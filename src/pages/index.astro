@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Section from '../components/Section.astro';
+import ProjectEntry from '../components/ProjectEntry.astro';
+import Skills from '../components/Skills.astro';
+import Education from '../components/Education.astro';
+import profile from '../data/profile.json';
+
+---
+
+<Layout>
+    <Header />
+
+    <Section title="CONTACT_INFO">
+        <div class="contact-grid">
+            <div class="contact-item">
+                <div class="contact-header">
+                    <span class="contact-title">Email</span>
+                    <span class="contact-meta">primary</span>
+                </div>
+                <div class="contact-description">
+                    <a href={`mailto:${profile.personal.email}`}>{profile.personal.email}</a>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-header">
+                    <span class="contact-title">LinkedIn</span>
+                    <span class="contact-meta">professional</span>
+                </div>
+                <div class="contact-description">
+                    <a href={`https://${profile.personal.linkedin}`} target="_blank">{profile.personal.linkedin}</a>
+                </div>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-header">
+                    <span class="contact-title">GitHub</span>
+                    <span class="contact-meta">repositories</span>
+                </div>
+                <div class="contact-description">
+                    <a href={`https://${profile.personal.github}`} target="_blank">{profile.personal.github}</a>
+                </div>
+            </div>
+            
+            <div class="contact-item digital-only">
+                <div class="contact-header">
+                    <span class="contact-title">Blog</span>
+                    <span class="contact-meta">system log</span>
+                </div>
+                <div class="contact-description">
+                    <a href="/blog/">/blog/</a>
+                </div>
+            </div>
+        </div>
+    </Section>
+
+    <Section title="PROJECT_MANIFEST">
+        {profile.projects.map(project => (
+            <ProjectEntry project={project} />
+        ))}
+    </Section>
+
+    <Section title="SKILL_MATRIX">
+        <Skills skills={profile.skills} />
+    </Section>
+
+    <Section title="EDUCATION_LOG">
+        <Education edu={profile.education} />
+    </Section>
+
+    <div class="checksum">
+        Document Checksum: {profile.checksum}
+    </div>
+
+    <!-- Page indicators removed to prevent empty pages -->
+</Layout>
+

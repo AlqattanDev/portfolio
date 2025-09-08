@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Section from '../../components/Section.astro';
+
+// This function is required for dynamic routes
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  return allPosts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+// Get the specific post for this page
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<Layout>
+    <Header />
+
+    <div class="execute-protocol">
+        <p class="terminal-command">$ ./blog --read {post.slug}</p>
+        <p class="comment">// Loading entry...</p>
+        <p>Blog Index: <a href="/blog/">/blog/</a></p>
+        <p>Main Site: <a href="/">/</a></p>
+    </div>
+
+    <Section title={post.data.title}>
+        <div class="entry">
+            <div class="entry-header">
+                <span class="entry-title"></span>
+                <span class="entry-meta">Published: {post.data.publishDate.toISOString().slice(0,10)}</span>
+            </div>
+            <div class="tech-stack" style="margin-bottom: 20px;">
+                {post.data.tags.map(tag => <span class="tech-tag">{tag}</span>)}
+            </div>
+            
+            <!-- The actual blog content is rendered here -->
+            <article class="entry-description">
+                <Content />
+            </article>
+        </div>
+    </Section>
+</Layout>
+

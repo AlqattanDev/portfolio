@@ -1,0 +1,586 @@
+---
+import '../styles/global.css';
+import '../styles/page-breaks.css';
+---
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ali - System Architect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- ASCII Blueprint Background System -->
+    
+    <!-- Add favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head>
+<body class="digital-view">
+
+    <!-- Canvas for ASCII Blueprint Background -->
+    <canvas id="ascii-blueprint" class="blueprint-canvas"></canvas>
+
+    <div class="watermark">ARCHITECT</div>
+    <div class="container page">
+        <div class="content">
+            <slot />
+        </div>
+    </div>
+
+    <script>
+      // Enhanced View Switcher with Morphing Transitions
+      const switcher = document.querySelector('.view-switcher') as HTMLElement | null;
+      const body = document.body;
+      const container = document.querySelector('.container') as HTMLElement | null;
+
+      if (switcher && container) {
+        switcher.addEventListener('click', () => {
+          // Add transitioning class to prevent multiple clicks
+          body.classList.add('view-transitioning');
+          switcher.style.pointerEvents = 'none';
+
+          if (body.classList.contains('digital-view')) {
+            // Digital to Print transition
+            container.classList.add('morphing-to-print');
+            
+            setTimeout(() => {
+              body.classList.remove('digital-view');
+              body.classList.add('print-view');
+              container.classList.remove('morphing-to-print');
+              container.classList.add('morphed-to-print');
+              
+              setTimeout(() => {
+                container.classList.remove('morphed-to-print');
+                body.classList.remove('view-transitioning');
+                switcher.style.pointerEvents = 'auto';
+              }, 100);
+            }, 400);
+            
+          } else {
+            // Print to Digital transition
+            container.classList.add('morphing-to-digital');
+            
+            setTimeout(() => {
+              body.classList.remove('print-view');
+              body.classList.add('digital-view');
+              container.classList.remove('morphing-to-digital');
+              container.classList.add('morphed-to-digital');
+              
+              setTimeout(() => {
+                container.classList.remove('morphed-to-digital');
+                body.classList.remove('view-transitioning');
+                switcher.style.pointerEvents = 'auto';
+              }, 100);
+            }, 400);
+          }
+        });
+      }
+    </script>
+
+
+    <!-- Initialize ASCII Blueprint System -->
+    <script is:inline>
+      // Initialize only in digital view
+      if (document.body.classList.contains('digital-view')) {
+        window.addEventListener('DOMContentLoaded', () => {
+          // Handled by external script
+        });
+      }
+      
+      // Original particles config (disabled)
+      /*particlesJS('particles-js', {
+        "particles": {
+          "number": {
+            "value": 80,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": "#00ff41"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000000"
+            }
+          },
+          "opacity": {
+            "value": 0.3,
+            "random": true,
+            "anim": {
+              "enable": true,
+              "speed": 1,
+              "opacity_min": 0.05,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 2,
+            "random": true
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#00ff41",
+            "opacity": 0.1,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 1,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "grab"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 140,
+              "line_opacity": 0.3
+            },
+            "push": {
+              "particles_nb": 4
+            }
+          }
+        },
+        "retina_detect": true
+      });*/
+    </script>
+    
+    <!-- Load System Monitor Background after DOM -->
+    <script type="module" src="/system-monitor-bg.js"></script>
+
+    <style is:global>
+      /* Embed critical styles directly */
+      :root {
+        --background-digital: #0a0a0a;
+        --foreground-digital: #00ff41;
+        --muted-digital: #888888;
+        --border-digital: #333333;
+        --accent-digital: #1a1a1a;
+        
+        --background-print: #ffffff;
+        --foreground-print: #000000;
+        --muted-print: #666666;
+        --border-print: #000000;
+        --accent-print: #000000;
+        
+        --font-body: 'JetBrains Mono', 'Courier New', monospace;
+        --font-accent: 'Space Mono', monospace;
+        --transition-speed: 0.25s;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-body);
+        line-height: 1.4;
+        background: var(--background-digital);
+        color: var(--foreground-digital);
+        transition: all var(--transition-speed) ease;
+        overflow-x: hidden;
+      }
+
+      body.print-view {
+        background: var(--background-print);
+        color: var(--foreground-print);
+      }
+
+      #particles-js {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -1;
+      }
+
+      body.print-view #particles-js {
+        display: none;
+      }
+
+      .watermark {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        font-size: 12px;
+        color: var(--muted-digital);
+        z-index: 1000;
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+
+      body.print-view .watermark {
+        color: var(--muted-print);
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        position: relative;
+        z-index: 1;
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .page {
+        min-height: 100vh;
+      }
+
+      .header {
+        margin-bottom: 40px;
+        position: relative;
+      }
+
+      .view-switcher {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: transparent;
+        border: 1px solid var(--border-digital);
+        color: var(--foreground-digital);
+        padding: 8px 12px;
+        cursor: pointer;
+        font-family: var(--font-body);
+        font-size: 12px;
+        transition: all var(--transition-speed) ease;
+      }
+
+      body.print-view .view-switcher {
+        border-color: var(--border-print);
+        color: var(--foreground-print);
+      }
+
+      .view-switcher:hover {
+        background: var(--accent-digital);
+      }
+
+      body.print-view .view-switcher:hover {
+        background: var(--accent-print);
+        color: var(--background-print);
+      }
+
+      .ascii-name {
+        font-family: var(--font-body);
+        font-size: 10px;
+        line-height: 1;
+        color: var(--foreground-digital);
+        margin: 20px 0;
+        white-space: pre;
+      }
+
+      body.print-view .ascii-name {
+        color: var(--foreground-print);
+      }
+
+      .system-info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        font-size: 12px;
+        color: var(--muted-digital);
+        margin-top: 20px;
+      }
+
+      body.print-view .system-info {
+        color: var(--muted-print);
+      }
+
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .section-title {
+        font-size: 14px;
+        font-weight: bold;
+        color: var(--foreground-digital);
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      body.print-view .section-title {
+        color: var(--foreground-print);
+      }
+
+      .entry {
+        margin-bottom: 25px;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border-digital);
+      }
+
+      body.print-view .entry {
+        border-bottom-color: var(--border-print);
+      }
+
+      .entry-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .entry-title {
+        font-weight: bold;
+        color: var(--foreground-digital);
+        font-size: 13px;
+      }
+
+      body.print-view .entry-title {
+        color: var(--foreground-print);
+      }
+
+      .entry-meta {
+        font-size: 11px;
+        color: var(--muted-digital);
+        white-space: nowrap;
+      }
+
+      body.print-view .entry-meta {
+        color: var(--muted-print);
+      }
+
+      .entry-description {
+        font-size: 12px;
+        color: var(--muted-digital);
+        line-height: 1.5;
+        margin-bottom: 10px;
+      }
+
+      body.print-view .entry-description {
+        color: var(--muted-print);
+      }
+
+      .comment {
+        font-style: italic;
+        opacity: 0.8;
+      }
+
+      .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .tech-tag {
+        background: var(--accent-digital);
+        color: var(--foreground-digital);
+        padding: 2px 8px;
+        font-size: 10px;
+        border: 1px solid var(--border-digital);
+        font-family: var(--font-body);
+      }
+
+      body.print-view .tech-tag {
+        background: var(--background-print);
+        color: var(--foreground-print);
+        border-color: var(--border-print);
+      }
+
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+      }
+
+      .skill-category {
+        margin-bottom: 20px;
+      }
+
+      .skill-header {
+        font-weight: bold;
+        color: var(--foreground-digital);
+        margin-bottom: 15px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      body.print-view .skill-header {
+        color: var(--foreground-print);
+      }
+
+      .skill-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 12px;
+      }
+
+      .skill-level {
+        color: var(--muted-digital);
+        font-family: var(--font-body);
+        font-size: 10px;
+      }
+
+      body.print-view .skill-level {
+        color: var(--muted-print);
+      }
+
+      a {
+        color: var(--foreground-digital);
+        text-decoration: none;
+        border-bottom: 1px dotted var(--muted-digital);
+      }
+
+      body.print-view a {
+        color: var(--foreground-print);
+        border-bottom-color: var(--muted-print);
+      }
+
+      a:hover {
+        border-bottom-style: solid;
+      }
+
+      @media print {
+        body {
+          background: white !important;
+          color: black !important;
+        }
+        
+        #particles-js {
+          display: none !important;
+        }
+        
+        .view-switcher {
+          display: none !important;
+        }
+        
+        .watermark {
+          color: #666 !important;
+        }
+      }
+
+      /* Morphing Page Transitions */
+      .morphing-to-print {
+        transform: translateY(-10px) scale(0.98);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        filter: brightness(1.1);
+      }
+
+      .morphed-to-print {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        filter: brightness(1);
+      }
+
+      .morphing-to-digital {
+        transform: translateY(10px) scale(1.02);
+        box-shadow: 0 5px 20px rgba(0, 255, 65, 0.1);
+        filter: brightness(0.9);
+      }
+
+      .morphed-to-digital {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0px 0px transparent;
+        filter: brightness(1);
+      }
+
+      /* Enhanced transitions for all elements during view change */
+      body.view-transitioning .entry {
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body.view-transitioning .section-title {
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body.view-transitioning .tech-tag {
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body.view-transitioning .skill-item {
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Background canvas transitions */
+      body.view-transitioning #ascii-blueprint {
+        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body.morphing-to-print #ascii-blueprint {
+        opacity: 0;
+      }
+
+      body.morphing-to-digital #ascii-blueprint {
+        opacity: 1;
+      }
+
+      /* Paper texture simulation during transition */
+      .morphing-to-print::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, 
+          rgba(255, 255, 255, 0.02) 0%, 
+          rgba(255, 255, 255, 0.01) 50%, 
+          rgba(255, 255, 255, 0.02) 100%);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 1;
+      }
+
+      .morphing-to-print::before {
+        opacity: 1;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px 15px;
+        }
+        
+        .ascii-name {
+          font-size: 8px;
+        }
+        
+        .skills-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .entry-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        /* Reduce transition intensity on mobile */
+        .morphing-to-print,
+        .morphing-to-digital {
+          transform: scale(1);
+        }
+      }
+    </style>
+</body>
+</html>
+

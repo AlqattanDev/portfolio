@@ -1,0 +1,12 @@
+---
+const { edu } = Astro.props;
+---
+
+<div class="entry">
+    <div class="entry-header">
+        <span class="entry-title">{edu.degree}</span>
+        <span class="entry-meta">{edu.university}</span>
+    </div>
+    <p class="entry-description">Thesis: {edu.thesis}</p>
+</div>
+

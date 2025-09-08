@@ -1,0 +1,695 @@
+---
+interface Props {
+  profileName: string;
+}
+
+const { profileName } = Astro.props as Props;
+---
+
+<div class="pdf-export-container">
+  <!-- PDF Export Control Panel -->
+  <div class="export-panel">
+    <div class="panel-header">
+      ┌─ PDF_EXPORT_SYSTEM v1.0.3 ─────────────────────┐<br/>
+      │ STATUS: [<span class="status-ready">READY</span>] | MODE: [<span id="export-mode">CUSTOM</span>] │<br/>
+      └─────────────────────────────────────────────────┘
+    </div>
+
+    <!-- Format Selection -->
+    <div class="format-section">
+      <div class="section-label">[SELECT_FORMAT]</div>
+      <div class="format-options">
+        <button class="format-btn active" data-format="executive">
+          <div class="format-icon">▫</div>
+          <div class="format-name">EXECUTIVE</div>
+          <div class="format-desc">1 page summary</div>
+        </button>
+        <button class="format-btn" data-format="detailed">
+          <div class="format-icon">▪</div>
+          <div class="format-name">DETAILED</div>
+          <div class="format-desc">2 page resume</div>
+        </button>
+        <button class="format-btn" data-format="full">
+          <div class="format-icon">█</div>
+          <div class="format-name">FULL</div>
+          <div class="format-desc">Complete portfolio</div>
+        </button>
+        <button class="format-btn" data-format="custom">
+          <div class="format-icon">◈</div>
+          <div class="format-name">CUSTOM</div>
+          <div class="format-desc">Select sections</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Section Selection (for custom format) -->
+    <div class="sections-selector" id="sections-selector">
+      <div class="section-label">[CUSTOMIZE_SECTIONS]</div>
+      <div class="sections-grid">
+        <label class="section-checkbox">
+          <input type="checkbox" name="section" value="header" checked>
+          <span class="checkbox-icon">[█]</span>
+          <span class="checkbox-label">Header Info</span>
+        </label>
+        <label class="section-checkbox">
+          <input type="checkbox" name="section" value="contact" checked>
+          <span class="checkbox-icon">[█]</span>
+          <span class="checkbox-label">Contact</span>
+        </label>
+        <label class="section-checkbox">
+          <input type="checkbox" name="section" value="projects" checked>
+          <span class="checkbox-icon">[█]</span>
+          <span class="checkbox-label">Projects</span>
+        </label>
+        <label class="section-checkbox">
+          <input type="checkbox" name="section" value="skills" checked>
+          <span class="checkbox-icon">[█]</span>
+          <span class="checkbox-label">Skills</span>
+        </label>
+        <label class="section-checkbox">
+          <input type="checkbox" name="section" value="radar">
+          <span class="checkbox-icon">[░]</span>
+          <span class="checkbox-label">Skills Radar</span>
+        </label>
+        <label class="section-checkbox">
+          <input type="checkbox" name="section" value="timeline" checked>
+          <span class="checkbox-icon">[█]</span>
+          <span class="checkbox-label">Timeline</span>
+        </label>
+        <label class="section-checkbox">
+          <input type="checkbox" name="section" value="education" checked>
+          <span class="checkbox-icon">[█]</span>
+          <span class="checkbox-label">Education</span>
+        </label>
+        <label class="section-checkbox">
+          <input type="checkbox" name="section" value="checksum">
+          <span class="checkbox-icon">[░]</span>
+          <span class="checkbox-label">Checksum</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Export Options -->
+    <div class="export-options">
+      <div class="section-label">[EXPORT_OPTIONS]</div>
+      <div class="options-grid">
+        <label class="option-item">
+          <input type="checkbox" id="include-links" checked>
+          <span>Include hyperlinks</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" id="include-colors">
+          <span>Preserve colors</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" id="include-timestamp" checked>
+          <span>Add timestamp</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Export Actions -->
+    <div class="export-actions">
+      <button class="action-btn preview-btn" id="preview-btn">
+        <span class="btn-icon">◉</span>
+        <span class="btn-text">PREVIEW</span>
+      </button>
+      <button class="action-btn export-btn" id="export-btn">
+        <span class="btn-icon">▼</span>
+        <span class="btn-text">EXPORT PDF</span>
+      </button>
+    </div>
+
+    <!-- Status Console -->
+    <div class="status-console">
+      <div class="console-output" id="console-output">
+        <div class="console-line">&gt; System initialized...</div>
+        <div class="console-line">&gt; PDF engine ready</div>
+        <div class="console-line">&gt; Awaiting user input_</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview Modal -->
+  <div class="preview-modal" id="preview-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        ┌─ PDF_PREVIEW ──────────────────┐<br/>
+        │ <button class="close-btn" id="close-preview">[X]</button>                            │<br/>
+        └────────────────────────────────┘
+      </div>
+      <div class="modal-body">
+        <iframe id="preview-frame" class="preview-frame"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .pdf-export-container {
+    margin: 20px 0;
+    font-family: var(--font-body);
+  }
+
+  .export-panel {
+    background: rgba(10, 14, 39, 0.5);
+    border: 1px solid var(--border-digital);
+    padding: 20px;
+    border-radius: 4px;
+  }
+
+  .panel-header {
+    font-size: 10px;
+    color: var(--foreground-digital);
+    white-space: pre;
+    line-height: 1.2;
+    text-align: center;
+    margin-bottom: 20px;
+    opacity: 0.9;
+  }
+
+  .status-ready {
+    color: #00ff41;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  /* Format Section */
+  .format-section {
+    margin-bottom: 30px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    color: var(--muted-digital);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .format-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+  }
+
+  .format-btn {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-digital);
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+  }
+
+  .format-btn:hover {
+    border-color: var(--foreground-digital);
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+  }
+
+  .format-btn.active {
+    background: rgba(100, 255, 218, 0.1);
+    border-color: var(--accent-digital);
+    box-shadow: 0 0 15px rgba(100, 255, 218, 0.4);
+  }
+
+  .format-icon {
+    font-size: 24px;
+    color: var(--foreground-digital);
+    margin-bottom: 8px;
+  }
+
+  .format-name {
+    font-size: 11px;
+    color: var(--foreground-digital);
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  .format-desc {
+    font-size: 9px;
+    color: var(--muted-digital);
+  }
+
+  /* Sections Selector */
+  .sections-selector {
+    margin-bottom: 30px;
+    transition: all 0.4s ease;
+  }
+
+  .sections-selector.hidden {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+
+  .section-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+  }
+
+  .section-checkbox:hover {
+    border-color: var(--border-digital);
+    background: rgba(100, 255, 218, 0.05);
+  }
+
+  .section-checkbox input {
+    display: none;
+  }
+
+  .checkbox-icon {
+    color: var(--muted-digital);
+    margin-right: 8px;
+    font-size: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .section-checkbox input:checked ~ .checkbox-icon {
+    color: var(--accent-digital);
+  }
+
+  .checkbox-label {
+    font-size: 10px;
+    color: var(--foreground-digital);
+  }
+
+  /* Export Options */
+  .export-options {
+    margin-bottom: 30px;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+  }
+
+  .option-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--foreground-digital);
+    cursor: pointer;
+  }
+
+  .option-item input {
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+  }
+
+  /* Export Actions */
+  .export-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--border-digital);
+    color: var(--foreground-digital);
+    padding: 10px 20px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+  }
+
+  .action-btn:hover {
+    background: var(--accent-digital);
+    color: var(--background-digital);
+    box-shadow: 0 0 20px var(--accent-digital);
+  }
+
+  .btn-icon {
+    font-size: 14px;
+  }
+
+  .export-btn {
+    background: rgba(100, 255, 218, 0.1);
+    border-color: var(--accent-digital);
+  }
+
+  /* Status Console */
+  .status-console {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--border-digital);
+    padding: 10px;
+    height: 80px;
+    overflow-y: auto;
+  }
+
+  .console-output {
+    font-family: var(--font-body);
+    font-size: 9px;
+    color: var(--foreground-digital);
+  }
+
+  .console-line {
+    margin-bottom: 2px;
+    opacity: 0.8;
+  }
+
+  .console-line:last-child {
+    opacity: 1;
+  }
+
+  /* Preview Modal */
+  .preview-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  .preview-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-content {
+    background: var(--background-digital);
+    border: 1px solid var(--border-digital);
+    width: 90%;
+    max-width: 900px;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal-header {
+    font-size: 10px;
+    color: var(--foreground-digital);
+    white-space: pre;
+    line-height: 1.2;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-digital);
+    position: relative;
+  }
+
+  .close-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--foreground-digital);
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .close-btn:hover {
+    color: #ff4444;
+  }
+
+  .modal-body {
+    flex: 1;
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  .preview-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: white;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .format-options {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sections-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .export-actions {
+      flex-direction: column;
+    }
+
+    .action-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  /* Print Mode - Hide export panel */
+  body.print-view .pdf-export-container {
+    display: none;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const formatBtns = document.querySelectorAll('.format-btn');
+    const sectionsSelector = document.getElementById('sections-selector');
+    const sectionCheckboxes = document.querySelectorAll('input[name="section"]');
+    const exportBtn = document.getElementById('export-btn');
+    const previewBtn = document.getElementById('preview-btn');
+    const previewModal = document.getElementById('preview-modal');
+    const closePreview = document.getElementById('close-preview');
+    const consoleOutput = document.getElementById('console-output');
+    const exportMode = document.getElementById('export-mode');
+    
+    let currentFormat = 'executive';
+    
+    // Format presets
+    const formatPresets = {
+      executive: ['header', 'contact', 'projects', 'skills'],
+      detailed: ['header', 'contact', 'projects', 'skills', 'timeline', 'education'],
+      full: ['header', 'contact', 'projects', 'skills', 'radar', 'timeline', 'education', 'checksum'],
+      custom: null
+    };
+
+    function addConsoleMessage(message) {
+      const line = document.createElement('div');
+      line.className = 'console-line';
+      line.textContent = `> ${message}`;
+      consoleOutput.appendChild(line);
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+      
+      // Keep only last 5 messages
+      while (consoleOutput.children.length > 5) {
+        consoleOutput.removeChild(consoleOutput.firstChild);
+      }
+    }
+
+    function updateSectionCheckboxes(sections) {
+      sectionCheckboxes.forEach(checkbox => {
+        const isChecked = sections ? sections.includes(checkbox.value) : false;
+        checkbox.checked = isChecked;
+        const icon = checkbox.parentElement.querySelector('.checkbox-icon');
+        icon.textContent = isChecked ? '[█]' : '[░]';
+      });
+    }
+
+    function getSelectedSections() {
+      const selected = [];
+      sectionCheckboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          selected.push(checkbox.value);
+        }
+      });
+      return selected;
+    }
+
+    // Format selection
+    formatBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        formatBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        currentFormat = btn.dataset.format;
+        exportMode.textContent = currentFormat.toUpperCase();
+        
+        if (currentFormat === 'custom') {
+          sectionsSelector.classList.remove('hidden');
+          addConsoleMessage('Custom mode activated');
+        } else {
+          sectionsSelector.classList.add('hidden');
+          updateSectionCheckboxes(formatPresets[currentFormat]);
+          addConsoleMessage(`Format set to: ${currentFormat}`);
+        }
+      });
+    });
+
+    // Section checkbox interactions
+    sectionCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const icon = checkbox.parentElement.querySelector('.checkbox-icon');
+        icon.textContent = checkbox.checked ? '[█]' : '[░]';
+        
+        if (currentFormat !== 'custom') {
+          // Switch to custom mode if user modifies sections
+          formatBtns.forEach(b => b.classList.remove('active'));
+          document.querySelector('[data-format="custom"]').classList.add('active');
+          currentFormat = 'custom';
+          exportMode.textContent = 'CUSTOM';
+          sectionsSelector.classList.remove('hidden');
+        }
+        
+        addConsoleMessage(`${checkbox.checked ? 'Added' : 'Removed'}: ${checkbox.value}`);
+      });
+    });
+
+    // Export functionality
+    exportBtn.addEventListener('click', async () => {
+      addConsoleMessage('Initializing PDF export...');
+      
+      const sections = getSelectedSections();
+      const includeLinks = document.getElementById('include-links').checked;
+      const includeColors = document.getElementById('include-colors').checked;
+      const includeTimestamp = document.getElementById('include-timestamp').checked;
+      
+      // Prepare export data
+      const exportData = {
+        format: currentFormat,
+        sections: sections,
+        options: {
+          links: includeLinks,
+          colors: includeColors,
+          timestamp: includeTimestamp
+        }
+      };
+      
+      addConsoleMessage('Generating PDF...');
+      
+      // Simulate PDF generation
+      setTimeout(() => {
+        // Switch to print mode temporarily
+        document.body.classList.add('print-view');
+        
+        // Hide unselected sections
+        const allSections = document.querySelectorAll('[class*="Section"], .execute-protocol, .checksum');
+        allSections.forEach(section => {
+          const sectionType = detectSectionType(section);
+          if (sectionType && !sections.includes(sectionType)) {
+            section.style.display = 'none';
+          }
+        });
+        
+        // Trigger browser print dialog
+        window.print();
+        
+        // Restore view
+        setTimeout(() => {
+          document.body.classList.remove('print-view');
+          allSections.forEach(section => {
+            section.style.display = '';
+          });
+          addConsoleMessage('PDF export complete');
+        }, 100);
+      }, 500);
+    });
+
+    // Preview functionality
+    previewBtn.addEventListener('click', () => {
+      addConsoleMessage('Generating preview...');
+      
+      // Clone current view for preview
+      const content = document.querySelector('.container').cloneNode(true);
+      
+      // Apply print styles to preview
+      const previewDoc = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            ${getComputedStyles()}
+          </style>
+        </head>
+        <body class="print-view">
+          ${content.innerHTML}
+        </body>
+        </html>
+      `;
+      
+      // Create blob and display in iframe
+      const blob = new Blob([previewDoc], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      
+      const previewFrame = document.getElementById('preview-frame');
+      previewFrame.src = url;
+      
+      previewModal.classList.add('active');
+      addConsoleMessage('Preview ready');
+    });
+
+    // Close preview
+    closePreview.addEventListener('click', () => {
+      previewModal.classList.remove('active');
+      addConsoleMessage('Preview closed');
+    });
+
+    // Helper functions
+    function detectSectionType(element) {
+      const classNames = element.className;
+      if (classNames.includes('Header')) return 'header';
+      if (classNames.includes('execute-protocol')) return 'contact';
+      if (classNames.includes('PROJECT_MANIFEST')) return 'projects';
+      if (classNames.includes('SKILL_MATRIX')) return 'skills';
+      if (classNames.includes('SKILL_RADAR')) return 'radar';
+      if (classNames.includes('CAREER_TIMELINE')) return 'timeline';
+      if (classNames.includes('EDUCATION_LOG')) return 'education';
+      if (classNames.includes('checksum')) return 'checksum';
+      return null;
+    }
+
+    function getComputedStyles() {
+      // Get all stylesheets
+      const styles = Array.from(document.styleSheets)
+        .map(sheet => {
+          try {
+            return Array.from(sheet.cssRules)
+              .map(rule => rule.cssText)
+              .join('\n');
+          } catch (e) {
+            return '';
+          }
+        })
+        .join('\n');
+      
+      return styles;
+    }
+
+    // Initialize
+    sectionsSelector.classList.add('hidden');
+    updateSectionCheckboxes(formatPresets.executive);
+    addConsoleMessage('PDF Export System ready');
+  });
+</script>

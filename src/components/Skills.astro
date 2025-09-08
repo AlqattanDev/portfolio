@@ -1,0 +1,28 @@
+---
+interface Props {
+  skills: {
+    header: string;
+    items: {
+      name: string;
+      level: string;
+    }[];
+  }[];
+}
+
+const { skills } = Astro.props as Props;
+---
+
+<div class="skills-grid">
+    {skills.map((category) => (
+        <div class="skill-category">
+            <div class="skill-header">{category.header}</div>
+            {category.items.map((item) => (
+                <div class="skill-item">
+                    <span>{item.name}</span>
+                    <span class="skill-level">{item.level}</span>
+                </div>
+            ))}
+        </div>
+    ))}
+</div>
+

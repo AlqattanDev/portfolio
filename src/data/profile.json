@@ -1,0 +1,105 @@
+
+
+
+{
+  "personal": {
+    "name": "Ali",
+    "email": "alqattandev@gmail.com",
+    "github": "github.com/ali",
+    "linkedin": "linkedin.com/in/ali",
+    "tagline": "Bridging low-level systems programming with innovative AI applications",
+    "bio": "Fueled by a childhood fascination with system infiltration and vulnerability research, my journey into technology evolved from exploring system vulnerabilities to mastering diverse programming paradigms. With expertise in mobile development using Flutter and growing proficiency in Rust for systems programming, I uniquely combine low-level systems knowledge with cutting-edge AI applications, constantly pushing the boundaries of what's possible."
+  },
+  "projects": [
+    {
+      "id": "001",
+      "name": "University Events Platform",
+      "status": "PRODUCTION",
+      "scale": "10K+ Users",
+      "description": "Comprehensive event management system with real-time analytics and user registration. Achieved 99.9% uptime serving university community.",
+      "stack": ["Flutter", "Firebase", "Real-time Analytics", "Push Notifications"],
+      "features": ["Live event tracking", "User analytics dashboard", "Automated notifications"]
+    },
+    {
+      "id": "002",
+      "name": "NFT Album Social Platform",
+      "status": "PRODUCTION",
+      "scale": "50K+ Transactions",
+      "description": "Instagram-like social platform for NFT collection showcase. Zero security breaches handling high-value digital assets.",
+      "stack": ["Flutter", "Firebase", "Blockchain Integration", "Advanced Security"],
+      "features": ["Social feeds", "Collection galleries", "Secure transactions"]
+    },
+    {
+      "id": "003",
+      "name": "Anonymous Chat Secure",
+      "status": "PRODUCTION",
+      "security": "Military-grade",
+      "description": "Privacy-focused messaging platform with end-to-end encryption. Implemented advanced cryptographic protocols.",
+      "stack": ["Flutter", "Firebase", "Custom Encryption", "Security Protocols"],
+      "features": ["E2E encryption", "Anonymous authentication", "Secure file sharing"]
+    },
+    {
+      "id": "004",
+      "name": "Terminal CloudWatch TUI",
+      "status": "BETA",
+      "performance": "10x Faster",
+      "description": "Reimagined AWS CloudWatch as powerful terminal interface. Revolutionary query execution speed improvements.",
+      "stack": ["Rust", "Ratatui", "AWS SDK", "Terminal UI"],
+      "features": ["Advanced error handling", "Syntax highlighting", "Query optimization"]
+    },
+    {
+      "id": "005",
+      "name": "AI Mobile Platform",
+      "status": "DEVELOPMENT",
+      "innovation": "Next-gen",
+      "description": "AI-powered mobile platform with edge computing capabilities. Integrating neural networks with mobile architecture.",
+      "stack": ["Flutter", "AI/ML", "Edge Computing", "Neural Networks"],
+      "features": ["On-device AI processing", "Intelligent automation", "Adaptive UI"]
+    }
+  ],
+  "skills": [
+    {
+      "header": "Mobile Architecture & Development",
+      "items": [
+        { "name": "Flutter/Dart", "level": "[█████████-]" },
+        { "name": "Firebase Integration", "level": "[████████--]" },
+        { "name": "State Management (Riverpod)", "level": "[████████--]" },
+        { "name": "Mobile Security", "level": "[████████--]" }
+      ]
+    },
+    {
+      "header": "Systems Programming & Low-Level",
+      "items": [
+        { "name": "Rust", "level": "[███████---]" },
+        { "name": "C/C++", "level": "[███████---]" },
+        { "name": "Assembly", "level": "[█████-----]" },
+        { "name": "TUI Development (Ratatui)", "level": "[████████--]" }
+      ]
+    },
+    {
+      "header": "AI & Cloud Technologies",
+      "items": [
+        { "name": "Machine Learning/NN", "level": "[███████---]" },
+        { "name": "Cloud Architecture (AWS)", "level": "[███████---]" },
+        { "name": "Edge Computing", "level": "[██████----]" },
+        { "name": "Data Analytics", "level": "[███████---]" }
+      ]
+    },
+    {
+      "header": "Terminal & DevOps",
+      "items": [
+        { "name": "Linux/Unix Systems", "level": "[█████████-]" },
+        { "name": "Neovim", "level": "[████████--]" },
+        { "name": "Terminal Tools", "level": "[█████████-]" },
+        { "name": "Version Control (Git)", "level": "[████████--]" }
+      ]
+    }
+  ],
+  "education": {
+    "degree": "Computer Science / Software Engineering",
+    "university": "University of Technology Bahrain",
+    "thesis": "UTB Codebase - Student code repository and app distribution platform"
+  },
+  "checksum": "f4a9b1c8d0e7f6a5"
+}
+
