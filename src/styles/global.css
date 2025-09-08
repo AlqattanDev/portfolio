@@ -257,20 +257,23 @@ body.print-view .ascii-name.print-only h1 {
 
 
 .view-switcher {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: transparent;
-    border: 1px solid transparent;
-    color: var(--muted-digital);
-    width: 40px;
-    height: 40px;
-    border-radius: 0.375rem;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-digital);
+    color: var(--foreground-digital);
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--transition-speed) ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 255, 65, 0.1);
 }
 
 .view-switcher svg {
@@ -288,7 +291,20 @@ body.print-view .icon-digital {
     display: none;
 }
 
-/* Digital view icon style: Glowing outline paper icon */
+/* Hover effects */
+.view-switcher:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(0, 255, 65, 0.2);
+    border-color: var(--foreground-digital);
+}
+
+/* Digital view styles */
+body.digital-view .view-switcher {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: var(--border-digital);
+    box-shadow: 0 4px 12px rgba(0, 255, 65, 0.1);
+}
+
 body.digital-view .icon-digital {
     stroke: var(--foreground-digital);
     stroke-width: 1.5;
@@ -297,19 +313,31 @@ body.digital-view .icon-digital {
 }
 
 body.digital-view .view-switcher:hover .icon-digital {
-     filter: drop-shadow(0 0 8px var(--foreground-digital));
-     stroke-width: 2;
+    filter: drop-shadow(0 0 12px var(--foreground-digital));
+    stroke-width: 2;
 }
 
-/* Print view icon style: QR code */
+/* Print view styles */
+body.print-view .view-switcher {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--border-print);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.print-view .view-switcher:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-color: var(--foreground-print);
+}
+
 body.print-view .icon-print {
     stroke: var(--foreground-print);
-    stroke-width: 1;
-    fill: var(--foreground-print);
+    stroke-width: 1.5;
+    fill: none;
 }
 
 body.print-view .view-switcher:hover .icon-print {
-    opacity: 0.7;
+    stroke-width: 2;
 }
 
 .ascii-name {
