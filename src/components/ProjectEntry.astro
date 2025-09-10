@@ -19,9 +19,9 @@ interface Props {
 }
 
 const { project } = Astro.props as Props;
-const meta = `${project.status} | ${project.scale || project.security || project.performance || project.innovation}`;
 const metric = project.scale || project.security || project.performance || project.innovation;
 const metricLabel = project.scale ? 'Users' : project.security ? 'Security' : project.performance ? 'Performance' : 'Innovation';
+const meta = `${project.status} | ${metric}`;
 ---
 
 <div class="entry project-card">
@@ -30,13 +30,9 @@ const metricLabel = project.scale ? 'Users' : project.security ? 'Security' : pr
         <span class="entry-meta">{meta}</span>
     </div>
     <p class="entry-description">{project.description}</p>
-    
-    <!-- Display Key Features -->
     <div class="entry-description comment" style="margin-top: 5px;">
         // Features: {project.features.join(', ')}
     </div>
-
-    <!-- Display Tech Stack -->
     <div class="tech-stack">
         {project.stack.map((tech: string) => <span class="tech-tag">{tech}</span>)}
     </div>
@@ -99,12 +95,12 @@ const metricLabel = project.scale ? 'Users' : project.security ? 'Security' : pr
         <!-- Action Buttons -->
         <div class="project-actions">
             {project.demoUrl && (
-                <button class="action-btn demo-btn" onclick={`window.open('${project.demoUrl}', '_blank')`}>
+                <button class="action-btn demo-btn" data-url={project.demoUrl}>
                     <span>→ Live Demo</span>
                 </button>
             )}
             {project.githubUrl && (
-                <button class="action-btn github-btn" onclick={`window.open('${project.githubUrl}', '_blank')`}>
+                <button class="action-btn github-btn" data-url={project.githubUrl}>
                     <span>⟨/⟩ Source</span>
                 </button>
             )}
@@ -407,7 +403,7 @@ const metricLabel = project.scale ? 'Users' : project.security ? 'Security' : pr
         // Video Preview on Hover
         const videoPreviews = document.querySelectorAll('.video-preview');
         videoPreviews.forEach(preview => {
-            const videoUrl = preview.dataset.videoUrl;
+            const videoUrl = (preview as HTMLElement).dataset.videoUrl;
             if (!videoUrl) return;
 
             let videoElement = null;
@@ -444,7 +440,7 @@ const metricLabel = project.scale ? 'Users' : project.security ? 'Security' : pr
         // GitHub API Integration
         const githubStats = document.querySelectorAll('.github-stats[data-repo]');
         githubStats.forEach(async (statsElement) => {
-            const repoUrl = statsElement.dataset.repo;
+            const repoUrl = (statsElement as HTMLElement).dataset.repo;
             if (!repoUrl) return;
 
             try {
@@ -480,14 +476,21 @@ const metricLabel = project.scale ? 'Users' : project.security ? 'Security' : pr
         const demoIframes = document.querySelectorAll('.demo-iframe-container');
         demoIframes.forEach(container => {
             container.addEventListener('click', () => {
-                const iframe = container.querySelector('.demo-iframe');
+                const iframe = container.querySelector('.demo-iframe') as HTMLElement;
                 if (iframe) {
                     iframe.style.pointerEvents = 'auto';
                     iframe.style.transform = 'scale(1)';
-                    container.style.height = '200px';
+                    (container as HTMLElement).style.height = '200px';
                 }
+            });
+        });
+
+        // Action button handlers
+        const actionBtns = document.querySelectorAll('.action-btn[data-url]');
+        actionBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                window.open((btn as HTMLElement).dataset.url, '_blank');
             });
         });
     });
 </script>
-

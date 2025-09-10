@@ -1,680 +1,178 @@
 /*
 ========================================
-CORE CONFIGURATION & THEME VARIABLES
+SIMPLIFIED PORTFOLIO CSS
+Clean three-column layout with digital/print modes
 ========================================
 */
-:root {
-    /* Digital View (Terminal Theme) */
-    --background-digital: #0a0a0a;
-    --foreground-digital: #00ff41;
-    --muted-digital: #888888;
-    --border-digital: #333333;
-    --accent-digital: #1a1a1a;
-    
-    /* Print-Perfect Variables - Exactly what appears on paper */
-    --background-print: #ffffff;
-    --foreground-print: #000000;
-    --muted-print: #666666;
-    --border-print: #000000;
-    --accent-print: #000000;
-    --background-inverted-print: #000000;
-    --foreground-inverted-print: #ffffff;
 
-    /* Typography */
-    --font-body: 'JetBrains Mono', 'Courier New', monospace;
-    --font-accent: 'Space Mono', monospace;
-
-    /* Transitions */
-    --transition-speed: 0.25s;
-}
-
-/*
-========================================
-PARTICLE EFFECTS STYLING
-========================================
-*/
-#ascii-blueprint {
-    position: fixed;
-    width: 100%;
-    height: 100vh; /* Only viewport height */
-    top: 0;
-    left: 0;
-    z-index: -1; /* Crucial: places it behind all other content */
-    opacity: 1;
-    pointer-events: auto; /* Allow scrolling interaction with background */
-}
-
-/* Hide ASCII blueprint in print view and on print */
-body.print-view #ascii-blueprint {
-    display: none;
-}
-
-@media print {
-    #ascii-blueprint {
-        display: none !important;
-    }
-    
-    /* Hide page break indicators when actually printing */
-    body.print-view::before,
-    body.print-view::after {
-        display: none !important;
-    }
-    
-    /* Hide all page indicators */
-    .page-indicator,
-    .page-break-line {
-        display: none !important;
-    }
-}
-
-/*
-========================================
-BASE & RESET STYLES
-========================================
-*/
-*, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: var(--font-body);
-    font-size: 9pt;
-    line-height: 1.4;
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
-
-/*
-========================================
-DUAL-VIEW THEME SYSTEM
-========================================
-*/
-body.print-view {
-    background-color: #f5f5f5;
-    color: var(--foreground-print);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 0.5rem 0;
-    min-height: 100vh;
-    position: relative;
-}
-
-/* Page break indicators - disabled to prevent empty pages */
-body.print-view::before {
-    display: none;
-}
-
-body.print-view::after {
-    display: none;
-}
-
-body.digital-view {
-    background-color: var(--background-digital);
-    color: var(--foreground-digital);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 2rem 0;
-    min-height: 100vh;
-}
-
-/*
-========================================
-MAIN LAYOUT & CONTAINER
-========================================
-*/
-.container {
-    /* Consistent A4 dimensions for both modes */
-    width: 210mm;
-    min-height: 297mm;
-    margin: 0 auto;
-    padding: 15mm;
-    position: relative;
-    transition: all var(--transition-speed) ease;
-}
-
-body.digital-view .container {
-    /* Digital mode keeps A4 dimensions but with different styling */
-    background-color: var(--background-digital);
-    border: 1px solid var(--border-digital);
-}
-
-body.print-view .container {
-    /* Print mode uses same dimensions */
-    background-color: var(--background-print);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.content {
-    position: relative;
-    z-index: 1;
-}
-
-/*
-========================================
-HEADER & INTEGRATED CONTROLS
-========================================
-*/
-.header {
-    border: 2px solid;
-    padding: 10px;
-    margin-bottom: 20px;
-    position: relative;
-}
-
-body.digital-view .header { 
-    border-color: var(--border-digital); 
-}
-
-body.print-view .header { 
-    border-color: var(--border-print); 
-    background: var(--background-print); 
-}
-
-/* Interactive ASCII Name Container */
-.ascii-name-container {
-    position: relative;
-    margin: 20px 0;
-    height: 120px;
-    overflow: hidden;
-}
-
-.ascii-name-canvas {
+/* Digital/Print View Toggle Classes */
+.digital-only {
     display: block;
-    width: 100%;
-    height: 120px;
-    cursor: crosshair;
 }
 
-
-/* Vim Mode Indicator */
-.vim-mode {
-    position: absolute;
-    bottom: 5px;
-    right: 10px;
-    color: var(--muted-digital);
-    font-size: 10px;
-    font-family: var(--font-body);
-    letter-spacing: 1px;
-    padding: 2px 6px;
-    border: 1px solid var(--border-digital);
-    background: var(--accent-digital);
-    transition: all 0.3s ease;
-}
-
-.vim-mode.insert {
-    color: #8ec07c;
-    border-color: #8ec07c;
-    background: rgba(142, 192, 124, 0.1);
-}
-
-.vim-mode.visual {
-    color: #83a598;
-    border-color: #83a598;
-    background: rgba(131, 165, 152, 0.1);
-}
-
-.vim-mode.command {
-    color: #ff4444;
-    border-color: #ff4444;
-    background: rgba(255, 68, 68, 0.1);
-}
-
-/* Print fallback */
-body.print-view .ascii-name-container {
-    display: none !important;
-}
-
-body.print-view .ascii-name.print-only {
-    display: block !important;
-    margin: 10px 0;
-}
-
-body.digital-view .ascii-name.print-only {
+.print-only {
     display: none;
 }
 
-.ascii-name.print-only h1 {
-    font-family: var(--font-body);
-    font-size: 16pt;
-    font-weight: bold;
-    text-align: center;
-    letter-spacing: 2px;
-    margin: 0;
-}
-
-body.print-view .ascii-name.print-only h1 {
-    color: var(--foreground-print);
-}
-
-
-.view-switcher {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--muted-digital);
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000;
-    opacity: 0.3;
-}
-
-.view-switcher svg {
-    width: 24px;
-    height: 24px;
-    transition: all var(--transition-speed) ease;
-}
-
-/* Icon visibility control */
-body.digital-view .icon-print {
+body.print-view .digital-only {
     display: none;
 }
 
-body.print-view .icon-digital {
-    display: none;
-}
-
-/* Digital view - blended background state */
-body.digital-view .view-switcher {
-    opacity: 0.3;
-}
-
-body.digital-view .icon-digital {
-    stroke: var(--muted-digital);
-    stroke-width: 1;
-    fill: none;
-}
-
-/* Digital view - hover reveal */
-body.digital-view .view-switcher:hover {
-    opacity: 1;
-    background: rgba(0, 0, 0, 0.8);
-    border-color: var(--foreground-digital);
-    box-shadow: 0 4px 16px rgba(0, 255, 65, 0.15);
-    transform: scale(1.02);
-}
-
-body.digital-view .view-switcher:hover .icon-digital {
-    stroke: var(--foreground-digital);
-    stroke-width: 2;
-    filter: drop-shadow(0 0 8px var(--foreground-digital));
-}
-
-/* Print view - blended background state */
-body.print-view .view-switcher {
-    opacity: 0.4;
-    color: var(--muted-print);
-}
-
-body.print-view .icon-print {
-    stroke: var(--muted-print);
-    stroke-width: 1;
-    fill: none;
-}
-
-/* Print view - hover reveal */
-body.print-view .view-switcher:hover {
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.9);
-    border-color: var(--foreground-print);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    transform: scale(1.02);
-}
-
-body.print-view .view-switcher:hover .icon-print {
-    stroke: var(--foreground-print);
-    stroke-width: 2;
-}
-
-.ascii-name {
-    font-size: 8pt;
-    line-height: 1;
-    font-weight: bold;
-    white-space: pre;
-    margin-bottom: 10px;
-}
-
-.system-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 8pt;
-    border-top: 1px dashed;
-    padding-top: 8px;
-    margin-top: 8px;
-}
-
-body.digital-view .system-info { 
-    border-color: var(--border-digital); 
-    color: var(--muted-digital); 
-}
-
-body.print-view .system-info { 
-    border-color: var(--border-print); 
-    color: var(--foreground-print); 
+body.print-view .print-only {
+    display: block;
 }
 
 /*
 ========================================
-CONTENT SECTIONS - PRINT-PERFECT STYLING
+CONTENT SECTIONS STYLING
 ========================================
 */
-.execute-protocol {
-    padding: 15px;
-    margin: 20px 0;
-    position: relative;
-    font-size: 9pt;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
-
-body.digital-view .execute-protocol { 
-    background: var(--accent-digital); 
-    border: 1px solid var(--border-digital); 
-}
-
-body.print-view .execute-protocol { 
-    background: transparent;
-    color: var(--foreground-print); 
-    border: none;
-    padding: 10px 0;
-    margin: 15px 0;
-    border-bottom: 1px solid #ddd;
-}
-
-/* Hide digital-only elements in print mode */
-body.print-view .digital-only {
-    display: none !important;
-}
-
-body.print-view .digital-only-section {
-    display: none !important;
-}
-
-/* Contact section styling for print */
-body.print-view .contact-section {
-    padding: 5px 0;
-}
-
-body.print-view .contact-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-body.print-view .contact-info p {
-    margin: 0;
-    flex: 0 0 45%;
-}
-
-.contact-label {
-    font-weight: bold;
-    margin-right: 5px;
-}
-
-.execute-protocol::before {
-    content: '▶ EXECUTE_PROTOCOL';
-    position: absolute;
-    top: -10px; 
-    left: 10px;
-    padding: 0 5px;
-    font-weight: bold;
-    font-size: 8pt;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
-
-body.digital-view .execute-protocol::before { 
-    background: var(--background-digital); 
-    color: var(--foreground-digital); 
-}
-
-body.print-view .execute-protocol::before { 
-    display: none; /* Hide the label in print view */
-}
-
-.terminal-command { 
-    font-family: var(--font-accent); 
-    margin: 5px 0; 
-}
-
-.comment { 
-    font-size: 8pt; 
-}
-
-body.digital-view .comment { 
-    color: var(--muted-digital); 
-}
-
-body.print-view .comment { 
-    color: #888; 
-}
-
-.section { 
-    margin-bottom: 20px; 
-    position: relative; 
-}
-
-.section-header {
-    padding: 5px 10px;
-    font-weight: bold;
-    font-size: 10pt;
-    letter-spacing: 2px;
-    position: relative;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
-
-body.digital-view .section-header { 
-    background: var(--accent-digital); 
-    border: 1px solid var(--border-digital); 
-}
-
-body.print-view .section-header { 
-    background: transparent;
-    color: var(--foreground-print); 
-    border: none;
-    border-bottom: 1px solid var(--border-print);
-    padding: 5px 0 3px 0;
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size: 11pt;
-}
-
-.section-header::before { 
-    content: '//'; 
-    margin-right: 8px; 
-}
-
-body.digital-view .section-header::before { 
-    color: var(--muted-digital); 
-}
-
-body.print-view .section-header::before { 
-    display: none; /* Hide decorative // in print */
+.section {
+    margin-bottom: 40px;
 }
 
 .section-title {
-    /* This class is used by the Section component */
-}
-
-.section-line {
-    /* This class is used by the Section component if needed */
-}
-
-.subsection {
-    padding: 10px 0;
-    margin-left: 10px;
-    padding-left: 15px;
-}
-
-body.digital-view .subsection { 
-    border-left: 2px solid var(--border-digital); 
-}
-
-body.print-view .subsection { 
-    border-left: 2px solid var(--border-print); 
-}
-
-.entry { 
-    margin-bottom: 15px; 
-    position: relative; 
-}
-
-.entry-header { 
-    display: flex; 
-    justify-content: space-between; 
-    margin-bottom: 5px; 
-}
-
-.entry-title { 
-    font-weight: bold; 
-    font-size: 9pt; 
-    text-decoration: none;
-}
-
-.entry-title:hover {
-    text-decoration: underline;
-}
-
-body.digital-view .entry-title {
+    font-size: 14px;
+    font-weight: bold;
     color: var(--foreground-digital);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+body.print-view .section-title {
+    color: var(--foreground-print);
+}
+
+.entry {
+    margin-bottom: 25px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-digital);
+}
+
+body.print-view .entry {
+    border-bottom-color: var(--border-print);
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.entry-title {
+    font-weight: bold;
+    color: var(--foreground-digital);
+    font-size: 13px;
 }
 
 body.print-view .entry-title {
     color: var(--foreground-print);
 }
 
-.entry-meta { 
-    font-size: 8pt; 
+.entry-meta {
+    font-size: 11px;
+    color: var(--muted-digital);
+    white-space: nowrap;
 }
 
-body.digital-view .entry-meta { 
-    color: var(--muted-digital); 
+body.print-view .entry-meta {
+    color: var(--muted-print);
 }
 
-body.print-view .entry-meta { 
-    color: var(--muted-print); 
+.entry-description {
+    font-size: 12px;
+    color: var(--muted-digital);
+    line-height: 1.5;
+    margin-bottom: 10px;
 }
 
-.entry-description { 
-    margin: 5px 0; 
-    font-size: 8pt; 
-    line-height: 1.5; 
+body.print-view .entry-description {
+    color: var(--muted-print);
 }
 
-.tech-stack { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 5px; 
-    margin-top: 5px; 
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
 }
 
 .tech-tag {
-    border: 1px solid;
-    padding: 2px 6px;
-    font-size: 7pt;
-    font-weight: 600;
+    background: var(--accent-digital);
+    color: var(--foreground-digital);
+    padding: 2px 8px;
+    font-size: 10px;
+    border: 1px solid var(--border-digital);
+    font-family: var(--font-body);
 }
 
-body.digital-view .tech-tag { 
-    border-color: var(--border-digital); 
-    color: var(--muted-digital); 
+body.print-view .tech-tag {
+    background: var(--background-print);
+    color: var(--foreground-print);
+    border-color: var(--border-print);
 }
 
-body.print-view .tech-tag { 
-    border-color: var(--border-print); 
-    background: var(--background-print); 
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.skill-category {
+    margin-bottom: 20px;
+}
+
+.skill-header {
+    font-weight: bold;
+    color: var(--foreground-digital);
+    margin-bottom: 15px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+body.print-view .skill-header {
     color: var(--foreground-print);
 }
 
-.skills-grid { 
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 15px; 
-    margin-top: 10px; 
+.skill-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12px;
 }
 
-.skill-category { 
-    border: 1px solid; 
-    padding: 8px; 
+.skill-level {
+    color: var(--muted-digital);
+    font-family: var(--font-body);
+    font-size: 10px;
 }
 
-body.digital-view .skill-category { 
-    border-color: var(--border-digital); 
+body.print-view .skill-level {
+    color: var(--muted-print);
 }
 
-body.print-view .skill-category { 
-    border-color: var(--border-print); 
-    background: var(--background-print); 
+a {
+    color: var(--foreground-digital);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--muted-digital);
 }
 
-.skill-header { 
-    font-weight: bold; 
-    font-size: 9pt; 
-    border-bottom: 1px solid; 
-    padding-bottom: 3px; 
-    margin-bottom: 5px; 
+body.print-view a {
+    color: var(--foreground-print);
+    border-bottom-color: var(--muted-print);
 }
 
-body.digital-view .skill-header { 
-    border-color: var(--border-digital); 
+a:hover {
+    border-bottom-style: solid;
 }
 
-body.print-view .skill-header { 
-    border-color: var(--border-print); 
-}
-
-.skill-item { 
-    display: flex; 
-    justify-content: space-between; 
-    font-size: 8pt; 
-    margin: 3px 0; 
-}
-
-.skill-level { 
-    font-family: monospace; 
-    letter-spacing: -1px; 
-}
-
-.watermark {
-    position: fixed;
-    top: 50%; 
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    font-size: 10vw;
-    font-weight: bold;
-    z-index: 0;
-    pointer-events: none;
-}
-
-body.digital-view .watermark { 
-    color: rgba(0, 255, 65, 0.03); 
-}
-
-body.print-view .watermark { 
-    position: absolute; 
-    font-size: 100pt; 
-    color: rgba(0, 0, 0, 0.03);
-    transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-/* Contact section styling - matches other sections */
+/* Contact Grid */
 .contact-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -686,11 +184,7 @@ body.print-view .watermark {
     margin-bottom: 15px;
     position: relative;
     padding: 15px 0;
-    border-bottom: 1px solid;
-}
-
-body.digital-view .contact-item {
-    border-bottom-color: var(--border-digital);
+    border-bottom: 1px solid var(--border-digital);
 }
 
 body.print-view .contact-item {
@@ -709,9 +203,6 @@ body.print-view .contact-item {
 .contact-title {
     font-weight: bold;
     font-size: 13px;
-}
-
-body.digital-view .contact-title {
     color: var(--foreground-digital);
 }
 
@@ -721,11 +212,8 @@ body.print-view .contact-title {
 
 .contact-meta {
     font-size: 11px;
-    white-space: nowrap;
-}
-
-body.digital-view .contact-meta {
     color: var(--muted-digital);
+    white-space: nowrap;
 }
 
 body.print-view .contact-meta {
@@ -734,12 +222,9 @@ body.print-view .contact-meta {
 
 .contact-description {
     font-size: 12px;
+    color: var(--muted-digital);
     line-height: 1.5;
     margin-bottom: 10px;
-}
-
-body.digital-view .contact-description {
-    color: var(--muted-digital);
 }
 
 body.print-view .contact-description {
@@ -748,12 +233,8 @@ body.print-view .contact-description {
 
 .contact-description a {
     text-decoration: none;
-    border-bottom: 1px dotted;
-}
-
-body.digital-view .contact-description a {
+    border-bottom: 1px dotted var(--muted-digital);
     color: var(--foreground-digital);
-    border-bottom-color: var(--muted-digital);
 }
 
 body.print-view .contact-description a {
@@ -765,456 +246,16 @@ body.print-view .contact-description a {
     border-bottom-style: solid;
 }
 
-.checksum { 
-    font-size: 7pt; 
-    text-align: right; 
-    margin-top: 10px; 
-    font-style: italic; 
-}
-
-body.digital-view .checksum { 
-    color: var(--muted-digital); 
-}
-
-body.print-view .checksum { 
-    color: var(--muted-print); 
-}
-
-/*
-========================================
-BLOG ARTICLE STYLING
-========================================
-*/
-article.entry-description {
-    font-size: 9pt; /* Match body font size */
-    line-height: 1.6; /* A bit more spacing for readability */
-}
-
-/* Headings */
-article.entry-description h2,
-article.entry-description h3,
-article.entry-description h4 {
-    font-family: var(--font-accent); /* Use the accent font for headers */
-    letter-spacing: 1px;
-    margin-top: 2em;
-    margin-bottom: 1em;
-    border-bottom: 1px dashed;
-}
-
-body.digital-view article.entry-description h2,
-body.digital-view article.entry-description h3,
-body.digital-view article.entry-description h4 {
-    border-color: var(--border-digital);
-}
-
-body.print-view article.entry-description h2,
-body.print-view article.entry-description h3,
-body.print-view article.entry-description h4 {
-    border-color: var(--border-print);
-}
-
-article.entry-description h2 { font-size: 14pt; }
-article.entry-description h3 { font-size: 12pt; }
-article.entry-description h4 { font-size: 10pt; }
-
-/* Paragraphs */
-article.entry-description p {
-    margin-bottom: 1.2em;
-}
-
-/* Links */
-article.entry-description a {
-    text-decoration: underline;
-    text-decoration-style: dashed;
-    text-underline-offset: 3px;
-}
-body.digital-view article.entry-description a { color: var(--foreground-digital); }
-body.print-view article.entry-description a { color: var(--foreground-print); }
-
-/* Blockquotes */
-article.entry-description blockquote {
-    margin: 1.5em 0;
-    padding: 10px 15px;
+.checksum {
+    font-size: 7pt;
+    text-align: right;
+    margin-top: 10px;
     font-style: italic;
-    border-left-width: 4px;
-    border-left-style: solid;
-}
-body.digital-view article.entry-description blockquote {
-    background-color: var(--accent-digital);
-    border-color: var(--foreground-digital);
     color: var(--muted-digital);
 }
-body.print-view article.entry-description blockquote {
-    background-color: #f0f0f0;
-    border-color: var(--border-print);
+
+body.print-view .checksum {
     color: var(--muted-print);
-}
-
-/* Code blocks */
-article.entry-description pre {
-    padding: 15px;
-    margin: 1.5em 0;
-    overflow-x: auto; /* Allow horizontal scrolling for long code lines */
-    font-size: 8pt;
-}
-body.digital-view article.entry-description pre {
-    background-color: var(--accent-digital);
-    border: 1px solid var(--border-digital);
-}
-body.print-view article.entry-description pre {
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    color: #000;
-}
-
-/* Inline code */
-article.entry-description code {
-    font-size: 8pt;
-    padding: 2px 5px;
-}
-body.digital-view article.entry-description code {
-    background-color: var(--accent-digital);
-    border: 1px solid var(--border-digital);
-}
-body.print-view article.entry-description code {
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-}
-
-/*
-========================================
-PRINT MEDIA QUERIES - EXACT PRINT MATCHING
-========================================
-*/
-@media print {
-    /* Force exact print colors and layout */
-    * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-    
-    body { 
-        background-color: white !important; 
-        color: black !important; 
-        font-size: 9pt !important;
-        line-height: 1.4 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    .view-switcher { 
-        display: none !important; 
-    }
-    
-    .container { 
-        box-shadow: none !important; 
-        padding: 15mm !important; 
-        max-width: 100% !important; 
-        margin: 0 !important; 
-        width: 100% !important; 
-        min-height: 0 !important;
-        background-color: white !important;
-    }
-    
-    .header {
-        border: 2px solid black !important;
-        background: white !important;
-        color: black !important;
-        margin: 0 !important;
-        padding: 3mm !important;
-    }
-    
-    .system-info {
-        border-color: black !important;
-        color: black !important;
-    }
-    
-    .execute-protocol { 
-        background: transparent !important; 
-        color: black !important; 
-        border: none !important;
-        border-bottom: 1px solid #ccc !important;
-        padding: 8px 0 !important;
-        margin: 10px 0 !important;
-    }
-    
-    .execute-protocol::before {
-        display: none !important;
-    }
-    
-    .digital-only {
-        display: none !important;
-    }
-    
-    .digital-only-section {
-        display: none !important;
-    }
-    
-    .contact-section {
-        padding: 5px 0 !important;
-        margin: 10px 0 20px 0 !important;
-    }
-    
-    .contact-info {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 10px !important;
-    }
-    
-    .contact-info p {
-        margin: 2px 0 !important;
-        font-size: 10pt !important;
-        flex: 0 0 48% !important;
-    }
-    
-    .contact-label {
-        font-weight: 600 !important;
-        display: inline-block !important;
-        min-width: 60px !important;
-    }
-    
-    .execute-protocol a {
-        color: black !important;
-        text-decoration: none !important;
-    }
-    
-    .section-header { 
-        background: white !important; 
-        color: black !important; 
-        border-bottom: 2px solid black !important;
-        border-top: none !important;
-        border-left: none !important;
-        border-right: none !important;
-        font-weight: bold !important;
-        padding: 8px 0 !important;
-    }
-    
-    .subsection {
-        border-left: 2px solid black !important;
-    }
-    
-    .skill-category {
-        border: 1px solid black !important;
-        background: white !important;
-    }
-    
-    .skill-header {
-        border-color: black !important;
-    }
-    
-    /* Hide export controller in print */
-    .pdf-export-container {
-        display: none !important;
-    }
-    
-    /* Hide the entire export controller section */
-    .section:has(.pdf-export-container) {
-        display: none !important;
-    }
-    
-    /* Alternative approach - hide by section title */
-    .section-title:has-text("EXPORT_CONTROLLER") {
-        display: none !important;
-    }
-    
-    /* More specific - target the section div */
-    .section .section-title:contains("EXPORT") {
-        display: none !important;
-    }
-    
-    .tech-tag {
-        border: 1px solid black !important;
-        background: white !important;
-        color: black !important;
-    }
-    
-    .entry-meta {
-        color: #666 !important;
-    }
-    
-    .comment {
-        color: #888 !important;
-    }
-    
-    .checksum {
-        color: #666 !important;
-    }
-    
-    .watermark { 
-        position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) rotate(-45deg) !important;
-        font-size: 100pt !important;
-        color: rgba(0, 0, 0, 0.03) !important;
-        z-index: 0 !important;
-    }
-    
-    /* Prevent page breaks in critical sections */
-    .section { 
-        page-break-inside: avoid !important; 
-    }
-    
-    .entry {
-        page-break-inside: avoid !important;
-    }
-    
-    .skills-grid {
-        page-break-inside: avoid !important;
-    }
-    
-    /* MAXIMUM COMPRESSION PRINT LAYOUT */
-    body {
-        margin: 0 !important;
-        padding: 0 !important;
-        line-height: 1 !important;
-        font-size: 7.5pt !important;
-    }
-    
-    .container {
-        padding: 3mm !important;
-        margin: 0 !important;
-        max-width: 100% !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 1mm !important;
-    }
-    
-    /* Force contact section to be ultra compact */
-    .execute-protocol {
-        margin: 0 !important;
-        padding: 1mm 0 !important;
-        page-break-after: avoid !important;
-        display: block !important;
-        width: 100% !important;
-        border-bottom: 0.5pt solid #ccc !important;
-    }
-    
-    .contact-section {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    .contact-info {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 2mm !important;
-        margin: 0 !important;
-    }
-    
-    .contact-info p {
-        margin: 0 !important;
-        padding: 0 !important;
-        font-size: 7pt !important;
-        line-height: 1 !important;
-    }
-    
-    /* Force first section to follow immediately */
-    .section:first-of-type {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-        page-break-before: avoid !important;
-        page-break-after: avoid !important;
-    }
-    
-    .section {
-        margin: 2mm 0 !important;
-        padding: 0 !important;
-        page-break-inside: avoid !important;
-        page-break-after: avoid !important;
-        display: block !important;
-    }
-    
-    .subsection {
-        margin: 1mm 0 !important;
-        padding: 0 !important;
-    }
-    
-    /* Ultra compact all headings and text */
-    h1, h2, h3, h4, h5, h6 {
-        margin: 1mm 0 !important;
-        line-height: 1 !important;
-        padding: 0 !important;
-        font-size: inherit !important;
-    }
-    
-    p {
-        margin: 0.5mm 0 !important;
-        line-height: 1.1 !important;
-        padding: 0 !important;
-    }
-    
-    ul, ol {
-        margin: 1mm 0 !important;
-        padding-left: 8px !important;
-    }
-    
-    li {
-        margin: 0 !important;
-        line-height: 1.1 !important;
-    }
-    
-    /* Ultra compact section headers */
-    .section-header {
-        margin: 1mm 0 !important;
-        padding: 1mm 0 !important;
-        font-size: 9pt !important;
-        page-break-after: avoid !important;
-    }
-    
-    /* Force project entries to be compact */
-    .entry {
-        margin: 1mm 0 !important;
-        padding: 0 !important;
-        page-break-inside: avoid !important;
-    }
-    
-    .entry-header {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    .entry-description {
-        margin: 0.5mm 0 !important;
-        padding: 0 !important;
-        font-size: 8pt !important;
-        line-height: 1.1 !important;
-    }
-    
-    /* Compact tech stack */
-    .tech-stack {
-        margin: 0.5mm 0 !important;
-        gap: 2px !important;
-    }
-    
-    .tech-tag {
-        padding: 1px 3px !important;
-        font-size: 7pt !important;
-        margin: 0 !important;
-    }
-    
-    /* Skills grid ultra compact */
-    .skills-grid {
-        margin: 1mm 0 !important;
-        gap: 1mm !important;
-        page-break-inside: avoid !important;
-    }
-    
-    .skill-category {
-        padding: 2mm !important;
-        margin: 0 !important;
-    }
-    
-    .skill-header {
-        margin: 0 0 1mm 0 !important;
-        padding: 0 0 0.5mm 0 !important;
-        font-size: 8pt !important;
-    }
-    
-    .skill-item {
-        margin: 0 !important;
-        font-size: 7pt !important;
-    }
 }
 
 /*
@@ -1222,33 +263,54 @@ PRINT MEDIA QUERIES - EXACT PRINT MATCHING
 RESPONSIVE ADJUSTMENTS
 ========================================
 */
-@media screen and (max-width: 240mm) {
-    body.digital-view,
-    body.print-view {
-        padding: 1rem;
-    }
-    
-    .container {
-        width: 100%;
-        min-width: 300px;
-        margin: 0;
-        padding: 1rem;
-    }
-    
+@media (max-width: 768px) {
     .skills-grid {
         grid-template-columns: 1fr;
     }
     
-    .ascii-name {
-        font-size: 6pt;
+    .entry-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
 
-@media screen and (min-width: 240mm) {
-    /* Ensure consistent A4 sizing on larger screens */
-    .container {
-        width: 210mm;
-        max-width: 210mm;
+/*
+========================================
+PRINT STYLES
+========================================
+*/
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 9pt !important;
+    }
+    
+    .section-title {
+        color: black !important;
+        font-size: 12pt !important;
+    }
+    
+    .entry-title {
+        color: black !important;
+    }
+    
+    .entry-meta,
+    .entry-description,
+    .skill-level,
+    .contact-meta,
+    .contact-description {
+        color: #666 !important;
+    }
+    
+    .tech-tag {
+        background: white !important;
+        color: black !important;
+        border-color: black !important;
+    }
+    
+    a {
+        color: black !important;
+        border-bottom-color: #666 !important;
     }
 }
-
