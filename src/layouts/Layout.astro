@@ -248,23 +248,78 @@ export const profile: UserProfile = profileData as UserProfile;
         padding: var(--space-4xl) var(--space-lg) var(--space-2xl); 
         position: relative; 
         z-index: var(--z-base); 
+        /* Modern mobile device support */
+        padding-top: calc(var(--space-4xl) + var(--safe-area-inset-top));
+        padding-left: calc(var(--space-lg) + var(--safe-area-inset-left));
+        padding-right: calc(var(--space-lg) + var(--safe-area-inset-right));
+        padding-bottom: calc(var(--space-2xl) + var(--safe-area-inset-bottom));
       }
 
       .page { 
         min-height: 100vh; 
+        min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
       }
 
+      /* Enhanced responsive adjustments */
+      @media (max-width: 1024px) {
+        .container { 
+          padding: var(--space-3xl) var(--space-lg) var(--space-2xl); 
+        }
+      }
 
-      /* Mobile adjustments */
       @media (max-width: 768px) {
         .container { 
           padding: var(--space-3xl) var(--space-md) var(--space-2xl); 
+          padding-left: calc(var(--space-md) + var(--safe-area-inset-left));
+          padding-right: calc(var(--space-md) + var(--safe-area-inset-right));
         }
       }
 
       @media (max-width: 480px) {
         .container { 
           padding: var(--space-3xl) var(--space-sm) var(--space-2xl); 
+          padding-left: calc(var(--space-sm) + var(--safe-area-inset-left));
+          padding-right: calc(var(--space-sm) + var(--safe-area-inset-right));
+        }
+      }
+
+      @media (max-width: 360px) {
+        .container { 
+          padding: var(--space-2xl) var(--space-xs) var(--space-lg); 
+          padding-left: calc(var(--space-xs) + var(--safe-area-inset-left));
+          padding-right: calc(var(--space-xs) + var(--safe-area-inset-right));
+        }
+      }
+
+      /* Modern mobile features */
+      @media (prefers-reduced-motion: reduce) {
+        .section-title,
+        .entry-title,
+        .entry-meta,
+        .entry-description,
+        .contact-title,
+        .contact-meta,
+        .contact-description,
+        .tech-tag,
+        .checksum,
+        a {
+          transition: none !important;
+        }
+        
+        body.digital-view::before {
+          animation: none !important;
+        }
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        body.digital-view::before {
+          opacity: 0.5;
+        }
+        
+        .section-title,
+        .entry-title {
+          font-weight: var(--font-weight-bold);
         }
       }
 

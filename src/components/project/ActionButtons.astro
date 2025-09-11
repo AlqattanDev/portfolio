@@ -80,6 +80,57 @@ const actions = customActions || defaultActions;
   gap: 8px;
   margin-bottom: 12px;
   flex-wrap: wrap;
+  /* Ensure buttons are touch-friendly */
+  min-height: var(--touch-target-min);
+  align-items: center;
+}
+
+/* Touch-friendly button sizing */
+.action-btn {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border-digital);
+  background: transparent;
+  color: var(--foreground-digital);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast) var(--ease-in-out);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+  user-select: none;
+}
+
+.action-btn:hover:not(.disabled) {
+  background: var(--accent-digital);
+  border-color: var(--foreground-digital);
+  transform: translateY(-1px);
+}
+
+.action-btn:active:not(.disabled) {
+  transform: translateY(0);
+  background: var(--foreground-digital);
+  color: var(--background-digital);
+}
+
+.action-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-btn.primary {
+  background: var(--foreground-digital);
+  color: var(--background-digital);
+}
+
+.action-btn.primary:hover:not(.disabled) {
+  background: var(--accent-digital);
+  color: var(--foreground-digital);
 }
 
 /* Variant styles */
@@ -108,6 +159,77 @@ const actions = customActions || defaultActions;
   background: transparent;
   text-decoration: none;
   transform: none;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .project-actions {
+    gap: 6px;
+    justify-content: flex-start;
+  }
+  
+  .action-btn {
+    padding: 6px 10px;
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .project-actions {
+    gap: 4px;
+  }
+  
+  .action-btn {
+    padding: 4px 8px;
+    font-size: var(--font-size-2xs);
+    min-width: 40px;
+  }
+  
+  .action-label {
+    display: none;
+  }
+  
+  .action-icon {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .project-actions {
+    justify-content: center;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+  .action-btn:hover {
+    transform: none;
+  }
+  
+  .action-btn:active:not(.disabled) {
+    transform: scale(0.98);
+    background: var(--accent-digital);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .action-btn {
+    transition: none;
+  }
+  
+  .action-btn:hover,
+  .action-btn:active {
+    transform: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .action-btn {
+    border-width: 2px;
+    font-weight: var(--font-weight-bold);
+  }
 }
 
 /* Print mode styles */

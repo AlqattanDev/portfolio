@@ -142,6 +142,36 @@ const meta = `${project.status} | ${metric}`;
     margin-top: 15px;
   }
 
+  /* Touch device support - show expanded content by default on touch devices */
+  @media (hover: none) and (pointer: coarse) {
+    .project-expanded-content {
+      max-height: none;
+      opacity: 1;
+      margin-top: 15px;
+      overflow: visible;
+    }
+    
+    body.digital-view .project-card {
+      border-color: var(--border-digital);
+      background: rgba(26, 26, 26, 0.2);
+    }
+  }
+
+  /* Mobile-first approach - expand on smaller screens */
+  @media (max-width: 768px) {
+    .project-expanded-content {
+      max-height: none;
+      opacity: 1;
+      margin-top: 15px;
+      overflow: visible;
+    }
+    
+    .project-card {
+      border-color: var(--border-digital);
+      background: rgba(26, 26, 26, 0.1);
+    }
+  }
+
   .project-metrics {
     display: flex;
     gap: 15px;
@@ -209,6 +239,47 @@ const meta = `${project.status} | ${metric}`;
   .demo-iframe-container:hover .demo-iframe {
     transform: scale(0.7);
     pointer-events: auto;
+  }
+
+  /* Mobile iframe improvements */
+  @media (max-width: 768px) {
+    .demo-iframe-container {
+      height: 100px;
+    }
+    
+    .demo-iframe {
+      transform: scale(0.7);
+    }
+    
+    .demo-iframe-container:hover .demo-iframe {
+      transform: scale(0.8);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .demo-iframe-container {
+      height: 80px;
+    }
+    
+    .demo-iframe {
+      transform: scale(0.8);
+    }
+    
+    .demo-iframe-container:hover .demo-iframe {
+      transform: scale(0.9);
+    }
+  }
+
+  /* Touch device support for iframe */
+  @media (hover: none) {
+    .demo-iframe {
+      pointer-events: auto;
+      transform: scale(0.75);
+    }
+    
+    .demo-iframe-container:active .demo-iframe {
+      transform: scale(0.8);
+    }
   }
 
   .iframe-overlay {

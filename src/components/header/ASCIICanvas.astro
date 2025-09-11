@@ -31,12 +31,15 @@ const {
 </div>
 
 <style>
-/* ASCII Canvas Container */
+/* ASCII Canvas Container - Responsive Height */
 .ascii-canvas-container {
     position: relative;
     width: 100%;
-    height: 180px;
+    height: clamp(120px, 20vw, 180px); /* Responsive height */
     margin-bottom: 20px;
+    /* Prevent animation performance issues on mobile */
+    will-change: transform;
+    contain: layout style paint;
 }
 
 body.print-view .ascii-canvas-container {
@@ -49,6 +52,70 @@ canvas {
     width: 100%;
     height: 100%;
     display: block;
+    /* Optimize canvas rendering on mobile */
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+    .ascii-canvas-container {
+        height: clamp(100px, 15vw, 140px);
+        margin-bottom: 15px;
+        /* Reduce animation complexity on mobile */
+        opacity: 0.9;
+    }
+}
+
+@media (max-width: 480px) {
+    .ascii-canvas-container {
+        height: clamp(80px, 12vw, 120px);
+        margin-bottom: 12px;
+        /* Further reduce complexity on small screens */
+        opacity: 0.8;
+    }
+}
+
+@media (max-width: 360px) {
+    .ascii-canvas-container {
+        height: clamp(70px, 10vw, 100px);
+        margin-bottom: 10px;
+        opacity: 0.7;
+    }
+}
+
+/* Performance optimizations for touch devices */
+@media (hover: none) {
+    .ascii-canvas-container {
+        /* Reduce animation complexity on touch devices */
+        will-change: auto;
+        contain: layout;
+    }
+    
+    canvas {
+        /* Disable complex filtering on mobile */
+        filter: none !important;
+    }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .ascii-canvas-container {
+        opacity: 1;
+        will-change: auto;
+    }
+    
+    canvas {
+        animation: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    canvas {
+        filter: contrast(1.2);
+    }
 }
 
 body.print-view canvas {
@@ -89,31 +156,85 @@ body.print-view .digital-only {
 <script>
 import { ASCIIAnimationSystem } from '@/utils/canvas/asciiAnimations.js';
 
-// Initialize ASCII animation system when DOM is loaded
+// Mobile-optimized ASCII animation initialization
 document.addEventListener('DOMContentLoaded', () => {
     try {
         const canvasElement = document.getElementById('ascii-canvas');
-        if (canvasElement) {
-            // Create animation system instance
-            const animationSystem = new ASCIIAnimationSystem('ascii-canvas');
-            
-            // Store reference for potential cleanup
-            (window as any).asciiAnimationSystem = animationSystem;
-            
-            // Handle page visibility changes to pause/resume animations
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
+        if (!canvasElement) return;
+        
+        // Check if device supports smooth animations
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const hasReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isLowPowerMode = navigator.getBattery ? await navigator.getBattery().then(battery => battery.level < 0.2) : false;
+        
+        // Skip complex animations on low-power mobile devices
+        if (hasReducedMotion || (isMobile && isLowPowerMode)) {
+            console.log('ASCII animations disabled for performance');
+            return;
+        }
+        
+        // Create animation system with mobile optimizations
+        const animationSystem = new ASCIIAnimationSystem('ascii-canvas');
+        
+        // Optimize for mobile performance
+        if (isMobile) {
+            // Reduce animation frame rate on mobile
+            animationSystem.setFrameRate?.(30); // 30fps instead of 60fps
+            animationSystem.setComplexity?.('low'); // Reduce particle count
+        }
+        
+        // Store reference for potential cleanup
+        (window as any).asciiAnimationSystem = animationSystem;
+        
+        // Enhanced visibility handling
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                animationSystem.pause();
+            } else {
+                // Only resume if page has been visible for 500ms (avoid rapid switching)
+                setTimeout(() => {
+                    if (!document.hidden) {
+                        animationSystem.resume();
+                    }
+                }, 500);
+            }
+        });
+        
+        // Memory management for mobile
+        let memoryCheckInterval: number;
+        if (isMobile && (performance as any).memory) {
+            memoryCheckInterval = setInterval(() => {
+                const memoryInfo = (performance as any).memory;
+                if (memoryInfo.usedJSHeapSize > memoryInfo.jsHeapSizeLimit * 0.8) {
+                    console.warn('High memory usage detected, pausing animations');
                     animationSystem.pause();
-                } else {
-                    animationSystem.resume();
+                    clearInterval(memoryCheckInterval);
                 }
-            });
-            
-            // Cleanup on page unload
-            window.addEventListener('beforeunload', () => {
-                animationSystem.destroy();
+            }, 10000); // Check every 10 seconds
+        }
+        
+        // Enhanced cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (memoryCheckInterval) clearInterval(memoryCheckInterval);
+            animationSystem.destroy();
+        });
+        
+        // Pause animations when battery is low (if supported)
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then((battery: any) => {
+                const handleBatteryChange = () => {
+                    if (battery.level < 0.15 && !battery.charging) {
+                        animationSystem.pause();
+                    } else if (battery.level > 0.25 || battery.charging) {
+                        animationSystem.resume();
+                    }
+                };
+                
+                battery.addEventListener('levelchange', handleBatteryChange);
+                battery.addEventListener('chargingchange', handleBatteryChange);
             });
         }
+        
     } catch (error) {
         console.warn('Failed to initialize ASCII animation system:', error);
     }

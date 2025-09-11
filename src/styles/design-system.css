@@ -18,6 +18,13 @@ Centralized spacing, typography, and animation values
   --space-4xl: 64px;
 
   /* ============ Breakpoints ============ */
+  --breakpoint-xs: 360px;   /* Small phones */
+  --breakpoint-sm: 480px;   /* Large phones */
+  --breakpoint-md: 768px;   /* Tablets */
+  --breakpoint-lg: 1024px;  /* Desktop */
+  --breakpoint-xl: 1280px;  /* Wide screens */
+  
+  /* Legacy breakpoint names (for compatibility) */
   --breakpoint-mobile: 480px;
   --breakpoint-tablet: 768px;
   --breakpoint-desktop: 1024px;
@@ -109,7 +116,27 @@ Centralized spacing, typography, and animation values
   --duration-base: 250ms;
   --duration-slow: 500ms;
   --duration-slower: 1000ms;
+  
+  /* ============ Touch & Interaction ============ */
+  --touch-target-min: 44px;     /* Minimum touch target size */
+  --touch-target-comfortable: 48px; /* Comfortable touch target size */
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-right: env(safe-area-inset-right);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: env(safe-area-inset-left);
 }
+
+/* ============ Responsive Breakpoint Mixins ============ */
+/* These will be used in media queries throughout the application */
+
+/* Usage examples in components:
+@media (max-width: 360px) { // Extra small phones
+@media (max-width: 480px) { // Small phones  
+@media (max-width: 768px) { // Tablets
+@media (max-width: 1024px) { // Desktop
+@media (hover: none) { // Touch devices
+@media (prefers-reduced-motion: reduce) { // Reduced motion
+*/
 
 /* ============ Core Utility Classes ============ */
 
