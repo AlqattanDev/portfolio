@@ -157,26 +157,63 @@ const meta = `${project.status} | ${metric}`;
     }
   }
 
-  /* Mobile-first approach - expand on smaller screens */
+  /* Enhanced mobile-first approach with fluid responsive design */
   @media (max-width: 768px) {
     .project-expanded-content {
       max-height: none;
       opacity: 1;
-      margin-top: 15px;
+      margin-top: clamp(12px, 3vw, 18px);
       overflow: visible;
+      /* Enhanced performance on mobile */
+      contain: layout;
     }
     
     .project-card {
       border-color: var(--border-digital);
       background: rgba(26, 26, 26, 0.1);
+      border-radius: var(--radius-md);
+      /* Improved touch interactions */
+      touch-action: manipulation;
+    }
+  }
+
+  @media (max-width: 414px) {
+    .project-card {
+      margin-bottom: clamp(16px, 4vw, 24px);
+      padding: clamp(12px, 3vw, 16px);
+    }
+
+    .project-expanded-content {
+      margin-top: clamp(10px, 2.5vw, 15px);
+    }
+  }
+
+  @media (max-width: 375px) {
+    .project-card {
+      border-radius: var(--radius-sm);
     }
   }
 
   .project-metrics {
     display: flex;
-    gap: 15px;
-    margin-bottom: 12px;
-    font-size: 11px;
+    flex-wrap: wrap;
+    gap: clamp(8px, 2vw, 15px);
+    margin-bottom: clamp(8px, 2vw, 12px);
+    font-size: var(--font-size-xs);
+  }
+
+  @media (max-width: 414px) {
+    .project-metrics {
+      flex-direction: column;
+      gap: clamp(4px, 1vw, 6px);
+    }
+
+    .metric-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: clamp(2px, 0.5vw, 4px) 0;
+    }
   }
 
   .metric-item {
@@ -241,14 +278,33 @@ const meta = `${project.status} | ${metric}`;
     pointer-events: auto;
   }
 
-  /* Mobile iframe improvements */
+  /* Enhanced Mobile iframe improvements with fluid sizing */
   @media (max-width: 768px) {
     .demo-iframe-container {
-      height: 100px;
+      height: clamp(80px, 15vw, 120px);
+      border-radius: var(--radius-md);
+      overflow: hidden;
     }
     
     .demo-iframe {
       transform: scale(0.7);
+      transform-origin: top left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .demo-iframe-container:hover .demo-iframe {
+      transform: scale(0.75);
+    }
+  }
+
+  @media (max-width: 414px) {
+    .demo-iframe-container {
+      height: clamp(70px, 12vw, 100px);
+      margin-bottom: clamp(8px, 2vw, 12px);
+    }
+    
+    .demo-iframe {
+      transform: scale(0.75);
     }
     
     .demo-iframe-container:hover .demo-iframe {
@@ -256,9 +312,9 @@ const meta = `${project.status} | ${metric}`;
     }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 375px) {
     .demo-iframe-container {
-      height: 80px;
+      height: clamp(60px, 10vw, 90px);
     }
     
     .demo-iframe {
@@ -266,19 +322,27 @@ const meta = `${project.status} | ${metric}`;
     }
     
     .demo-iframe-container:hover .demo-iframe {
-      transform: scale(0.9);
+      transform: scale(0.85);
     }
   }
 
-  /* Touch device support for iframe */
+  /* Enhanced touch device support for iframe */
   @media (hover: none) {
     .demo-iframe {
       pointer-events: auto;
       transform: scale(0.75);
+      /* Improve touch interactions */
+      touch-action: manipulation;
     }
     
     .demo-iframe-container:active .demo-iframe {
       transform: scale(0.8);
+      transition: transform 0.1s ease-out;
+    }
+
+    .demo-iframe-container {
+      /* Enhanced touch feedback */
+      -webkit-tap-highlight-color: rgba(100, 255, 218, 0.2);
     }
   }
 

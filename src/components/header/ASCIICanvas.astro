@@ -31,15 +31,19 @@ const {
 </div>
 
 <style>
-/* ASCII Canvas Container - Responsive Height */
+/* ASCII Canvas Container - Enhanced Responsive Height with Container Queries */
 .ascii-canvas-container {
     position: relative;
     width: 100%;
-    height: clamp(120px, 20vw, 180px); /* Responsive height */
-    margin-bottom: 20px;
-    /* Prevent animation performance issues on mobile */
+    /* Enhanced fluid sizing with better scaling factors */
+    height: clamp(80px, 15vw + 2rem, 200px);
+    margin-bottom: clamp(12px, 2vw, 24px);
+    /* Improved performance optimizations */
     will-change: transform;
     contain: layout style paint;
+    /* Better aspect ratio maintenance */
+    aspect-ratio: 6 / 1;
+    max-height: 25vh; /* Ensure it doesn't take too much vertical space */
 }
 
 body.print-view .ascii-canvas-container {
@@ -52,36 +56,49 @@ canvas {
     width: 100%;
     height: 100%;
     display: block;
-    /* Optimize canvas rendering on mobile */
+    /* Enhanced canvas rendering optimization */
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
+    /* Better scaling on high-DPI displays */
+    object-fit: contain;
+    object-position: center;
+    /* Improved font rendering for text */
+    text-rendering: geometricPrecision;
 }
 
-/* Mobile-specific optimizations */
+/* Enhanced mobile-first responsive optimizations */
 @media (max-width: 768px) {
     .ascii-canvas-container {
-        height: clamp(100px, 15vw, 140px);
-        margin-bottom: 15px;
+        /* Height is now handled by the main clamp() function */
+        aspect-ratio: 5 / 1; /* Slightly taller on tablets */
         /* Reduce animation complexity on mobile */
-        opacity: 0.9;
+        opacity: 0.95;
     }
 }
 
 @media (max-width: 480px) {
     .ascii-canvas-container {
-        height: clamp(80px, 12vw, 120px);
-        margin-bottom: 12px;
+        aspect-ratio: 4 / 1; /* Even more compact on phones */
+        max-height: 20vh;
         /* Further reduce complexity on small screens */
-        opacity: 0.8;
+        opacity: 0.9;
     }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 375px) {
     .ascii-canvas-container {
-        height: clamp(70px, 10vw, 100px);
-        margin-bottom: 10px;
-        opacity: 0.7;
+        aspect-ratio: 3.5 / 1; /* Most compact for small phones */
+        max-height: 18vh;
+        opacity: 0.85;
+    }
+}
+
+/* Ultra-wide screen optimizations */
+@media (min-width: 1440px) {
+    .ascii-canvas-container {
+        aspect-ratio: 8 / 1; /* Wider ratio for large screens */
+        max-height: 220px;
     }
 }
 
@@ -158,85 +175,104 @@ import { ASCIIAnimationSystem } from '@/utils/canvas/asciiAnimations.js';
 
 // Mobile-optimized ASCII animation initialization
 document.addEventListener('DOMContentLoaded', () => {
-    try {
-        const canvasElement = document.getElementById('ascii-canvas');
-        if (!canvasElement) return;
-        
-        // Check if device supports smooth animations
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const hasReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const isLowPowerMode = navigator.getBattery ? await navigator.getBattery().then(battery => battery.level < 0.2) : false;
-        
-        // Skip complex animations on low-power mobile devices
-        if (hasReducedMotion || (isMobile && isLowPowerMode)) {
-            console.log('ASCII animations disabled for performance');
-            return;
-        }
-        
-        // Create animation system with mobile optimizations
-        const animationSystem = new ASCIIAnimationSystem('ascii-canvas');
-        
-        // Optimize for mobile performance
-        if (isMobile) {
-            // Reduce animation frame rate on mobile
-            animationSystem.setFrameRate?.(30); // 30fps instead of 60fps
-            animationSystem.setComplexity?.('low'); // Reduce particle count
-        }
-        
-        // Store reference for potential cleanup
-        (window as any).asciiAnimationSystem = animationSystem;
-        
-        // Enhanced visibility handling
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                animationSystem.pause();
-            } else {
-                // Only resume if page has been visible for 500ms (avoid rapid switching)
-                setTimeout(() => {
-                    if (!document.hidden) {
-                        animationSystem.resume();
-                    }
-                }, 500);
-            }
-        });
-        
-        // Memory management for mobile
-        let memoryCheckInterval: number;
-        if (isMobile && (performance as any).memory) {
-            memoryCheckInterval = setInterval(() => {
-                const memoryInfo = (performance as any).memory;
-                if (memoryInfo.usedJSHeapSize > memoryInfo.jsHeapSizeLimit * 0.8) {
-                    console.warn('High memory usage detected, pausing animations');
-                    animationSystem.pause();
-                    clearInterval(memoryCheckInterval);
+    const initializeAnimation = async () => {
+        try {
+            const canvasElement = document.getElementById('ascii-canvas');
+            if (!canvasElement) return;
+            
+            // Check if device supports smooth animations
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const hasReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            
+            // Check battery level safely
+            let isLowPowerMode = false;
+            try {
+                if ('getBattery' in navigator) {
+                    const battery = await navigator.getBattery();
+                    isLowPowerMode = battery.level < 0.2;
                 }
-            }, 10000); // Check every 10 seconds
-        }
-        
-        // Enhanced cleanup on page unload
-        window.addEventListener('beforeunload', () => {
-            if (memoryCheckInterval) clearInterval(memoryCheckInterval);
-            animationSystem.destroy();
-        });
-        
-        // Pause animations when battery is low (if supported)
-        if ('getBattery' in navigator) {
-            navigator.getBattery().then((battery: any) => {
-                const handleBatteryChange = () => {
-                    if (battery.level < 0.15 && !battery.charging) {
-                        animationSystem.pause();
-                    } else if (battery.level > 0.25 || battery.charging) {
-                        animationSystem.resume();
-                    }
-                };
-                
-                battery.addEventListener('levelchange', handleBatteryChange);
-                battery.addEventListener('chargingchange', handleBatteryChange);
+            } catch (batteryError) {
+                // Battery API not available, assume normal power mode
+                isLowPowerMode = false;
+            }
+            
+            // Skip complex animations on low-power mobile devices
+            if (hasReducedMotion || (isMobile && isLowPowerMode)) {
+                console.log('ASCII animations disabled for performance');
+                return;
+            }
+            
+            // Create animation system with mobile optimizations
+            const animationSystem = new ASCIIAnimationSystem('ascii-canvas');
+            
+            // Optimize for mobile performance
+            if (isMobile) {
+                // Reduce animation frame rate on mobile
+                animationSystem.setFrameRate?.(30); // 30fps instead of 60fps
+                animationSystem.setComplexity?.('low'); // Reduce particle count
+            }
+            
+            // Store reference for potential cleanup
+            (window as any).asciiAnimationSystem = animationSystem;
+            
+            // Enhanced visibility handling
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    animationSystem.pause();
+                } else {
+                    // Only resume if page has been visible for 500ms (avoid rapid switching)
+                    setTimeout(() => {
+                        if (!document.hidden) {
+                            animationSystem.resume();
+                        }
+                    }, 500);
+                }
             });
+            
+            // Memory management for mobile
+            let memoryCheckInterval: number;
+            if (isMobile && (performance as any).memory) {
+                memoryCheckInterval = setInterval(() => {
+                    const memoryInfo = (performance as any).memory;
+                    if (memoryInfo.usedJSHeapSize > memoryInfo.jsHeapSizeLimit * 0.8) {
+                        console.warn('High memory usage detected, pausing animations');
+                        animationSystem.pause();
+                        clearInterval(memoryCheckInterval);
+                    }
+                }, 10000); // Check every 10 seconds
+            }
+            
+            // Enhanced cleanup on page unload
+            window.addEventListener('beforeunload', () => {
+                if (memoryCheckInterval) clearInterval(memoryCheckInterval);
+                animationSystem.destroy();
+            });
+            
+            // Pause animations when battery is low (if supported)
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    const handleBatteryChange = () => {
+                        if (battery.level < 0.15 && !battery.charging) {
+                            animationSystem.pause();
+                        } else if (battery.level > 0.25 || battery.charging) {
+                            animationSystem.resume();
+                        }
+                    };
+                    
+                    battery.addEventListener('levelchange', handleBatteryChange);
+                    battery.addEventListener('chargingchange', handleBatteryChange);
+                } catch (batteryError) {
+                    console.warn('Battery event listeners not available:', batteryError);
+                }
+            }
+            
+        } catch (error) {
+            console.warn('Failed to initialize ASCII animation system:', error);
         }
-        
-    } catch (error) {
-        console.warn('Failed to initialize ASCII animation system:', error);
-    }
+    };
+    
+    // Call the async initialization function
+    initializeAnimation();
 });
 </script>
