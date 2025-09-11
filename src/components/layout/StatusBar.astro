@@ -10,7 +10,7 @@ export interface StatusBarProps {
 const { className = '' } = Astro.props as StatusBarProps;
 ---
 
-<nav class={`status-bar digital-only ${className}`} role="navigation" aria-label="Section Navigation">
+<nav class={`status-bar ${className}`} role="navigation" aria-label="Section Navigation">
   <div class="status-left">
     <div class="status-mode" id="statusMode">NORMAL</div>
     <div class="status-scheme" id="statusScheme">Matrix Rain</div>
@@ -42,13 +42,13 @@ const { className = '' } = Astro.props as StatusBarProps;
       </svg>
       <span class="progress-percentage" aria-live="polite">100%</span>
     </div>
-    <button class="view-switcher" aria-label="Toggle between digital and print view">
-      <svg class="icon-digital" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <button class="view-switcher status-button" aria-label="Toggle between digital and print view">
+      <svg class="icon-digital" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
         <line x1="8" y1="21" x2="16" y2="21"></line>
         <line x1="12" y1="17" x2="12" y2="21"></line>
       </svg>
-      <svg class="icon-print" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg class="icon-print" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <polyline points="6,9 6,2 18,2 18,9"></polyline>
         <path d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2,2H20a2,2,0,0,1,2-2v5a2,2,0,0,1-2,2H18"></path>
         <rect x="6" y="14" width="12" height="8"></rect>
@@ -78,6 +78,57 @@ const { className = '' } = Astro.props as StatusBarProps;
   font-family: var(--font-body);
   font-size: var(--font-size-sm);
   padding: 0 var(--space-md);
+}
+
+/* Print Mode Status Bar */
+body.print-view .status-bar {
+  background: rgba(255,255,255,0.95);
+  border-top: 1px solid rgba(0,0,0,0.1);
+  color: var(--foreground-print);
+  box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
+}
+
+/* Hide digital-only elements in print mode */
+body.print-view .status-mode,
+body.print-view .status-scheme,
+body.print-view .status-position,
+body.print-view .status-progress-container {
+  display: none;
+}
+
+/* Show only navigation and mode switcher in print mode */
+body.print-view .status-left {
+  display: none;
+}
+
+body.print-view .status-center {
+  flex: 1;
+  justify-content: center;
+}
+
+body.print-view .status-right {
+  display: flex;
+}
+
+/* Print mode navigation styling */
+body.print-view .status-item {
+  color: var(--muted-print);
+}
+
+body.print-view .status-item:hover {
+  color: var(--foreground-print);
+  background: rgba(0,0,0,0.05);
+}
+
+body.print-view .status-item.active {
+  color: var(--background-print);
+  background: var(--foreground-print);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+body.print-view .status-separator {
+  color: rgba(0,0,0,0.3);
+  opacity: 0.8;
 }
 
 .status-left {
@@ -210,32 +261,27 @@ const { className = '' } = Astro.props as StatusBarProps;
   transition: stroke-dashoffset var(--transition-base) var(--ease-out);
 }
 
-/* View Switcher */
-.view-switcher { 
-  position: fixed; 
-  top: 40%; 
-  right: var(--space-lg); 
-  transform: translateY(-50%);
-  background: rgba(10,10,10,0.85); 
+/* Status Button (View Switcher) */
+.status-button { 
+  background: transparent; 
   border: 1px solid rgba(0,255,65,0.2); 
   color: var(--muted-digital); 
-  width: 48px; 
-  height: 48px; 
-  border-radius: var(--radius-2xl); 
+  height: 24px; 
+  width: 24px; 
+  border-radius: var(--radius-sm); 
   cursor: pointer; 
   display: inline-flex; 
   align-items: center; 
   justify-content: center; 
-  transition: all var(--transition-base) var(--ease-in-out); 
-  z-index: var(--z-sticky); 
-  opacity: 0.9; 
-  backdrop-filter: blur(8px); 
-  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-fast) var(--ease-in-out); 
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding: 0;
 }
 
-.view-switcher svg { 
-  width: 22px; 
-  height: 22px; 
+.status-button svg { 
+  width: 16px; 
+  height: 16px; 
   transition: all var(--transition-fast) var(--ease-in-out); 
 }
 
@@ -244,43 +290,45 @@ body.print-view .icon-digital { display: none; }
 
 body.digital-view .icon-digital { 
   stroke: var(--muted-digital); 
-  stroke-width: 1; 
+  stroke-width: 1.5; 
   fill: none; 
 }
 
-body.digital-view .view-switcher:hover { 
-  background: rgba(0,0,0,0.8); 
+body.digital-view .status-button:hover { 
+  color: var(--foreground-digital); 
+  background: rgba(0,255,65,0.1); 
   border-color: var(--foreground-digital); 
-  box-shadow: 0 6px 18px rgba(0,255,65,0.18); 
-  transform: translateY(-50%) translateY(-1px); 
 }
 
-body.digital-view .view-switcher:hover .icon-digital { 
+body.digital-view .status-button:hover .icon-digital { 
   stroke: var(--foreground-digital); 
   stroke-width: 2; 
-  filter: drop-shadow(0 0 8px var(--foreground-digital)); 
 }
 
-body.print-view .view-switcher { 
-  opacity: 0.8; 
+body.digital-view .status-button:active { 
+  color: var(--background-digital); 
+  background: var(--foreground-digital); 
+  box-shadow: 0 2px 8px rgba(0,255,65,0.3);
+}
+
+body.print-view .status-button { 
   color: var(--muted-print); 
-  background: rgba(255,255,255,0.9); 
-  border-color: var(--foreground-print); 
+  border-color: var(--border-print); 
 }
 
 body.print-view .icon-print { 
   stroke: var(--muted-print); 
-  stroke-width: 1; 
+  stroke-width: 1.5; 
   fill: none; 
 }
 
-body.print-view .view-switcher:hover { 
-  opacity: 1; 
-  transform: translateY(-50%) translateY(-1px); 
-  box-shadow: 0 2px 12px rgba(0,0,0,0.12); 
+body.print-view .status-button:hover { 
+  color: var(--foreground-print); 
+  background: rgba(0,0,0,0.05); 
+  border-color: var(--foreground-print); 
 }
 
-body.print-view .view-switcher:hover .icon-print { 
+body.print-view .status-button:hover .icon-print { 
   stroke: var(--foreground-print); 
   stroke-width: 2; 
 }
@@ -299,11 +347,14 @@ body.print-view .view-switcher:hover .icon-print {
   .status-item { font-size: var(--font-size-xs); padding: var(--space-2xs) var(--space-xs); }
   .status-right { gap: var(--space-sm); font-size: var(--font-size-xs); }
   
-  .view-switcher { 
-    top: 25%; 
-    right: var(--space-sm); 
-    width: 42px; 
-    height: 42px; 
+  .status-button { 
+    height: 22px; 
+    width: 22px; 
+  }
+  
+  .status-button svg {
+    width: 14px;
+    height: 14px;
   }
 }
 
@@ -322,11 +373,19 @@ body.print-view .view-switcher:hover .icon-print {
   .status-text { display: none; }
   .status-right { gap: var(--space-xs); font-size: var(--font-size-2xs); }
   
-  .view-switcher {
-    top: 20%;
-    right: var(--space-xs);
-    width: 38px;
-    height: 38px;
+  /* Print mode mobile adjustments */
+  body.print-view .status-text {
+    display: inline;
+  }
+  
+  .status-button {
+    height: 20px;
+    width: 20px;
+  }
+  
+  .status-button svg {
+    width: 12px;
+    height: 12px;
   }
 }
 </style>
@@ -360,7 +419,7 @@ const initStatusBarNavigation = () => {
 
 // View Switcher Handler
 const initViewSwitcher = () => {
-  const switcher = document.querySelector('.view-switcher') as HTMLElement | null;
+  const switcher = document.querySelector('.status-button') as HTMLElement | null;
   const body = document.body;
   
   if (switcher) {

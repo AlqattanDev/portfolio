@@ -13,28 +13,28 @@ export const generateSkillBarConfig = (level: SkillLevel): SkillBarConfig => {
   const configs: Record<SkillLevel, SkillBarConfig> = {
     Expert: {
       level,
-      bar: '[██ ██ ██ ██ ██ ██]',
-      html: '[<span class="filled">██ ██ ██ ██ ██ ██</span>]',
+      bar: '{ ████████████ }',
+      html: '{ <span class="filled">████████████</span> }',
     },
     Advanced: {
       level,
-      bar: '[██ ██ ██ ██ ▓▓ ▓▓]',
-      html: '[<span class="filled">██ ██ ██ ██</span> <span class="dither-1">▓▓ ▓▓</span>]',
+      bar: '{ ██████████▓▓ }',
+      html: '{ <span class="filled">██████████</span><span class="dither-1">▓▓</span> }',
     },
     Proficient: {
       level,
-      bar: '[██ ██ ██ ▒▒ ▒▒ ▒▒]',
-      html: '[<span class="filled">██ ██ ██</span> <span class="dither-2">▒▒ ▒▒ ▒▒</span>]',
+      bar: '{ ████████▒▒▒▒ }',
+      html: '{ <span class="filled">████████</span><span class="dither-2">▒▒▒▒</span> }',
     },
     Intermediate: {
       level,
-      bar: '[██ ██ ░░ ░░ ░░ ░░]',
-      html: '[<span class="filled">██ ██</span> <span class="dither-3">░░ ░░ ░░ ░░</span>]',
+      bar: '{ ██████░░░░░░ }',
+      html: '{ <span class="filled">██████</span><span class="dither-3">░░░░░░</span> }',
     },
     Beginner: {
       level,
-      bar: '[██ ░░ ░░ ░░ ░░ ░░]',
-      html: '[<span class="filled">██</span> <span class="dither-3">░░ ░░ ░░ ░░ ░░</span>]',
+      bar: '{ ████░░░░░░░░ }',
+      html: '{ <span class="filled">████</span><span class="dither-3">░░░░░░░░</span> }',
     },
   };
 

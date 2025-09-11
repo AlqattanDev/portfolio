@@ -15,9 +15,7 @@ const sectionId = idProp ?? slugify(title);
 
 <div id={sectionId} class={`section ${className}`} {...props}>
   <div class="section-header">
-    <span class="section-title">{title}</span>
-    <a class="section-anchor" href={`#${sectionId}`} aria-label={`Link to ${title}`}>#</a>
-    <div class="section-line"></div>
+    <h2 class="section-title">{title}</h2>
   </div>
   <div class="subsection">
     <slot />
@@ -26,45 +24,22 @@ const sectionId = idProp ?? slugify(title);
 
 <style>
   .section-header {
-    position: relative;
-    display: grid;
-    grid-template-columns: auto 24px 1fr;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
+    margin-bottom: var(--space-lg);
   }
 
-  .section-anchor {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
-    color: var(--muted-digital);
-    border: 1px solid var(--border-digital);
-    text-decoration: none;
-    transition: all var(--transition-base) var(--ease-in-out);
-  }
-
-  body.digital-view .section-anchor:hover {
+  .section-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
     color: var(--foreground-digital);
-    border-color: var(--foreground-digital);
-    box-shadow: 0 0 0 3px rgba(0,255,65,0.1);
+    margin: 0;
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--border-digital);
+    display: inline-block;
   }
 
-  body.print-view .section-anchor {
-    color: var(--muted-print);
-    border-color: var(--border-print);
-  }
-
-  .section-line {
-    height: 1px;
-    width: 100%;
-    background: linear-gradient(90deg,var(--border-digital),transparent 70%);
-  }
-
-  body.print-view .section-line {
-    background: linear-gradient(90deg,var(--border-print),transparent 70%);
+  /* Print mode styling */
+  body.print-view .section-title {
+    color: var(--foreground-print);
+    border-bottom-color: var(--border-print);
   }
 </style>

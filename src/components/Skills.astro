@@ -207,38 +207,51 @@ const getSkillBarStyle = (level: string) => {
   }
 
   .skill-bar {
-    font-family: inherit;
-    background: none;
-    border: none;
-    font-size: inherit;
-    letter-spacing: 0.5px;
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-digital);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
     white-space: nowrap;
+    color: var(--foreground-digital);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
-  /* Dithered gradient effect for different block types */
+  /* Code-like styling for different block types */
   .skill-bar .filled {
-    color: var(--foreground-digital);
-    opacity: 1;
+    color: #00ff41;
+    text-shadow: 0 0 2px rgba(0, 255, 65, 0.3);
+    font-weight: 600;
   }
 
   .skill-bar .dither-1 {
-    color: var(--foreground-digital);
-    opacity: 0.75;
+    color: #ffff00;
+    text-shadow: 0 0 2px rgba(255, 255, 0, 0.2);
+    font-weight: 500;
   }
 
   .skill-bar .dither-2 {
-    color: var(--foreground-digital);
-    opacity: 0.5;
+    color: #ff8c00;
+    text-shadow: 0 0 2px rgba(255, 140, 0, 0.2);
+    font-weight: 400;
   }
 
   .skill-bar .dither-3 {
-    color: var(--foreground-digital);
-    opacity: 0.25;
+    color: #666;
+    font-weight: 300;
   }
 
-  /* Print Mode Styles */
+  /* Print Mode Styles - Strict Black and White */
   body.print-view .skills-container {
-    background: transparent;
+    background: white !important;
+    color: black !important;
+  }
+
+  body.print-view .skills-header {
+    border-bottom-color: black !important;
   }
 
   body.print-view .command-prompt,
@@ -247,23 +260,54 @@ const getSkillBarStyle = (level: string) => {
     color: black !important;
   }
 
-  body.print-view .skill-bar .filled,
-  body.print-view .skill-bar .dither-1,
-  body.print-view .skill-bar .dither-2,
+  body.print-view .category-header {
+    border-bottom-color: black !important;
+  }
+
+  body.print-view .skill-bar {
+    background: white !important;
+    border: 1px solid black !important;
+    box-shadow: none !important;
+    color: black !important;
+  }
+
+  body.print-view .skill-bar .filled {
+    color: black !important;
+    text-shadow: none !important;
+    font-weight: 700 !important;
+  }
+
+  body.print-view .skill-bar .dither-1 {
+    color: black !important;
+    text-shadow: none !important;
+    font-weight: 600 !important;
+  }
+
+  body.print-view .skill-bar .dither-2 {
+    color: black !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+  }
+
   body.print-view .skill-bar .dither-3 {
     color: black !important;
-    opacity: 1 !important;
+    text-shadow: none !important;
+    font-weight: 400 !important;
   }
 
   body.print-view .category-meta,
   body.print-view .skill-level,
   body.print-view .skill-meta,
   body.print-view .skill-highlight {
-    color: var(--muted-print) !important;
+    color: black !important;
+  }
+
+  body.print-view .skill-item {
+    background: white !important;
   }
 
   body.print-view .skill-item:hover {
-    background: none !important;
+    background: white !important;
     transform: none !important;
   }
 
