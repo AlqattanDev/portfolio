@@ -5,7 +5,6 @@ import '../styles/global.css';
 import '../styles/page-breaks.css';
 import ProgressBar from '../components/layout/ProgressBar.astro';
 import StatusBar from '../components/layout/StatusBar.astro';
-import ScrollToTop from '../components/layout/ScrollToTop.astro';
 import type { UserProfile } from '@/types/index.ts';
 
 // Import profile data
@@ -33,9 +32,6 @@ export const profile: UserProfile = profileData as UserProfile;
 
     <!-- Bottom Status Bar Navigation -->
     <StatusBar />
-
-    <!-- Scroll to Top Button -->
-    <ScrollToTop />
 
     <div class="container page">
       <div class="content">

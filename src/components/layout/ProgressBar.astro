@@ -24,15 +24,15 @@ const { className = '' } = Astro.props as ProgressBarProps;
   left: 0; 
   right: 0; 
   height: 3px; 
-  background: rgba(0,255,65,0.12); 
+  background: var(--muted-digital); 
   z-index: var(--z-toast); 
 }
 
 .progress-bar .progress { 
   height: 100%; 
   width: 0%; 
-  background: linear-gradient(90deg, #00ff41, #00c853); 
-  box-shadow: 0 0 12px rgba(0,255,65,0.6); 
+  background: var(--foreground-digital); 
+  box-shadow: 0 0 12px var(--color-focus-ring); 
   transition: width var(--transition-fast) var(--ease-out); 
 }
 </style>

@@ -37,11 +37,16 @@ const { className = '' } = Astro.props as StatusBarProps;
     <div class="status-position">1:1</div>
     <div class="status-progress-container" role="progressbar" aria-label="Page scroll progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <svg width="20" height="20" viewBox="0 0 60 60" aria-hidden="true">
-        <circle cx="30" cy="30" r="25" fill="none" stroke="rgba(0,255,65,0.1)" stroke-width="2"></circle>
+        <circle cx="30" cy="30" r="25" fill="none" stroke="var(--muted-digital)" stroke-width="2"></circle>
         <circle class="progress-ring" cx="30" cy="30" r="25" fill="none" stroke="var(--foreground-digital)" stroke-width="2" stroke-linecap="round" transform="rotate(-90 30 30)"></circle>
       </svg>
       <span class="progress-percentage" aria-live="polite">100%</span>
     </div>
+    <button class="scroll-to-top-btn status-button" id="scrollToTopBtn" aria-label="Scroll to top" data-show-after="300">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="m18 15-6-6-6 6"/>
+      </svg>
+    </button>
     <button class="view-switcher status-button" aria-label="Toggle between digital and print view">
       <svg class="icon-digital" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
@@ -72,8 +77,8 @@ const { className = '' } = Astro.props as StatusBarProps;
   justify-content: space-between;
   z-index: var(--z-sticky); 
   backdrop-filter: blur(8px); 
-  background: rgba(10,10,10,0.95); 
-  border-top: 1px solid rgba(0,255,65,0.3); 
+  background: var(--background-digital); 
+  border-top: 1px solid var(--border-digital); 
   box-shadow: var(--shadow-lg);
   font-family: var(--font-body);
   font-size: var(--font-size-sm);
@@ -82,10 +87,10 @@ const { className = '' } = Astro.props as StatusBarProps;
 
 /* Print Mode Status Bar */
 body.print-view .status-bar {
-  background: rgba(255,255,255,0.95);
-  border-top: 1px solid rgba(0,0,0,0.1);
+  background: var(--background-print);
+  border-top: 1px solid var(--border-print);
   color: var(--foreground-print);
-  box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Hide digital-only elements in print mode */
@@ -117,17 +122,17 @@ body.print-view .status-item {
 
 body.print-view .status-item:hover {
   color: var(--foreground-print);
-  background: rgba(0,0,0,0.05);
+  background: var(--accent-print);
 }
 
 body.print-view .status-item.active {
   color: var(--background-print);
   background: var(--foreground-print);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 body.print-view .status-separator {
-  color: rgba(0,0,0,0.3);
+  color: var(--muted-print);
   opacity: 0.8;
 }
 
@@ -150,18 +155,18 @@ body.print-view .status-separator {
 }
 
 .status-mode.insert {
-  background: #8ec07c;
-  color: #0a0a0a;
+  background: var(--color-success);
+  color: var(--background-digital);
 }
 
 .status-mode.visual {
-  background: #83a598;
-  color: #0a0a0a;
+  background: var(--color-info);
+  color: var(--background-digital);
 }
 
 .status-mode.command {
-  background: #ff4444;
-  color: #ffffff;
+  background: var(--color-error);
+  color: var(--background-print);
 }
 
 .status-file {
@@ -207,20 +212,20 @@ body.print-view .status-separator {
 }
 
 .status-separator {
-  color: rgba(0,255,65,0.4);
+  color: var(--muted-digital);
   font-weight: var(--font-weight-normal);
   opacity: 0.6;
 }
 
 .status-item:hover { 
   color: var(--foreground-digital); 
-  background: rgba(0,255,65,0.1);
+  background: var(--accent-digital);
 }
 
 .status-item.active { 
   color: var(--background-digital); 
   background: var(--foreground-digital); 
-  box-shadow: 0 2px 8px rgba(0,255,65,0.3);
+  box-shadow: 0 2px 8px var(--color-focus-ring);
 }
 
 .status-right {
@@ -264,7 +269,7 @@ body.print-view .status-separator {
 /* Status Button (View Switcher) */
 .status-button { 
   background: transparent; 
-  border: 1px solid rgba(0,255,65,0.2); 
+  border: none; 
   color: var(--muted-digital); 
   height: 24px; 
   width: 24px; 
@@ -296,8 +301,7 @@ body.digital-view .icon-digital {
 
 body.digital-view .status-button:hover { 
   color: var(--foreground-digital); 
-  background: rgba(0,255,65,0.1); 
-  border-color: var(--foreground-digital); 
+  background: var(--accent-digital); 
 }
 
 body.digital-view .status-button:hover .icon-digital { 
@@ -308,12 +312,11 @@ body.digital-view .status-button:hover .icon-digital {
 body.digital-view .status-button:active { 
   color: var(--background-digital); 
   background: var(--foreground-digital); 
-  box-shadow: 0 2px 8px rgba(0,255,65,0.3);
+  box-shadow: 0 2px 8px var(--color-focus-ring);
 }
 
 body.print-view .status-button { 
   color: var(--muted-print); 
-  border-color: var(--border-print); 
 }
 
 body.print-view .icon-print { 
@@ -324,13 +327,30 @@ body.print-view .icon-print {
 
 body.print-view .status-button:hover { 
   color: var(--foreground-print); 
-  background: rgba(0,0,0,0.05); 
-  border-color: var(--foreground-print); 
+  background: var(--accent-print); 
 }
 
 body.print-view .status-button:hover .icon-print { 
   stroke: var(--foreground-print); 
   stroke-width: 2; 
+}
+
+/* Scroll to Top Button */
+.scroll-to-top-btn {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.8);
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.scroll-to-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.scroll-to-top-btn:hover {
+  transform: scale(1.1);
 }
 
 /* Mobile adjustments */
@@ -419,7 +439,7 @@ const initStatusBarNavigation = () => {
 
 // View Switcher Handler
 const initViewSwitcher = () => {
-  const switcher = document.querySelector('.status-button') as HTMLElement | null;
+  const switcher = document.querySelector('.view-switcher') as HTMLElement | null;
   const body = document.body;
   
   if (switcher) {
@@ -435,14 +455,82 @@ const initViewSwitcher = () => {
   }
 };
 
+// Scroll to Top Handler
+const initScrollToTop = () => {
+  const scrollToTopBtn = document.querySelector('#scrollToTopBtn') as HTMLElement | null;
+  
+  if (!scrollToTopBtn) return;
+  
+  const showAfter = parseInt(scrollToTopBtn.dataset['showAfter'] || '300', 10);
+  
+  // Throttle function for performance
+  function throttle(func: Function, limit: number) {
+    let inThrottle: boolean;
+    return function(this: any, ...args: any[]) {
+      if (!inThrottle) {
+        func.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, limit);
+      }
+    };
+  }
+  
+  function toggleScrollToTop() {
+    try {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollToTopBtn) {
+        if (scrollTop > showAfter) {
+          scrollToTopBtn.classList.add('visible');
+        } else {
+          scrollToTopBtn.classList.remove('visible');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to toggle scroll to top button:', error);
+    }
+  }
+  
+  const scrollToTop = () => {
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+      // Fallback for browsers that don't support smooth scrolling
+      console.warn('Smooth scrolling not supported, using fallback:', error);
+      window.scrollTo(0, 0);
+    }
+  };
+  
+  // Event listeners
+  scrollToTopBtn.addEventListener('click', scrollToTop);
+  
+  // Add keyboard support
+  scrollToTopBtn.addEventListener('keydown', (e) => {
+    const keyEvent = e as KeyboardEvent;
+    if (keyEvent.key === 'Enter' || keyEvent.key === ' ') {
+      keyEvent.preventDefault();
+      scrollToTop();
+    }
+  });
+  
+  // Use throttled scroll listener for better performance
+  const throttledToggleScrollToTop = throttle(toggleScrollToTop, 100);
+  
+  window.addEventListener('scroll', throttledToggleScrollToTop, { passive: true });
+  
+  // Initial check
+  toggleScrollToTop();
+};
+
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     initStatusBarNavigation();
     initViewSwitcher();
+    initScrollToTop();
   });
 } else {
   initStatusBarNavigation();
   initViewSwitcher();
+  initScrollToTop();
 }
 </script>
