@@ -1,0 +1,389 @@
+---
+/**
+ * StatusBar Component
+ * Bottom navigation bar with vim-style status indicators
+ */
+export interface StatusBarProps {
+  className?: string;
+}
+
+const { className = '' } = Astro.props as StatusBarProps;
+---
+
+<nav class={`status-bar digital-only ${className}`} role="navigation" aria-label="Section Navigation">
+  <div class="status-left">
+    <div class="status-mode" id="statusMode">NORMAL</div>
+    <div class="status-scheme" id="statusScheme">Matrix Rain</div>
+    <div class="status-file">portfolio.md</div>
+  </div>
+  <div class="status-center">
+    <a href="#contact-info" class="status-item" aria-label="Navigate to Contact section" tabindex="0">
+      <span class="status-text">Contact</span>
+    </a>
+    <div class="status-separator">|</div>
+    <a href="#project-manifest" class="status-item" aria-label="Navigate to Projects section" tabindex="0">
+      <span class="status-text">Projects</span>
+    </a>
+    <div class="status-separator">|</div>
+    <a href="#skill-matrix" class="status-item" aria-label="Navigate to Skills section" tabindex="0">
+      <span class="status-text">Skills</span>
+    </a>
+    <div class="status-separator">|</div>
+    <a href="#education-log" class="status-item" aria-label="Navigate to Education section" tabindex="0">
+      <span class="status-text">Education</span>
+    </a>
+  </div>
+  <div class="status-right">
+    <div class="status-position">1:1</div>
+    <div class="status-progress-container" role="progressbar" aria-label="Page scroll progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <svg width="20" height="20" viewBox="0 0 60 60" aria-hidden="true">
+        <circle cx="30" cy="30" r="25" fill="none" stroke="rgba(0,255,65,0.1)" stroke-width="2"></circle>
+        <circle class="progress-ring" cx="30" cy="30" r="25" fill="none" stroke="var(--foreground-digital)" stroke-width="2" stroke-linecap="round" transform="rotate(-90 30 30)"></circle>
+      </svg>
+      <span class="progress-percentage" aria-live="polite">100%</span>
+    </div>
+    <button class="view-switcher" aria-label="Toggle between digital and print view">
+      <svg class="icon-digital" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
+      </svg>
+      <svg class="icon-print" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6,9 6,2 18,2 18,9"></polyline>
+        <path d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2,2H20a2,2,0,0,1,2-2v5a2,2,0,0,1-2,2H18"></path>
+        <rect x="6" y="14" width="12" height="8"></rect>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<style>
+@import '../../styles/design-system.css';
+
+/* Status Bar Styles */
+.status-bar { 
+  position: fixed; 
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  display: flex; 
+  align-items: center;
+  justify-content: space-between;
+  z-index: var(--z-sticky); 
+  backdrop-filter: blur(8px); 
+  background: rgba(10,10,10,0.95); 
+  border-top: 1px solid rgba(0,255,65,0.3); 
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  padding: 0 var(--space-md);
+}
+
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--foreground-digital);
+}
+
+.status-mode {
+  background: var(--foreground-digital);
+  color: var(--background-digital);
+  padding: var(--space-2xs) var(--space-sm);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.status-mode.insert {
+  background: #8ec07c;
+  color: #0a0a0a;
+}
+
+.status-mode.visual {
+  background: #83a598;
+  color: #0a0a0a;
+}
+
+.status-mode.command {
+  background: #ff4444;
+  color: #ffffff;
+}
+
+.status-file {
+  color: var(--muted-digital);
+  font-weight: var(--font-weight-medium);
+}
+
+.status-scheme {
+  color: var(--foreground-digital);
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-xs);
+  opacity: 0.8;
+  padding: 1px var(--space-xs);
+  border: 1px solid var(--border-digital);
+  border-radius: var(--radius-sm);
+}
+
+.status-center {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1;
+  justify-content: center;
+}
+
+.status-item { 
+  color: var(--muted-digital); 
+  text-decoration: none; 
+  font-size: var(--font-size-sm); 
+  padding: var(--space-xs) var(--space-sm); 
+  border-radius: var(--radius-base); 
+  transition: all var(--transition-fast) var(--ease-in-out);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.status-text {
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.status-separator {
+  color: rgba(0,255,65,0.4);
+  font-weight: var(--font-weight-normal);
+  opacity: 0.6;
+}
+
+.status-item:hover { 
+  color: var(--foreground-digital); 
+  background: rgba(0,255,65,0.1);
+}
+
+.status-item.active { 
+  color: var(--background-digital); 
+  background: var(--foreground-digital); 
+  box-shadow: 0 2px 8px rgba(0,255,65,0.3);
+}
+
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--muted-digital);
+  font-size: var(--font-size-sm);
+}
+
+.status-position {
+  color: var(--foreground-digital);
+  font-weight: var(--font-weight-semibold);
+}
+
+.status-progress-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--muted-digital);
+  font-weight: var(--font-weight-medium);
+}
+
+.status-progress-container svg {
+  width: 16px;
+  height: 16px;
+}
+
+.status-progress-container .progress-percentage {
+  font-size: var(--font-size-sm);
+  color: var(--muted-digital);
+}
+
+/* Progress Ring Animation */
+.progress-ring {
+  stroke-dasharray: 157; /* 2 * π * 25 */
+  stroke-dashoffset: 157;
+  transition: stroke-dashoffset var(--transition-base) var(--ease-out);
+}
+
+/* View Switcher */
+.view-switcher { 
+  position: fixed; 
+  top: 40%; 
+  right: var(--space-lg); 
+  transform: translateY(-50%);
+  background: rgba(10,10,10,0.85); 
+  border: 1px solid rgba(0,255,65,0.2); 
+  color: var(--muted-digital); 
+  width: 48px; 
+  height: 48px; 
+  border-radius: var(--radius-2xl); 
+  cursor: pointer; 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+  transition: all var(--transition-base) var(--ease-in-out); 
+  z-index: var(--z-sticky); 
+  opacity: 0.9; 
+  backdrop-filter: blur(8px); 
+  box-shadow: var(--shadow-lg);
+}
+
+.view-switcher svg { 
+  width: 22px; 
+  height: 22px; 
+  transition: all var(--transition-fast) var(--ease-in-out); 
+}
+
+body.digital-view .icon-print { display: none; }
+body.print-view .icon-digital { display: none; }
+
+body.digital-view .icon-digital { 
+  stroke: var(--muted-digital); 
+  stroke-width: 1; 
+  fill: none; 
+}
+
+body.digital-view .view-switcher:hover { 
+  background: rgba(0,0,0,0.8); 
+  border-color: var(--foreground-digital); 
+  box-shadow: 0 6px 18px rgba(0,255,65,0.18); 
+  transform: translateY(-50%) translateY(-1px); 
+}
+
+body.digital-view .view-switcher:hover .icon-digital { 
+  stroke: var(--foreground-digital); 
+  stroke-width: 2; 
+  filter: drop-shadow(0 0 8px var(--foreground-digital)); 
+}
+
+body.print-view .view-switcher { 
+  opacity: 0.8; 
+  color: var(--muted-print); 
+  background: rgba(255,255,255,0.9); 
+  border-color: var(--foreground-print); 
+}
+
+body.print-view .icon-print { 
+  stroke: var(--muted-print); 
+  stroke-width: 1; 
+  fill: none; 
+}
+
+body.print-view .view-switcher:hover { 
+  opacity: 1; 
+  transform: translateY(-50%) translateY(-1px); 
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12); 
+}
+
+body.print-view .view-switcher:hover .icon-print { 
+  stroke: var(--foreground-print); 
+  stroke-width: 2; 
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .status-bar { 
+    height: 36px;
+    padding: 0 var(--space-sm);
+    font-size: var(--font-size-sm);
+  }
+  
+  .status-left { gap: var(--space-sm); }
+  .status-mode { padding: var(--space-2xs) var(--space-xs); font-size: var(--font-size-xs); }
+  .status-center { gap: var(--space-xs); }
+  .status-item { font-size: var(--font-size-xs); padding: var(--space-2xs) var(--space-xs); }
+  .status-right { gap: var(--space-sm); font-size: var(--font-size-xs); }
+  
+  .view-switcher { 
+    top: 25%; 
+    right: var(--space-sm); 
+    width: 42px; 
+    height: 42px; 
+  }
+}
+
+@media (max-width: 480px) {
+  .status-bar {
+    height: 32px;
+    padding: 0 var(--space-sm);
+    font-size: var(--font-size-xs);
+  }
+  
+  .status-left { gap: var(--space-xs); }
+  .status-mode { padding: 1px var(--space-xs); font-size: var(--font-size-2xs); }
+  .status-file { display: none; }
+  .status-center { gap: var(--space-xs); }
+  .status-item { font-size: var(--font-size-2xs); padding: var(--space-2xs) var(--space-xs); }
+  .status-text { display: none; }
+  .status-right { gap: var(--space-xs); font-size: var(--font-size-2xs); }
+  
+  .view-switcher {
+    top: 20%;
+    right: var(--space-xs);
+    width: 38px;
+    height: 38px;
+  }
+}
+</style>
+
+<script>
+// Status Bar Navigation Handler
+const initStatusBarNavigation = () => {
+  const statusBar = document.querySelector('.status-bar');
+  if (!statusBar) return;
+  
+  // Use event delegation for better performance
+  statusBar.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const statusItem = target.closest('.status-item') as HTMLAnchorElement;
+    
+    if (!statusItem) return;
+    
+    e.preventDefault();
+    
+    const targetId = statusItem.getAttribute('href')?.substring(1);
+    const targetElement = targetId ? document.getElementById(targetId) : null;
+    
+    if (targetElement) {
+      // Use requestAnimationFrame for smoother scrolling
+      requestAnimationFrame(() => {
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+  });
+};
+
+// View Switcher Handler
+const initViewSwitcher = () => {
+  const switcher = document.querySelector('.view-switcher') as HTMLElement | null;
+  const body = document.body;
+  
+  if (switcher) {
+    switcher.addEventListener('click', () => {
+      if (body.classList.contains('digital-view')) {
+        body.classList.remove('digital-view');
+        body.classList.add('print-view');
+      } else {
+        body.classList.remove('print-view');
+        body.classList.add('digital-view');
+      }
+    });
+  }
+};
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initStatusBarNavigation();
+    initViewSwitcher();
+  });
+} else {
+  initStatusBarNavigation();
+  initViewSwitcher();
+}
+</script>

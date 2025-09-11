@@ -1,13 +1,70 @@
 ---
-const { title } = Astro.props;
+import type { BaseComponentProps } from '@/types/component.js';
+
+export interface SectionProps extends BaseComponentProps {
+  title: string;
+  id?: string;
+}
+
+const { title, id: idProp, className = '', ...props } = Astro.props as SectionProps;
+
+// simple slugify fallback when id not provided
+const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const sectionId = idProp ?? slugify(title);
 ---
 
-<div class="section">
-    <div class="section-header">
-        <span class="section-title">{title}</span>
-        <div class="section-line"></div>
-    </div>
-    <div class="subsection">
-        <slot />
-    </div>
+<div id={sectionId} class={`section ${className}`} {...props}>
+  <div class="section-header">
+    <span class="section-title">{title}</span>
+    <a class="section-anchor" href={`#${sectionId}`} aria-label={`Link to ${title}`}>#</a>
+    <div class="section-line"></div>
+  </div>
+  <div class="subsection">
+    <slot />
+  </div>
 </div>
+
+<style>
+  .section-header {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 24px 1fr;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .section-anchor {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    color: var(--muted-digital);
+    border: 1px solid var(--border-digital);
+    text-decoration: none;
+    transition: all var(--transition-base) var(--ease-in-out);
+  }
+
+  body.digital-view .section-anchor:hover {
+    color: var(--foreground-digital);
+    border-color: var(--foreground-digital);
+    box-shadow: 0 0 0 3px rgba(0,255,65,0.1);
+  }
+
+  body.print-view .section-anchor {
+    color: var(--muted-print);
+    border-color: var(--border-print);
+  }
+
+  .section-line {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg,var(--border-digital),transparent 70%);
+  }
+
+  body.print-view .section-line {
+    background: linear-gradient(90deg,var(--border-print),transparent 70%);
+  }
+</style>

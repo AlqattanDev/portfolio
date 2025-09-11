@@ -3,23 +3,61 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Section from '../../components/Section.astro';
+import type { UserProfile } from '@/types/index.js';
+import { validateData, userProfileSchema } from '@/utils/validation/schemas.js';
+
+// Import and validate profile data
+import profileData from '../../data/profile.json';
+const profileValidation = validateData(userProfileSchema, profileData);
+
+const profile: UserProfile = profileValidation.success
+  ? profileValidation.data
+  : ({
+      personal: {
+        name: 'Unknown User',
+        title: 'System Architect',
+        email: 'user@example.com',
+      },
+      social: {},
+      contact: { email: 'user@example.com' },
+    } as UserProfile);
+
+if (!profileValidation.success) {
+  console.warn('Profile data validation failed:', profileValidation.error);
+}
 
 // This function is required for dynamic routes
 export async function getStaticPaths() {
+  // Import and validate profile data within the function
+  const profileData = (await import('../../data/profile.json')).default;
+  const profileValidation = validateData(userProfileSchema, profileData);
+  
+  const profile: UserProfile = profileValidation.success
+    ? profileValidation.data
+    : ({
+        personal: {
+          name: 'Unknown User',
+          title: 'System Architect',
+          email: 'user@example.com',
+        },
+        social: {},
+        contact: { email: 'user@example.com' },
+      } as UserProfile);
+      
   const allPosts = await getCollection('blog');
   return allPosts.map(post => ({
     params: { slug: post.slug },
-    props: { post },
+    props: { post, profile },
   }));
 }
 
 // Get the specific post for this page
-const { post } = Astro.props;
+const { post, profile: profileProp } = Astro.props;
 const { Content } = await post.render();
 ---
 
 <Layout>
-    <Header />
+    <Header profile={profileProp} />
 
     <div class="execute-protocol">
         <p class="terminal-command">$ ./blog --read {post.slug}</p>

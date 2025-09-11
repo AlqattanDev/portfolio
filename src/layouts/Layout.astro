@@ -1,323 +1,283 @@
 ---
+import '../styles/design-system.css';
+import '../styles/themes.css';
 import '../styles/global.css';
 import '../styles/page-breaks.css';
+import ProgressBar from '../components/layout/ProgressBar.astro';
+import StatusBar from '../components/layout/StatusBar.astro';
+import ScrollToTop from '../components/layout/ScrollToTop.astro';
+import type { UserProfile } from '@/types/index.ts';
+
+// Import profile data
+import profileData from '../data/profile.json';
+
+export const profile: UserProfile = profileData as UserProfile;
 ---
 
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ali - System Architect</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-</head>
-<body class="digital-view">
-    <!-- View Switcher -->
-    <button class="view-switcher" aria-label="Toggle between digital and print view">
-        <svg class="icon-digital" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-            <line x1="8" y1="21" x2="16" y2="21"/>
-            <line x1="12" y1="17" x2="12" y2="21"/>
-        </svg>
-        <svg class="icon-print" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="6,9 6,2 18,2 18,9"/>
-            <path d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2,2H20a2,2,0,0,1,2-2v5a2,2,0,0,1-2,2H18"/>
-            <rect x="6" y="14" width="12" height="8"/>
-        </svg>
-    </button>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="digital-view">
+    <!-- Progress Bar -->
+    <ProgressBar />
+
+    <!-- Bottom Status Bar Navigation -->
+    <StatusBar />
+
+    <!-- Scroll to Top Button -->
+    <ScrollToTop />
 
     <div class="container page">
-        <div class="content">
-            <slot />
-        </div>
+      <div class="content">
+        <slot />
+      </div>
     </div>
 
-    <script>
-      const switcher = document.querySelector('.view-switcher') as HTMLElement | null;
-      const body = document.body;
+    <!-- Screen Reader Announcements -->
+    <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-      if (switcher) {
-        switcher.addEventListener('click', () => {
-          if (body.classList.contains('digital-view')) {
-            body.classList.remove('digital-view');
-            body.classList.add('print-view');
-          } else {
-            body.classList.remove('print-view');
-            body.classList.add('digital-view');
+    <script>
+      // Core theme management functionality
+      const themeToggle = document.getElementById('themeToggle');
+      const html = document.documentElement;
+
+      function updateTheme(theme: string) {
+        try {
+          html.setAttribute('data-theme', theme);
+          
+          // Safe localStorage operation
+          try {
+            localStorage.setItem('theme', theme);
+          } catch (storageError) {
+            console.warn('Failed to save theme preference:', storageError);
+          }
+        } catch (error) {
+          console.error('Failed to update theme:', error);
+        }
+      }
+
+      // Initialize theme with fallback
+      function initializeTheme() {
+        let savedTheme = 'light'; // Default fallback
+        
+        try {
+          if (typeof Storage !== 'undefined') {
+            savedTheme = localStorage.getItem('theme') || 'light';
+          }
+        } catch (error) {
+          console.warn('localStorage not available, using default theme:', error);
+        }
+        
+        // Validate theme value
+        if (!['light', 'dark'].includes(savedTheme)) {
+          savedTheme = 'light';
+        }
+        
+        updateTheme(savedTheme);
+      }
+
+      initializeTheme();
+
+      if (themeToggle) {
+        // Get reference to the animation system
+        const animationSystem = (window as any).asciiAnimationSystem;
+        
+        const toggleTheme = () => {
+          try {
+            // If animation system exists, use it to cycle schemes
+            if (animationSystem) {
+              animationSystem.nextScheme();
+            } else {
+              // Fallback to simple toggle if animation system not available
+              const currentTheme = html.getAttribute('data-theme') || 'light';
+              const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+              updateTheme(newTheme);
+            }
+            
+            // Add subtle animation feedback
+            themeToggle.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+              themeToggle.style.transform = '';
+            }, 150);
+          } catch (error) {
+            console.error('Failed to toggle theme:', error);
+          }
+        };
+        
+        // Listen for theme:changed events from the animation system
+        document.addEventListener('theme:changed', (e: Event) => {
+          const customEvent = e as CustomEvent;
+          if (customEvent.detail && customEvent.detail.theme) {
+            themeToggle.setAttribute('aria-pressed', customEvent.detail.theme === 'dark' ? 'true' : 'false');
+          }
+        });
+        
+        themeToggle.addEventListener('click', toggleTheme);
+        
+        // Add keyboard support
+        themeToggle.addEventListener('keydown', (e) => {
+          const keyEvent = e as KeyboardEvent;
+          if (keyEvent.key === 'Enter' || keyEvent.key === ' ') {
+            keyEvent.preventDefault();
+            toggleTheme();
           }
         });
       }
 
+      // Lazy load section observer with performance optimization
+      const observeSections = () => {
+        const navLinks = Array.from(document.querySelectorAll('.status-item')) as HTMLAnchorElement[];
+        if (navLinks.length === 0) return;
+        
+        const sections = navLinks
+          .map((l) => document.querySelector(l.getAttribute('href')!) as HTMLElement | null)
+          .filter(Boolean) as HTMLElement[];
+          
+        if (sections.length === 0) return;
+        
+        // Debounce utility
+        function debounce(func: Function, wait: number) {
+          let timeout: NodeJS.Timeout;
+          return function executedFunction(...args: any[]) {
+            const later = () => {
+              clearTimeout(timeout);
+              func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+          };
+        }
+        
+        // Debounced intersection handler
+        const debouncedHandler = debounce((entries: IntersectionObserverEntry[]) => {
+          entries.forEach((entry) => {
+            const id = entry.target.getAttribute('id');
+            if (!id) return;
+            const link = navLinks.find((l) => l.getAttribute('href') === `#${id}`);
+            if (!link) return;
+            if (entry.isIntersecting) {
+              requestAnimationFrame(() => {
+                navLinks.forEach((a) => a.classList.remove('active'));
+                link.classList.add('active');
+              });
+            }
+          });
+        }, 50);
+        
+        const observer = new IntersectionObserver(
+          debouncedHandler,
+          { rootMargin: '-40% 0px -55% 0px', threshold: [0, 0.25, 0.6, 1] }
+        );
+        
+        sections.forEach((sec) => observer.observe(sec));
+      };
+
+      // Initialize section observer after a short delay
+      setTimeout(observeSections, 100);
     </script>
 
     <style is:global>
-      :root {
-        /* Default Matrix Theme */
-        --background-digital: #0a0a0a;
-        --foreground-digital: #00ff41;
-        --muted-digital: #888888;
-        --border-digital: #333333;
-        --accent-digital: #1a1a1a;
-        
-        --background-print: #ffffff;
-        --foreground-print: #000000;
-        --muted-print: #666666;
-        --border-print: #000000;
-        --accent-print: #000000;
-        
-        --font-body: 'JetBrains Mono', 'Courier New', monospace;
-        --font-accent: 'Space Mono', monospace;
-        --transition-speed: 0.25s;
+      /* Core layout styles */
+      * { 
+        margin: 0; 
+        padding: 0; 
+        box-sizing: border-box; 
       }
 
-      /* Color Scheme Definitions */
-      .scheme-matrix {
-        --background-digital: #0a0a0a;
-        --foreground-digital: #00ff41;
-        --muted-digital: #888888;
-        --border-digital: #333333;
-        --accent-digital: #1a1a1a;
-      }
-
-      .scheme-blockchain {
-        --background-digital: #0d1421;
-        --foreground-digital: #00d4aa;
-        --muted-digital: #7a8b99;
-        --border-digital: #2d3748;
-        --accent-digital: #1a202c;
-      }
-
-      .scheme-trading {
-        --background-digital: #1a0f0a;
-        --foreground-digital: #ff6b35;
-        --muted-digital: #a0a0a0;
-        --border-digital: #4a2c1a;
-        --accent-digital: #2d1810;
-      }
-
-      .scheme-encryption {
-        --background-digital: #1a1a0a;
-        --foreground-digital: #ffaa00;
-        --muted-digital: #999966;
-        --border-digital: #444422;
-        --accent-digital: #222211;
-      }
-
-      .scheme-ledger {
-        --background-digital: #0a1a1a;
-        --foreground-digital: #00ffcc;
-        --muted-digital: #669999;
-        --border-digital: #224444;
-        --accent-digital: #112222;
-      }
-
-      .scheme-swift {
-        --background-digital: #0a0a1a;
-        --foreground-digital: #0088ff;
-        --muted-digital: #6699cc;
-        --border-digital: #223344;
-        --accent-digital: #111122;
-      }
-
-      .scheme-risk {
-        --background-digital: #1a0a0a;
-        --foreground-digital: #ff4444;
-        --muted-digital: #cc6666;
-        --border-digital: #442222;
-        --accent-digital: #221111;
-      }
-
-      .scheme-compliance {
-        --background-digital: #0a1a0a;
-        --foreground-digital: #88ff44;
-        --muted-digital: #99cc66;
-        --border-digital: #334422;
-        --accent-digital: #1a2211;
-      }
-
-      .scheme-settlement {
-        --background-digital: #1a1a0a;
-        --foreground-digital: #ffcc00;
-        --muted-digital: #ccaa66;
-        --border-digital: #444422;
-        --accent-digital: #222211;
-      }
-
-      .scheme-gruvbox {
-        --background-digital: #282828;
-        --foreground-digital: #ebdbb2;
-        --muted-digital: #a89984;
-        --border-digital: #504945;
-        --accent-digital: #3c3836;
-      }
-
-      .scheme-gruvbox-visual {
-        --background-digital: #282828;
-        --foreground-digital: #d3869b;
-        --muted-digital: #a89984;
-        --border-digital: #504945;
-        --accent-digital: #3c3836;
-      }
-
-      .scheme-gruvbox-syntax {
-        --background-digital: #282828;
-        --foreground-digital: #fabd2f;
-        --muted-digital: #a89984;
-        --border-digital: #504945;
-        --accent-digital: #3c3836;
-      }
-
-      /* Smooth transitions for color scheme changes */
       body {
+        font-family: var(--font-body);
+        line-height: var(--line-height-base);
         transition: 
-          background-color var(--transition-speed) ease,
-          color var(--transition-speed) ease;
+          background-color var(--transition-base) var(--ease-in-out),
+          color var(--transition-base) var(--ease-in-out);
+        overflow-x: hidden;
+        position: relative;
       }
 
+      /* Smooth transitions for all interactive elements */
       .section-title,
       .entry-title,
       .entry-meta,
       .entry-description,
-      .skill-header,
-      .skill-level,
       .contact-title,
       .contact-meta,
       .contact-description,
       .tech-tag,
       .checksum,
       a {
-        transition: 
-          color var(--transition-speed) ease,
-          border-color var(--transition-speed) ease,
-          background-color var(--transition-speed) ease;
+        transition:
+          color var(--transition-base) var(--ease-in-out),
+          border-color var(--transition-base) var(--ease-in-out),
+          background-color var(--transition-base) var(--ease-in-out);
       }
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: var(--font-body);
-        line-height: 1.4;
-        transition: all var(--transition-speed) ease;
-        overflow-x: hidden;
-      }
-
-      /* Digital View */
-      body.digital-view {
-        background: var(--background-digital);
-        color: var(--foreground-digital);
-      }
-
-      /* Print View */
-      body.print-view {
-        background: var(--background-print);
-        color: var(--foreground-print);
-      }
-
-      .container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 40px 20px;
-        position: relative;
-        z-index: 1;
-      }
-
-      .page {
-        min-height: 100vh;
-      }
-
-      /* View Switcher */
-      .view-switcher {
+      /* Ambient grid background in digital view */
+      body.digital-view::before {
+        content: '';
         position: fixed;
-        top: 20px;
-        right: 20px;
-        background: transparent;
-        border: 1px solid transparent;
-        color: var(--muted-digital);
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1000;
-        opacity: 0.3;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(0,255,65,0.08) 1px, transparent 1px) 0 0 / 40px 40px,
+          linear-gradient(0deg, rgba(0,255,65,0.06) 1px, transparent 1px) 0 0 / 40px 40px;
+        pointer-events: none;
+        z-index: var(--z-base);
+        opacity: 0.25;
       }
 
-      .view-switcher svg {
-        width: 24px;
-        height: 24px;
-        transition: all var(--transition-speed) ease;
+      /* View modes */
+      body.digital-view { 
+        background: var(--background-digital); 
+        color: var(--foreground-digital); 
       }
 
-      /* Icon visibility */
-      body.digital-view .icon-print {
-        display: none;
+      body.print-view { 
+        background: var(--background-print); 
+        color: var(--foreground-print); 
       }
 
-      body.print-view .icon-digital {
-        display: none;
+      /* Layout container */
+      .container { 
+        max-width: var(--container-lg); 
+        margin: 0 auto; 
+        padding: var(--space-4xl) var(--space-lg) var(--space-2xl); 
+        position: relative; 
+        z-index: var(--z-base); 
       }
 
-      /* Digital view switcher */
-      body.digital-view .icon-digital {
-        stroke: var(--muted-digital);
-        stroke-width: 1;
-        fill: none;
+      .page { 
+        min-height: 100vh; 
       }
 
-      body.digital-view .view-switcher:hover {
-        opacity: 1;
-        background: rgba(0, 0, 0, 0.8);
-        border-color: var(--foreground-digital);
-        box-shadow: 0 4px 16px rgba(0, 255, 65, 0.15);
-        transform: scale(1.02);
-      }
 
-      body.digital-view .view-switcher:hover .icon-digital {
-        stroke: var(--foreground-digital);
-        stroke-width: 2;
-        filter: drop-shadow(0 0 8px var(--foreground-digital));
-      }
-
-      /* Print view switcher */
-      body.print-view .view-switcher {
-        opacity: 0.4;
-        color: var(--muted-print);
-      }
-
-      body.print-view .icon-print {
-        stroke: var(--muted-print);
-        stroke-width: 1;
-        fill: none;
-      }
-
-      body.print-view .view-switcher:hover {
-        opacity: 1;
-        background: rgba(255, 255, 255, 0.9);
-        border-color: var(--foreground-print);
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-        transform: scale(1.02);
-      }
-
-      body.print-view .view-switcher:hover .icon-print {
-        stroke: var(--foreground-print);
-        stroke-width: 2;
-      }
-
+      /* Mobile adjustments */
       @media (max-width: 768px) {
-        .container {
-          padding: 20px 15px;
+        .container { 
+          padding: var(--space-3xl) var(--space-md) var(--space-2xl); 
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container { 
+          padding: var(--space-3xl) var(--space-sm) var(--space-2xl); 
+        }
+      }
+
+      /* Hide digital-only elements when printing */
+      @media print {
+        .digital-only { 
+          display: none !important; 
         }
       }
     </style>
-</body>
+  </body>
 </html>

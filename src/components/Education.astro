@@ -1,11 +1,13 @@
 ---
-const { edu } = Astro.props;
+import type { Education, EducationProps } from '@/types/skill.js';
+
+const { edu } = Astro.props as EducationProps;
 ---
 
 <div class="entry">
-    <div class="entry-header">
-        <span class="entry-title">{edu.degree}</span>
-        <span class="entry-meta">{edu.university}</span>
-    </div>
-    <p class="entry-description">Thesis: {edu.thesis}</p>
+  <div class="entry-header">
+    <span class="entry-title">{edu.degree}</span>
+    <span class="entry-meta">{edu.university}</span>
+  </div>
+  <p class="entry-description">Thesis: {edu.thesis}</p>
 </div>

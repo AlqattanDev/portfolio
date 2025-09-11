@@ -1,27 +1,354 @@
 ---
-interface Props {
-  skills: {
-    header: string;
-    items: {
-      name: string;
-      level: string;
-    }[];
-  }[];
-}
+/**
+ * Skills Component - Refactored
+ * Now uses utility functions and proper type definitions
+ */
+import type { SkillsProps, SkillLevel } from '@/types/skill.js';
+import {
+  generateSkillBarConfig,
+  isValidSkillLevel,
+} from '@/utils/helpers/skillBarGenerator.js';
 
-const { skills } = Astro.props as Props;
+const {
+  skills,
+  variant = 'grid',
+  showProgressBars = true,
+  interactive = true,
+  className = '',
+  ...props
+} = Astro.props as SkillsProps;
+
+// Enhanced skill bar generation with validation
+const getSkillBarStyle = (level: string) => {
+  if (!isValidSkillLevel(level)) {
+    console.warn(`Invalid skill level: ${level}, defaulting to Beginner`);
+    return generateSkillBarConfig('Beginner');
+  }
+  return generateSkillBarConfig(level as SkillLevel);
+};
 ---
 
-<div class="skills-grid">
-    {skills.map((category) => (
-        <div class="skill-category">
-            <div class="skill-header">{category.header}</div>
-            {category.items.map((item) => (
-                <div class="skill-item">
-                    <span>{item.name}</span>
-                    <span class="skill-level">{item.level}</span>
+<div class={`skills-container skills-${variant} ${className}`} {...props}>
+  <div class="skills-header">
+    <span class="command-prompt">$ cat ~/.skills</span>
+  </div>
+
+  {
+    skills && skills.length > 0 ? (
+      <div class="skills-grid">
+        {skills.map((category) => (
+          <div class="category-section">
+            <div class="category-header">
+              <h3 class="category-name">{category.header}</h3>
+              <span class="category-meta">{category.years}</span>
+            </div>
+
+            <div class="skills-list">
+              {category.items.map((skill) => (
+                <div class={`skill-item ${interactive ? 'interactive' : ''}`}>
+                  <div class="skill-info">
+                    <div class="skill-name">{skill.name}</div>
+                    <div class="skill-details">
+                      <span class="skill-meta">
+                        {skill.years} • {skill.projects}
+                      </span>
+                      <span class="skill-highlight">{skill.highlight}</span>
+                    </div>
+                  </div>
+
+                  {showProgressBars && (
+                    <div class="skill-progress">
+                      <span class="skill-level">{skill.level}</span>
+                      <code
+                        class="skill-bar"
+                        set:html={getSkillBarStyle(skill.level).html}
+                      />
+                    </div>
+                  )}
                 </div>
-            ))}
-        </div>
-    ))}
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="skills-error">
+        <span class="error-message">! No skills data available</span>
+        <span class="error-details">Skills data not provided</span>
+      </div>
+    )
+  }
 </div>
+
+<style>
+  .skills-container {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .skills-header {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-digital);
+  }
+
+  .command-prompt {
+    color: var(--foreground-digital);
+    font-weight: bold;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 80px;
+    align-items: start;
+  }
+
+  .category-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-digital);
+  }
+
+  .category-name {
+    color: var(--foreground-digital);
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .category-meta {
+    color: var(--muted-digital);
+    font-size: 11px;
+    font-weight: normal;
+  }
+
+  .skills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .skill-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .skill-item.interactive:hover {
+    background: rgba(0, 255, 65, 0.05);
+    transform: translateX(4px);
+  }
+
+  .skill-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .skill-name {
+    color: var(--foreground-digital);
+    font-weight: 500;
+    font-size: 13px;
+  }
+
+  .skill-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .skill-meta {
+    color: var(--muted-digital);
+    font-size: 10px;
+  }
+
+  .skill-highlight {
+    color: var(--muted-digital);
+    font-size: 9px;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .skill-progress {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .skill-level {
+    color: var(--muted-digital);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .skill-bar {
+    font-family: inherit;
+    background: none;
+    border: none;
+    font-size: inherit;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  /* Dithered gradient effect for different block types */
+  .skill-bar .filled {
+    color: var(--foreground-digital);
+    opacity: 1;
+  }
+
+  .skill-bar .dither-1 {
+    color: var(--foreground-digital);
+    opacity: 0.75;
+  }
+
+  .skill-bar .dither-2 {
+    color: var(--foreground-digital);
+    opacity: 0.5;
+  }
+
+  .skill-bar .dither-3 {
+    color: var(--foreground-digital);
+    opacity: 0.25;
+  }
+
+  /* Print Mode Styles */
+  body.print-view .skills-container {
+    background: transparent;
+  }
+
+  body.print-view .command-prompt,
+  body.print-view .category-name,
+  body.print-view .skill-name {
+    color: black !important;
+  }
+
+  body.print-view .skill-bar .filled,
+  body.print-view .skill-bar .dither-1,
+  body.print-view .skill-bar .dither-2,
+  body.print-view .skill-bar .dither-3 {
+    color: black !important;
+    opacity: 1 !important;
+  }
+
+  body.print-view .category-meta,
+  body.print-view .skill-level,
+  body.print-view .skill-meta,
+  body.print-view .skill-highlight {
+    color: var(--muted-print) !important;
+  }
+
+  body.print-view .skill-item:hover {
+    background: none !important;
+    transform: none !important;
+  }
+
+  /* Error handling styles */
+  .skills-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    border: 1px dashed var(--border-digital);
+    background: rgba(255, 68, 68, 0.05);
+  }
+
+  .error-message {
+    color: var(--color-error);
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .error-details {
+    color: var(--muted-digital);
+    font-size: 11px;
+    opacity: 0.8;
+  }
+
+  body.print-view .skills-error {
+    border-color: var(--border-print);
+    background: transparent;
+  }
+
+  body.print-view .error-message {
+    color: var(--foreground-print) !important;
+  }
+
+  body.print-view .error-details {
+    color: var(--muted-print) !important;
+  }
+
+  /* Variant-specific styles */
+  .skills-list {
+    variant: 'list';
+  }
+
+  .skills-container.skills-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .skills-container.skills-compact .skills-grid {
+    gap: 16px;
+  }
+
+  .skills-container.skills-compact .skill-item {
+    padding: 6px 0;
+    gap: 16px;
+  }
+
+  .skills-container.skills-compact .category-name {
+    font-size: 13px;
+  }
+
+  .skills-container.skills-compact .skill-name {
+    font-size: 12px;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .skills-container {
+      font-size: 12px;
+    }
+
+    .skills-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .skill-item {
+      gap: 16px;
+    }
+
+    .skill-meta,
+    .skill-highlight {
+      font-size: 9px;
+    }
+  }
+</style>

@@ -1,0 +1,121 @@
+---
+/**
+ * ASCII Canvas Component
+ * Extracted from Header.astro - handles ASCII art animation
+ */
+import type { BaseComponentProps } from '@/types/component.js';
+
+export interface ASCIICanvasProps extends BaseComponentProps {
+  canvasId?: string;
+  width?: number;
+  height?: number;
+  enableAnimations?: boolean;
+}
+
+const { 
+  canvasId = 'ascii-canvas',
+  width,
+  height,
+  enableAnimations = true,
+  className = '',
+  ...props 
+} = Astro.props as ASCIICanvasProps;
+---
+
+<div class={`ascii-canvas-container ${className}`} {...props}>
+    <canvas 
+        id={canvasId}
+        width={width}
+        height={height}
+    ></canvas>
+</div>
+
+<style>
+/* ASCII Canvas Container */
+.ascii-canvas-container {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    margin-bottom: 20px;
+}
+
+body.print-view .ascii-canvas-container {
+    height: 180px;
+    margin-bottom: 20px;
+    display: block !important;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+body.print-view canvas {
+    filter: none !important;
+    opacity: 1 !important;
+    display: block !important;
+}
+
+/* Vim mode styles moved to Layout.astro status bar */
+
+/* Cursor styles based on vim mode */
+body.digital-view {
+    cursor: crosshair;
+}
+
+body.digital-view.vim-normal {
+    cursor: crosshair;
+}
+
+body.digital-view.vim-insert {
+    cursor: text;
+}
+
+body.digital-view.vim-visual {
+    cursor: cell;
+}
+
+body.digital-view.vim-command {
+    cursor: help;
+}
+
+/* Digital/Print View Toggles */
+body.print-view .digital-only {
+    display: none;
+}
+</style>
+
+<script>
+import { ASCIIAnimationSystem } from '@/utils/canvas/asciiAnimations.js';
+
+// Initialize ASCII animation system when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        const canvasElement = document.getElementById('ascii-canvas');
+        if (canvasElement) {
+            // Create animation system instance
+            const animationSystem = new ASCIIAnimationSystem('ascii-canvas');
+            
+            // Store reference for potential cleanup
+            (window as any).asciiAnimationSystem = animationSystem;
+            
+            // Handle page visibility changes to pause/resume animations
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    animationSystem.pause();
+                } else {
+                    animationSystem.resume();
+                }
+            });
+            
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', () => {
+                animationSystem.destroy();
+            });
+        }
+    } catch (error) {
+        console.warn('Failed to initialize ASCII animation system:', error);
+    }
+});
+</script>

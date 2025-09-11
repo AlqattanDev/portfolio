@@ -1,0 +1,133 @@
+---
+/**
+ * System Info Component
+ * Extracted from Header.astro - displays system information
+ */
+import type { BaseComponentProps, UserProfile } from '@/types/index.js';
+
+export interface SystemInfoProps extends BaseComponentProps {
+  profile: UserProfile;
+  showDate?: boolean;
+  dateFormat?: 'iso' | 'locale' | 'custom';
+  customFormat?: (date: Date) => string;
+}
+
+const { 
+  profile,
+  showDate = true,
+  dateFormat = 'iso',
+  customFormat,
+  className = '',
+  ...props 
+} = Astro.props as SystemInfoProps;
+
+// Format the current date based on the specified format
+const formatDate = (date: Date): string => {
+  switch (dateFormat) {
+    case 'locale':
+      return date.toLocaleDateString();
+    case 'custom':
+      return customFormat ? customFormat(date) : date.toISOString().slice(0, 10);
+    case 'iso':
+    default:
+      return date.toISOString().slice(0, 10);
+  }
+};
+---
+
+<div class={`system-info ${className}`} {...props}>
+    <span>USER: {profile.personal.name}</span>
+    <span>STATUS: {profile.personal.title}</span>
+    {showDate && (
+        <span>DATE: <span id="current-date" data-format={dateFormat}></span></span>
+    )}
+</div>
+
+<style>
+/* System Info */
+.system-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--muted-digital);
+    margin-top: 20px;
+    font-family: var(--font-body);
+}
+
+body.print-view .system-info {
+    color: var(--muted-print);
+}
+
+.system-info span {
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .system-info {
+        font-size: 11px;
+        gap: 4px;
+        margin-top: 15px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .system-info {
+        color: var(--foreground-digital);
+        font-weight: 600;
+    }
+    
+    body.print-view .system-info {
+        color: var(--foreground-print);
+    }
+}
+</style>
+
+<script>
+// Update the current date display
+const updateCurrentDate = () => {
+    const dateElement = document.getElementById('current-date');
+    if (!dateElement) return;
+    
+    const format = dateElement.dataset.format || 'iso';
+    const currentDate = new Date();
+    
+    let formattedDate: string;
+    switch (format) {
+        case 'locale':
+            formattedDate = currentDate.toLocaleDateString();
+            break;
+        case 'iso':
+        default:
+            formattedDate = currentDate.toISOString().slice(0, 10);
+            break;
+    }
+    
+    dateElement.textContent = formattedDate;
+};
+
+// Initialize date display
+document.addEventListener('DOMContentLoaded', updateCurrentDate);
+
+// Optional: Update date at midnight
+const scheduleNextUpdate = () => {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const msUntilMidnight = tomorrow.getTime() - now.getTime();
+    
+    setTimeout(() => {
+        updateCurrentDate();
+        // Schedule the next update
+        scheduleNextUpdate();
+    }, msUntilMidnight);
+};
+
+// Start the midnight update scheduler
+scheduleNextUpdate();
+</script>

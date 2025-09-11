@@ -1,496 +1,248 @@
 ---
+import type { Project } from '@/types/project.js';
+import ActionButtons from './project/ActionButtons.astro';
+import GitHubStats from './project/GitHubStats.astro';
+import MediaPreview from './project/MediaPreview.astro';
+
 interface Props {
-  project: {
-    id: string;
-    name: string;
-    description: string;
-    status: string;
-    scale?: string;
-    security?: string;
-    performance?: string;
-    innovation?: string;
-    features: string[];
-    stack: string[];
-    demoUrl?: string;
-    githubUrl?: string;
-    videoUrl?: string;
-    images?: string[];
-  };
+  project: Project;
 }
 
 const { project } = Astro.props as Props;
-const metric = project.scale || project.security || project.performance || project.innovation;
-const metricLabel = project.scale ? 'Users' : project.security ? 'Security' : project.performance ? 'Performance' : 'Innovation';
+const metric =
+  project.metrics?.scale ||
+  project.metrics?.security ||
+  project.metrics?.performance ||
+  project.metrics?.innovation;
+const metricLabel = project.metrics?.scale
+  ? 'Users'
+  : project.metrics?.security
+    ? 'Security'
+    : project.metrics?.performance
+      ? 'Performance'
+      : 'Innovation';
 const meta = `${project.status} | ${metric}`;
 ---
 
 <div class="entry project-card">
-    <div class="entry-header">
-        <span class="entry-title">[{project.id}] {project.name}</span>
-        <span class="entry-meta">{meta}</span>
+  <div class="entry-header">
+    <span class="entry-title">[{project.id}] {project.name}</span>
+    <span class="entry-meta">{meta}</span>
+  </div>
+  <p class="entry-description">{project.description}</p>
+  <div class="entry-description comment" style="margin-top: 5px;">
+    // Features: {project.features.join(', ')}
+  </div>
+  <div class="tech-stack">
+    {project.stack.map((tech: string) => <span class="tech-tag">{tech}</span>)}
+  </div>
+
+  <!-- Progressive Disclosure Content (Digital Mode Only) -->
+  <div class="project-expanded-content">
+    <!-- Metrics Section -->
+    <div class="project-metrics">
+      <div class="metric-item">
+        <span class="metric-label">{metricLabel}:</span>
+        <span class="metric-value">{metric}</span>
+      </div>
+      {
+        project.status === 'PRODUCTION' && (
+          <div class="metric-item">
+            <span class="metric-label">Status:</span>
+            <span class="metric-value status-live">● LIVE</span>
+          </div>
+        )
+      }
     </div>
-    <p class="entry-description">{project.description}</p>
-    <div class="entry-description comment" style="margin-top: 5px;">
-        // Features: {project.features.join(', ')}
+
+    <!-- Smart Media Preview -->
+    <MediaPreview
+      videoUrl={project.videoUrl}
+      images={project.images}
+      enableVideoPreview={true}
+      enableImageGallery={true}
+      lazyLoading={true}
+    />
+
+    <!-- Live Demo Iframe (Production only) -->
+    {
+      project.status === 'PRODUCTION' && project.demoUrl && (
+        <div class="demo-iframe-container">
+          <iframe
+            class="demo-iframe"
+            src={project.demoUrl}
+            title={`${project.name} Live Demo`}
+            sandbox="allow-scripts allow-same-origin"
+            loading="lazy"
+          ></iframe>
+          <div class="iframe-overlay">
+            <span>Live Demo - Click to interact</span>
+          </div>
+        </div>
+      )
+    }
+
+
+
+    <!-- Action Buttons -->
+    <ActionButtons
+      demoUrl={project.demoUrl}
+      githubUrl={project.githubUrl}
+      showCaseStudy={true}
+      variant="default"
+    />
+
+    <!-- Real GitHub Stats -->
+    <GitHubStats
+      repoUrl={project.githubUrl}
+      enableRealTime={true}
+      showLanguage={true}
+    />
+
+    <!-- Key Achievement Badge -->
+    <div class="achievement-badge">
+      {
+        project.status === 'PRODUCTION'
+          ? '🚀 Production Ready'
+          : project.status === 'BETA'
+            ? '⚡ Beta Testing'
+            : '🔧 In Development'
+      }
     </div>
-    <div class="tech-stack">
-        {project.stack.map((tech: string) => <span class="tech-tag">{tech}</span>)}
-    </div>
-
-    <!-- Progressive Disclosure Content (Digital Mode Only) -->
-    <div class="project-expanded-content">
-        <!-- Metrics Section -->
-        <div class="project-metrics">
-            <div class="metric-item">
-                <span class="metric-label">{metricLabel}:</span>
-                <span class="metric-value">{metric}</span>
-            </div>
-            {project.status === 'PRODUCTION' && (
-                <div class="metric-item">
-                    <span class="metric-label">Status:</span>
-                    <span class="metric-value status-live">● LIVE</span>
-                </div>
-            )}
-        </div>
-
-        <!-- Smart Media Preview -->
-        {project.videoUrl && (
-            <div class="media-preview">
-                <div class="video-preview" data-video-url={project.videoUrl}>
-                    <div class="video-placeholder">
-                        <div class="play-icon">▶</div>
-                        <span>Hover to preview</span>
-                    </div>
-                </div>
-            </div>
-        )}
-
-        <!-- Live Demo Iframe (Production only) -->
-        {project.status === 'PRODUCTION' && project.demoUrl && (
-            <div class="demo-iframe-container">
-                <iframe 
-                    class="demo-iframe" 
-                    src={project.demoUrl}
-                    title={`${project.name} Live Demo`}
-                    sandbox="allow-scripts allow-same-origin"
-                    loading="lazy">
-                </iframe>
-                <div class="iframe-overlay">
-                    <span>Live Demo - Click to interact</span>
-                </div>
-            </div>
-        )}
-
-        <!-- Image Gallery -->
-        {project.images && project.images.length > 0 && (
-            <div class="image-gallery">
-                {project.images.map((image, index) => (
-                    <div class="gallery-item">
-                        <img src={image} alt={`${project.name} screenshot ${index + 1}`} loading="lazy" />
-                    </div>
-                ))}
-            </div>
-        )}
-
-        <!-- Action Buttons -->
-        <div class="project-actions">
-            {project.demoUrl && (
-                <button class="action-btn demo-btn" data-url={project.demoUrl}>
-                    <span>→ Live Demo</span>
-                </button>
-            )}
-            {project.githubUrl && (
-                <button class="action-btn github-btn" data-url={project.githubUrl}>
-                    <span>⟨/⟩ Source</span>
-                </button>
-            )}
-            <button class="action-btn case-study-btn">
-                <span>📋 Case Study</span>
-            </button>
-        </div>
-
-        <!-- Real GitHub Stats -->
-        <div class="github-stats" data-repo={project.githubUrl}>
-            <div class="stat-item loading">
-                <span>★ Loading...</span>
-            </div>
-            <div class="stat-item loading">
-                <span>⑃ Loading...</span>
-            </div>
-            <div class="stat-item loading">
-                <span>⚡ Loading...</span>
-            </div>
-        </div>
-
-        <!-- Key Achievement Badge -->
-        <div class="achievement-badge">
-            {project.status === 'PRODUCTION' ? '🚀 Production Ready' : 
-             project.status === 'BETA' ? '⚡ Beta Testing' : '🔧 In Development'}
-        </div>
-    </div>
+  </div>
 </div>
 
 <style>
-    .project-card {
-        position: relative;
-        transition: all 0.3s ease;
-        overflow: hidden;
-        border: 1px solid transparent;
-    }
+  .project-card {
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    border: 1px solid transparent;
+  }
 
-    .project-expanded-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: all 0.4s ease;
-        opacity: 0;
-        margin-top: 0;
-    }
+  .project-expanded-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    opacity: 0;
+    margin-top: 0;
+  }
 
-    /* Digital Mode Hover Effects */
-    body.digital-view .project-card:hover {
-        border-color: var(--border-digital);
-        background: rgba(26, 26, 26, 0.3);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
+  /* Digital Mode Hover Effects */
+  body.digital-view .project-card:hover {
+    border-color: var(--border-digital);
+    background: rgba(26, 26, 26, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
 
-    body.digital-view .project-card:hover .project-expanded-content {
-        max-height: 200px;
-        opacity: 1;
-        margin-top: 15px;
-    }
+  body.digital-view .project-card:hover .project-expanded-content {
+    max-height: 200px;
+    opacity: 1;
+    margin-top: 15px;
+  }
 
-    .project-metrics {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 12px;
-        font-size: 11px;
-    }
+  .project-metrics {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 12px;
+    font-size: 11px;
+  }
 
-    .metric-item {
-        color: var(--muted-digital);
-    }
+  .metric-item {
+    color: var(--muted-digital);
+  }
 
-    .metric-label {
-        color: var(--muted-digital);
-    }
+  .metric-label {
+    color: var(--muted-digital);
+  }
 
-    .metric-value {
-        color: var(--foreground-digital);
-        font-weight: bold;
-    }
+  .metric-value {
+    color: var(--foreground-digital);
+    font-weight: bold;
+  }
 
-    .status-live {
-        color: #00ff41;
-    }
+  .status-live {
+    color: #00ff41;
+  }
 
-    .project-actions {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 12px;
-        flex-wrap: wrap;
-    }
 
-    .action-btn {
-        background: transparent;
-        border: 1px solid var(--border-digital);
-        color: var(--foreground-digital);
-        padding: 4px 8px;
-        font-size: 9px;
-        font-family: var(--font-body);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
 
-    .action-btn:hover {
-        background: var(--accent-digital);
-        color: var(--background-digital);
-        transform: translateY(-1px);
-    }
+  .achievement-badge {
+    display: inline-block;
+    background: rgba(0, 255, 65, 0.1);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    color: #00ff41;
+    padding: 2px 6px;
+    font-size: 9px;
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-    .demo-btn:hover {
-        border-color: #00ff41;
-        color: #00ff41;
-    }
+  /* Print Mode - Hide expanded content */
+  body.print-view .project-expanded-content {
+    display: none;
+  }
 
-    .github-btn:hover {
-        border-color: #64ffda;
-        color: #64ffda;
-    }
 
-    .case-study-btn:hover {
-        border-color: #ffa726;
-        color: #ffa726;
-    }
 
-    .github-stats {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 10px;
-        font-size: 10px;
-        color: var(--muted-digital);
-    }
+  /* Live Demo Iframe */
+  .demo-iframe-container {
+    position: relative;
+    height: 120px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-digital);
+    overflow: hidden;
+  }
 
-    .stat-item {
-        font-family: var(--font-body);
-    }
+  .demo-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    transform: scale(0.6);
+    transform-origin: top left;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
 
-    .achievement-badge {
-        display: inline-block;
-        background: rgba(0, 255, 65, 0.1);
-        border: 1px solid rgba(0, 255, 65, 0.3);
-        color: #00ff41;
-        padding: 2px 6px;
-        font-size: 9px;
-        font-family: var(--font-body);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
+  .demo-iframe-container:hover .demo-iframe {
+    transform: scale(0.7);
+    pointer-events: auto;
+  }
 
-    /* Print Mode - Hide expanded content */
-    body.print-view .project-expanded-content {
-        display: none;
-    }
+  .iframe-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: #64ffda;
+    text-align: center;
+    padding: 4px;
+    font-size: 9px;
+    transition: opacity 0.3s ease;
+  }
 
-    /* Smart Media Features */
-    .media-preview {
-        margin-bottom: 12px;
-    }
+  .demo-iframe-container:hover .iframe-overlay {
+    opacity: 0;
+  }
 
-    .video-preview {
-        position: relative;
-        height: 80px;
-        background: rgba(26, 26, 26, 0.5);
-        border: 1px solid var(--border-digital);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
 
-    .video-preview:hover {
-        background: rgba(26, 26, 26, 0.8);
-        border-color: #64ffda;
-    }
 
-    .video-placeholder {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 5px;
-        color: var(--muted-digital);
-        font-size: 10px;
-    }
 
-    .play-icon {
-        font-size: 20px;
-        color: #64ffda;
-    }
 
-    /* Live Demo Iframe */
-    .demo-iframe-container {
-        position: relative;
-        height: 120px;
-        margin-bottom: 12px;
-        border: 1px solid var(--border-digital);
-        overflow: hidden;
-    }
+  /* Print Mode - Hide smart features */
+  body.print-view .demo-iframe-container {
+    display: none;
+  }
 
-    .demo-iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        transform: scale(0.6);
-        transform-origin: top left;
-        pointer-events: none;
-        transition: all 0.3s ease;
-    }
-
-    .demo-iframe-container:hover .demo-iframe {
-        transform: scale(0.7);
-        pointer-events: auto;
-    }
-
-    .iframe-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0, 0, 0, 0.8);
-        color: #64ffda;
-        text-align: center;
-        padding: 4px;
-        font-size: 9px;
-        transition: opacity 0.3s ease;
-    }
-
-    .demo-iframe-container:hover .iframe-overlay {
-        opacity: 0;
-    }
-
-    /* Image Gallery */
-    .image-gallery {
-        display: flex;
-        gap: 5px;
-        margin-bottom: 12px;
-        overflow-x: auto;
-        padding: 2px;
-    }
-
-    .gallery-item {
-        flex-shrink: 0;
-        width: 60px;
-        height: 40px;
-        border: 1px solid var(--border-digital);
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .gallery-item:hover {
-        transform: scale(1.1);
-        border-color: #64ffda;
-        z-index: 10;
-    }
-
-    .gallery-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-    .gallery-item:hover img {
-        transform: scale(1.2);
-    }
-
-    /* GitHub Stats Loading */
-    .github-stats .loading {
-        opacity: 0.5;
-        animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 0.7; }
-    }
-
-    .github-stats.loaded .loading {
-        animation: none;
-        opacity: 1;
-    }
-
-    /* Print Mode - Hide smart features */
-    body.print-view .media-preview,
-    body.print-view .demo-iframe-container,
-    body.print-view .image-gallery {
-        display: none;
-    }
-
-    body.print-view .project-card:hover {
-        transform: none;
-        box-shadow: none;
-        background: transparent;
-        border-color: transparent;
-    }
+  body.print-view .project-card:hover {
+    transform: none;
+    box-shadow: none;
+    background: transparent;
+    border-color: transparent;
+  }
 </style>
 
-<script>
-    // Smart Project Cards JavaScript
-    document.addEventListener('DOMContentLoaded', () => {
-        // Video Preview on Hover
-        const videoPreviews = document.querySelectorAll('.video-preview');
-        videoPreviews.forEach(preview => {
-            const videoUrl = (preview as HTMLElement).dataset.videoUrl;
-            if (!videoUrl) return;
 
-            let videoElement = null;
-            
-            preview.addEventListener('mouseenter', () => {
-                if (!videoElement) {
-                    videoElement = document.createElement('video');
-                    videoElement.src = videoUrl;
-                    videoElement.muted = true;
-                    videoElement.autoplay = true;
-                    videoElement.loop = true;
-                    videoElement.style.width = '100%';
-                    videoElement.style.height = '100%';
-                    videoElement.style.objectFit = 'cover';
-                    preview.innerHTML = '';
-                    preview.appendChild(videoElement);
-                }
-            });
-
-            preview.addEventListener('mouseleave', () => {
-                if (videoElement) {
-                    videoElement.pause();
-                    preview.innerHTML = `
-                        <div class="video-placeholder">
-                            <div class="play-icon">▶</div>
-                            <span>Hover to preview</span>
-                        </div>
-                    `;
-                    videoElement = null;
-                }
-            });
-        });
-
-        // GitHub API Integration
-        const githubStats = document.querySelectorAll('.github-stats[data-repo]');
-        githubStats.forEach(async (statsElement) => {
-            const repoUrl = (statsElement as HTMLElement).dataset.repo;
-            if (!repoUrl) return;
-
-            try {
-                // Extract owner/repo from URL
-                const match = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-                if (!match) return;
-                
-                const [, owner, repo] = match;
-                const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
-                
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                
-                if (response.ok) {
-                    const statItems = statsElement.querySelectorAll('.stat-item');
-                    statItems[0].innerHTML = `<span>★ ${data.stargazers_count}</span>`;
-                    statItems[1].innerHTML = `<span>⑃ ${data.forks_count}</span>`;
-                    statItems[2].innerHTML = `<span>⚡ ${data.language || 'Mixed'}</span>`;
-                    statsElement.classList.add('loaded');
-                }
-            } catch (error) {
-                console.log('GitHub API rate limited, using fallback data');
-                // Fallback to simulated data
-                const statItems = statsElement.querySelectorAll('.stat-item');
-                statItems[0].innerHTML = `<span>★ ${Math.floor(Math.random() * 50 + 5)}</span>`;
-                statItems[1].innerHTML = `<span>⑃ ${Math.floor(Math.random() * 15 + 2)}</span>`;
-                statItems[2].innerHTML = `<span>⚡ ${Math.floor(Math.random() * 100 + 20)} commits</span>`;
-                statsElement.classList.add('loaded');
-            }
-        });
-
-        // Demo iframe click-to-focus behavior
-        const demoIframes = document.querySelectorAll('.demo-iframe-container');
-        demoIframes.forEach(container => {
-            container.addEventListener('click', () => {
-                const iframe = container.querySelector('.demo-iframe') as HTMLElement;
-                if (iframe) {
-                    iframe.style.pointerEvents = 'auto';
-                    iframe.style.transform = 'scale(1)';
-                    (container as HTMLElement).style.height = '200px';
-                }
-            });
-        });
-
-        // Action button handlers
-        const actionBtns = document.querySelectorAll('.action-btn[data-url]');
-        actionBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                window.open((btn as HTMLElement).dataset.url, '_blank');
-            });
-        });
-    });
-</script>

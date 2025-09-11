@@ -1,0 +1,35 @@
+---
+/**
+ * Profile Data Provider Component
+ * Loads and validates profile data, making it available to child components
+ */
+import type { UserProfile } from '@/types/index.js';
+import { validateData, userProfileSchema } from '@/utils/validation/schemas.js';
+
+// Import profile data
+import profileData from '../data/profile.json';
+
+// Validate profile data
+const profileValidation = validateData(userProfileSchema, profileData);
+
+export const profile: UserProfile = profileValidation.success
+  ? profileValidation.data
+  : ({
+      personal: {
+        name: 'Unknown User',
+        title: 'System Architect',
+        email: 'user@example.com',
+      },
+      social: {},
+      contact: { email: 'user@example.com' },
+    } as UserProfile);
+
+if (!profileValidation.success) {
+  console.warn('Profile data validation failed:', profileValidation.error);
+}
+
+// Make profile available to child components via context
+Astro.locals.profile = profile;
+---
+
+<slot />

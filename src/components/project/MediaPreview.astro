@@ -1,0 +1,379 @@
+---
+/**
+ * Media Preview Component
+ * Extracted from ProjectEntry.astro - handles video previews and image galleries
+ */
+import type { BaseComponentProps } from '@/types/component.js';
+import type { ImageGalleryItem, VideoPreviewState } from '@/types/project.js';
+
+export interface MediaPreviewProps extends BaseComponentProps {
+  videoUrl?: string;
+  images?: string[] | ImageGalleryItem[];
+  variant?: 'default' | 'compact' | 'gallery';
+  enableVideoPreview?: boolean;
+  enableImageGallery?: boolean;
+  lazyLoading?: boolean;
+}
+
+const { 
+  videoUrl,
+  images = [],
+  variant = 'default',
+  enableVideoPreview = true,
+  enableImageGallery = true,
+  lazyLoading = true,
+  className = '',
+  ...props 
+} = Astro.props as MediaPreviewProps;
+
+// Process images data
+const processedImages: ImageGalleryItem[] = images.map((item, index) => {
+  if (typeof item === 'string') {
+    return {
+      src: item,
+      alt: `Image ${index + 1}`,
+      thumbnail: item, // Use same URL for thumbnail
+    };
+  }
+  return item;
+});
+
+const hasVideo = videoUrl && enableVideoPreview;
+const hasImages = processedImages.length > 0 && enableImageGallery;
+const hasMedia = hasVideo || hasImages;
+---
+
+{hasMedia && (
+  <div class={`media-preview media-preview-${variant} ${className}`} {...props}>
+    <!-- Video Preview -->
+    {hasVideo && (
+      <div 
+        class="video-preview" 
+        data-video-url={videoUrl}
+        role="button"
+        tabindex="0"
+        aria-label="Preview video - hover or press Enter to play"
+        aria-describedby="video-preview-instructions"
+      >
+        <div class="video-placeholder">
+          <div class="play-icon" aria-hidden="true">▶</div>
+          <span class="play-text">Hover to preview</span>
+          <span id="video-preview-instructions" class="sr-only">Press Enter or Space to preview video</span>
+          <span class="sr-only loading-status" aria-live="polite"></span>
+        </div>
+      </div>
+    )}
+
+    <!-- Image Gallery -->
+    {hasImages && (
+      <div 
+        class="image-gallery"
+        role="region"
+        aria-label="Project image gallery"
+        aria-describedby="gallery-instructions"
+      >
+        <div id="gallery-instructions" class="sr-only">
+          Image gallery with {processedImages.length} images. Use arrow keys to navigate.
+        </div>
+        {processedImages.map((image, index) => (
+          <div 
+            class="gallery-item" 
+            data-index={index}
+            role="img"
+            tabindex="0"
+            aria-label={`Image ${index + 1} of ${processedImages.length}: ${image.alt}`}
+          >
+            <img 
+              src={image.src}
+              alt={image.alt}
+              loading={lazyLoading ? "lazy" : "eager"}
+              class="gallery-image"
+              data-full-src={image.src}
+              aria-hidden="true"
+            />
+            <span class="sr-only loading-status" aria-live="polite"></span>
+            {image.caption && (
+               <div class="image-caption">{image.caption}</div>
+             )}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
+
+<style>
+/* Media preview container */
+.media-preview {
+  margin-bottom: 12px;
+  border: 1px solid var(--border-digital);
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Video preview styles */
+.video-preview {
+  position: relative;
+  height: 80px;
+  background: rgba(26, 26, 26, 0.5);
+  border: 1px solid var(--border-digital);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.video-preview:hover {
+  background: rgba(26, 26, 26, 0.8);
+  border-color: #64ffda;
+  box-shadow: 0 2px 12px rgba(100, 255, 218, 0.1);
+}
+
+.video-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted-digital);
+  font-size: 10px;
+  transition: all 0.3s ease;
+}
+
+.video-preview:hover .video-placeholder {
+  color: #64ffda;
+}
+
+.play-icon {
+  font-size: 20px;
+  color: #64ffda;
+  transition: all 0.3s ease;
+}
+
+.video-preview:hover .play-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px #64ffda);
+}
+
+.play-text {
+  font-family: var(--font-body);
+  font-size: 9px;
+  opacity: 0.8;
+}
+
+/* Video element when loaded */
+.video-preview video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+/* Image gallery styles */
+.image-gallery {
+  display: flex;
+  gap: 5px;
+  padding: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-digital) transparent;
+}
+
+.image-gallery::-webkit-scrollbar {
+  height: 4px;
+}
+
+.image-gallery::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.image-gallery::-webkit-scrollbar-thumb {
+  background: var(--border-digital);
+  border-radius: 2px;
+}
+
+.gallery-item {
+  position: relative;
+  flex-shrink: 0;
+  width: 60px;
+  height: 40px;
+  border: 1px solid var(--border-digital);
+  border-radius: 2px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.gallery-item:hover {
+  transform: scale(1.1);
+  border-color: #64ffda;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(100, 255, 218, 0.2);
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+.gallery-item:hover .gallery-image {
+  transform: scale(1.1);
+}
+
+.image-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 8px;
+  padding: 2px 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-family: var(--font-body);
+}
+
+.gallery-item:hover .image-caption {
+  opacity: 1;
+}
+
+/* Variant styles */
+.media-preview-compact .video-preview {
+  height: 60px;
+}
+
+.media-preview-compact .play-icon {
+  font-size: 16px;
+}
+
+.media-preview-compact .play-text {
+  font-size: 8px;
+}
+
+.media-preview-compact .gallery-item {
+  width: 45px;
+  height: 30px;
+}
+
+.media-preview-gallery .image-gallery {
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 12px;
+}
+
+.media-preview-gallery .gallery-item {
+  width: 80px;
+  height: 60px;
+  margin: 4px;
+}
+
+/* Loading states */
+.video-preview.loading .play-icon {
+  animation: spin 1s linear infinite;
+}
+
+.video-preview.loading .play-text::after {
+  content: '...';
+  animation: loading-dots 1.5s infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes loading-dots {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
+}
+
+.gallery-item.loading {
+  background: rgba(100, 255, 218, 0.1);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+/* Error states */
+.video-preview.error {
+  background: rgba(255, 68, 68, 0.1);
+  border-color: #ff4444;
+}
+
+.video-preview.error .play-icon {
+  color: #ff4444;
+}
+
+.video-preview.error .play-text::before {
+  content: '⚠ ';
+  color: #ff4444;
+}
+
+.gallery-item.error {
+  background: rgba(255, 68, 68, 0.1);
+  border-color: #ff4444;
+}
+
+.gallery-item.error::after {
+  content: '⚠';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ff4444;
+  font-size: 16px;
+}
+
+/* Print mode styles */
+body.print-view .media-preview {
+  display: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .video-preview {
+    height: 60px;
+  }
+  
+  .play-icon {
+    font-size: 16px;
+  }
+  
+  .play-text {
+    font-size: 8px;
+  }
+  
+  .gallery-item {
+    width: 50px;
+    height: 35px;
+  }
+  
+  .image-gallery {
+    gap: 4px;
+    padding: 6px;
+  }
+}
+</style>
+
+<script>
+import { initMediaPreviews } from '@/utils/client/mediaPreview.js';
+
+// Initialize media previews when component is ready
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize for the entire document (can be scoped to component root if needed)
+  const cleanup = initMediaPreviews();
+
+  // Store cleanup function for potential future use
+  (window as any).mediaPreviewsCleanup = cleanup;
+});
+</script>
