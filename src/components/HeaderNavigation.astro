@@ -1,0 +1,37 @@
+---
+const navLinks = [
+  { href: "#projects", label: "Projects" },
+  { href: "#skills", label: "Skills" },
+  { href: "#about", label: "About" },
+  { href: "#contact", label: "Contact" },
+];
+---
+
+<nav class="main-nav">
+  <ul>
+    {navLinks.map(link => (
+      <li>
+        <a href={link.href}>{link.label}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .main-nav ul {
+    display: flex;
+    gap: var(--space-lg);
+    list-style: none;
+  }
+
+  .main-nav a {
+    text-decoration: none;
+    color: var(--foreground-digital);
+    font-size: var(--font-size-md);
+    transition: color 0.2s ease;
+  }
+
+  .main-nav a:hover {
+    color: var(--color-accent);
+  }
+</style>

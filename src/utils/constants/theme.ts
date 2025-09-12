@@ -3,33 +3,35 @@
  */
 
 export const COLOR_SCHEMES = {
+  // Professional dual-color schemes
+  SLATE_AZURE: 'scheme-slate-azure',
+  CHARCOAL_AMBER: 'scheme-charcoal-amber',
+  NAVY_SILVER: 'scheme-navy-silver',
+  GRAPHITE_CYAN: 'scheme-graphite-cyan',
+  STEEL_GOLD: 'scheme-steel-gold',
+  OBSIDIAN_BLUE: 'scheme-obsidian-blue',
+  MIDNIGHT_EMERALD: 'scheme-midnight-emerald',
+  CARBON_PURPLE: 'scheme-carbon-purple',
+  GUNMETAL_ORANGE: 'scheme-gunmetal-orange',
+  // Legacy schemes (kept for compatibility)
   MATRIX: 'scheme-matrix',
   BLOCKCHAIN: 'scheme-blockchain',
   TRADING: 'scheme-trading',
-  ENCRYPTION: 'scheme-encryption',
-  LEDGER: 'scheme-ledger',
-  SWIFT: 'scheme-swift',
-  RISK: 'scheme-risk',
-  COMPLIANCE: 'scheme-compliance',
-  SETTLEMENT: 'scheme-settlement',
-  GRUVBOX: 'scheme-gruvbox',
-  GRUVBOX_VISUAL: 'scheme-gruvbox-visual',
-  GRUVBOX_SYNTAX: 'scheme-gruvbox-syntax',
 } as const;
 
 export const EFFECT_NAMES = [
-  'Matrix Rain',
-  'Blockchain Validation',
-  'Real-time Trading',
-  'AES Encryption',
-  'Distributed Ledger',
-  'SWIFT Network',
-  'Risk Assessment',
-  'Compliance Check',
-  'Trade Settlement',
-  'Typing Animation',
-  'Visual Selection',
-  'Syntax Highlight',
+  'Slate & Azure',
+  'Charcoal & Amber',
+  'Navy & Silver',
+  'Graphite & Cyan',
+  'Steel & Gold',
+  'Obsidian & Blue',
+  'Midnight & Emerald',
+  'Carbon & Purple',
+  'Gunmetal & Orange',
+  'Matrix Classic',
+  'Blockchain',
+  'Trading Floor',
 ] as const;
 
 export const VIM_MODES = {

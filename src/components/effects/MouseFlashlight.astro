@@ -1,0 +1,408 @@
+---
+/**
+ * Mouse Flashlight Effect Component
+ * Creates a smooth spotlight effect that follows the mouse cursor
+ */
+export interface MouseFlashlightProps {
+  className?: string;
+  intensity?: 'subtle' | 'normal' | 'intense';
+  size?: 'small' | 'medium' | 'large';
+  enableAnimation?: boolean;
+  color?: string;
+}
+
+const { 
+  className = '',
+  intensity = 'normal',
+  size = 'medium',
+  enableAnimation = true,
+  color = null
+} = Astro.props as MouseFlashlightProps;
+---
+
+<div 
+  class={`mouse-flashlight ${intensity} ${size} ${className}`} 
+  data-enable-animation={enableAnimation}
+  data-color={color}
+  role="presentation"
+  aria-hidden="true"
+></div>
+
+<style>
+.mouse-flashlight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+  mix-blend-mode: screen;
+}
+
+.mouse-flashlight.active {
+  opacity: 1;
+}
+
+/* Size variations */
+.mouse-flashlight.small {
+  --flashlight-size: 100px;
+  --flashlight-blur: 80px;
+}
+
+.mouse-flashlight.medium {
+  --flashlight-size: 180px;
+  --flashlight-blur: 150px;
+}
+
+.mouse-flashlight.large {
+  --flashlight-size: 250px;
+  --flashlight-blur: 220px;
+}
+
+/* Intensity variations */
+.mouse-flashlight.subtle {
+  --flashlight-opacity: 0.03;
+  --flashlight-falloff: 0.9;
+}
+
+.mouse-flashlight.normal {
+  --flashlight-opacity: 0.06;
+  --flashlight-falloff: 0.8;
+}
+
+.mouse-flashlight.intense {
+  --flashlight-opacity: 0.12;
+  --flashlight-falloff: 0.6;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .mouse-flashlight {
+    display: none; /* Disable on mobile since no mouse cursor */
+  }
+}
+
+/* Touch devices */
+@media (hover: none) {
+  .mouse-flashlight {
+    display: none;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .mouse-flashlight {
+    transition: none;
+  }
+}
+
+/* Print mode */
+body.print-view .mouse-flashlight {
+  display: none;
+}
+
+/* High contrast mode - disable for accessibility */
+@media (prefers-contrast: high) {
+  .mouse-flashlight {
+    display: none;
+  }
+}
+</style>
+
+<script>
+interface FlashlightConfig {
+  size: number;
+  blur: number;
+  opacity: number;
+  falloff: number;
+  color: string;
+  smoothing: number;
+}
+
+class MouseFlashlightEffect {
+  private element: HTMLElement;
+  private config: FlashlightConfig;
+  private mouseX: number = 0;
+  private mouseY: number = 0;
+  private currentX: number = 0;
+  private currentY: number = 0;
+  private animationId: number | null = null;
+  private isActive: boolean = false;
+  private enableAnimation: boolean = true;
+
+  constructor(element: HTMLElement) {
+    this.element = element;
+    this.config = this.parseConfig();
+    
+    // Check if animations should be enabled
+    this.enableAnimation = element.getAttribute('data-enable-animation') !== 'false';
+    
+    // Listen for theme changes
+    document.addEventListener('theme:changed', () => {
+      this.updateThemeColor();
+      this.updateBackground();
+    });
+    
+    // Don't initialize on mobile/touch devices
+    if (window.matchMedia('(hover: none)').matches) {
+      return;
+    }
+
+    // Don't initialize if reduced motion is preferred
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.enableAnimation = false;
+    }
+
+    this.init();
+  }
+
+  private parseConfig(): FlashlightConfig {
+    const computedStyle = getComputedStyle(this.element);
+    
+    return {
+      size: parseInt(computedStyle.getPropertyValue('--flashlight-size') || '180'),
+      blur: parseInt(computedStyle.getPropertyValue('--flashlight-blur') || '150'),
+      opacity: parseFloat(computedStyle.getPropertyValue('--flashlight-opacity') || '0.06'),
+      falloff: parseFloat(computedStyle.getPropertyValue('--flashlight-falloff') || '0.8'),
+      color: this.getThemeColor(),
+      smoothing: 0.1 // Easing factor for smooth movement
+    };
+  }
+
+  private getThemeColor(): string {
+    // Try to get theme color from data attribute first
+    const dataColor = this.element.getAttribute('data-color');
+    if (dataColor && dataColor !== 'null') {
+      return dataColor;
+    }
+
+    // Get dynamic theme color from CSS variables
+    const rootStyles = getComputedStyle(document.documentElement);
+    const primaryRgb = rootStyles.getPropertyValue('--space-primary-rgb').trim();
+    
+    if (primaryRgb) {
+      return `rgba(${primaryRgb}, 0.1)`;
+    }
+    
+    // Fallback to subtle white
+    return 'rgba(255, 255, 255, 0.08)';
+  }
+
+  private updateThemeColor(): void {
+    this.config.color = this.getThemeColor();
+  }
+
+  private init(): void {
+    this.setupEventListeners();
+    this.updateBackground();
+    
+    if (this.enableAnimation) {
+      this.startAnimation();
+    }
+  }
+
+  private setupEventListeners(): void {
+    // Mouse move tracking
+    document.addEventListener('mousemove', this.handleMouseMove);
+    
+    // Show/hide flashlight based on mouse enter/leave
+    document.addEventListener('mouseenter', this.handleMouseEnter);
+    document.addEventListener('mouseleave', this.handleMouseLeave);
+    
+    // Pause animations when page is hidden
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    
+    // Handle window resize
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  private handleMouseMove = (e: MouseEvent): void => {
+    this.mouseX = e.clientX;
+    this.mouseY = e.clientY;
+    
+    if (!this.isActive) {
+      this.isActive = true;
+      this.element.classList.add('active');
+    }
+  };
+
+  private handleMouseEnter = (): void => {
+    if (!this.isActive) {
+      this.isActive = true;
+      this.element.classList.add('active');
+    }
+  };
+
+  private handleMouseLeave = (): void => {
+    this.isActive = false;
+    this.element.classList.remove('active');
+  };
+
+  private handleVisibilityChange = (): void => {
+    if (document.hidden) {
+      this.pause();
+    } else {
+      this.resume();
+    }
+  };
+
+  private handleResize = (): void => {
+    this.updateBackground();
+  };
+
+  private startAnimation(): void {
+    if (this.animationId) return;
+    
+    this.animate();
+  }
+
+  private animate = (): void => {
+    if (!this.enableAnimation) return;
+    
+    // Smooth interpolation between current and target positions
+    this.currentX += (this.mouseX - this.currentX) * this.config.smoothing;
+    this.currentY += (this.mouseY - this.currentY) * this.config.smoothing;
+    
+    this.updateBackground();
+    
+    this.animationId = requestAnimationFrame(this.animate);
+  };
+
+  private updateBackground(): void {
+    const x = this.enableAnimation ? this.currentX : this.mouseX;
+    const y = this.enableAnimation ? this.currentY : this.mouseY;
+    
+    // Create sophisticated radial gradient with multiple stops for realistic light falloff
+    const gradient = `
+      radial-gradient(
+        circle at ${x}px ${y}px,
+        ${this.adjustColorOpacity(this.config.color, this.config.opacity)} 0%,
+        ${this.adjustColorOpacity(this.config.color, this.config.opacity * 0.7)} 20%,
+        ${this.adjustColorOpacity(this.config.color, this.config.opacity * 0.4)} 40%,
+        ${this.adjustColorOpacity(this.config.color, this.config.opacity * 0.2)} 60%,
+        ${this.adjustColorOpacity(this.config.color, this.config.opacity * 0.1)} 80%,
+        transparent 100%
+      )
+    `;
+    
+    this.element.style.background = gradient;
+    this.element.style.filter = `blur(${this.config.blur * 0.05}px)`;
+  }
+
+  private adjustColorOpacity(color: string, opacity: number): string {
+    // Handle rgba colors
+    if (color.startsWith('rgba')) {
+      return color.replace(/[\d\.]+\)$/g, `${opacity})`);
+    }
+    
+    // Handle rgb colors
+    if (color.startsWith('rgb')) {
+      return color.replace('rgb', 'rgba').replace(')', `, ${opacity})`);
+    }
+    
+    // Handle hex colors
+    if (color.startsWith('#')) {
+      const hex = color.slice(1);
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+    
+    // Fallback
+    return `rgba(255, 255, 255, ${opacity})`;
+  }
+
+  public pause(): void {
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+  }
+
+  public resume(): void {
+    if (!this.animationId && this.enableAnimation) {
+      this.startAnimation();
+    }
+  }
+
+  public destroy(): void {
+    this.pause();
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mouseenter', this.handleMouseEnter);
+    document.removeEventListener('mouseleave', this.handleMouseLeave);
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  public updateConfig(newConfig: Partial<FlashlightConfig>): void {
+    this.config = { ...this.config, ...newConfig };
+    this.updateBackground();
+  }
+
+  public setIntensity(intensity: 'subtle' | 'normal' | 'intense'): void {
+    const intensityMap = {
+      subtle: { opacity: 0.03, falloff: 0.9 },
+      normal: { opacity: 0.06, falloff: 0.8 },
+      intense: { opacity: 0.12, falloff: 0.6 }
+    };
+    
+    this.updateConfig(intensityMap[intensity]);
+  }
+
+  public setSize(size: 'small' | 'medium' | 'large'): void {
+    const sizeMap = {
+      small: { size: 100, blur: 80 },
+      medium: { size: 180, blur: 150 },
+      large: { size: 250, blur: 220 }
+    };
+    
+    this.updateConfig(sizeMap[size]);
+  }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  const flashlightElements = document.querySelectorAll('.mouse-flashlight');
+  
+  flashlightElements.forEach(element => {
+    const flashlight = new MouseFlashlightEffect(element as HTMLElement);
+    
+    // Store reference for potential cleanup or external control
+    (element as any).flashlightEffect = flashlight;
+  });
+  
+  // Global reference for external control
+  (window as any).MouseFlashlightEffect = MouseFlashlightEffect;
+});
+
+// Enhanced interaction with other elements
+document.addEventListener('DOMContentLoaded', () => {
+  const interactiveElements = document.querySelectorAll('button, a, .action-btn, .project-actions');
+  
+  interactiveElements.forEach(element => {
+    element.addEventListener('mouseenter', () => {
+      const flashlights = document.querySelectorAll('.mouse-flashlight');
+      flashlights.forEach(flashlight => {
+        const effect = (flashlight as any).flashlightEffect as MouseFlashlightEffect;
+        if (effect) {
+          effect.setIntensity('intense');
+        }
+      });
+    });
+    
+    element.addEventListener('mouseleave', () => {
+      const flashlights = document.querySelectorAll('.mouse-flashlight');
+      flashlights.forEach(flashlight => {
+        const effect = (flashlight as any).flashlightEffect as MouseFlashlightEffect;
+        if (effect) {
+          effect.setIntensity('normal');
+        }
+      });
+    });
+  });
+});
+</script>

@@ -3,8 +3,11 @@ import '../styles/design-system.css';
 import '../styles/themes.css';
 import '../styles/global.css';
 import '../styles/page-breaks.css';
+import '../styles/space-theme.css';
 import ProgressBar from '../components/layout/ProgressBar.astro';
 import StatusBar from '../components/layout/StatusBar.astro';
+import SpaceBackground from '../components/background/SpaceBackground.astro';
+import MouseFlashlight from '../components/effects/MouseFlashlight.astro';
 import type { UserProfile } from '@/types/index.ts';
 
 // Import profile data
@@ -26,7 +29,13 @@ export const profile: UserProfile = profileData as UserProfile;
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body class="digital-view">
+  <body class="digital-view space-theme">
+    <!-- Space Background Effects -->
+    <SpaceBackground intensity="normal" starCount={200} />
+    
+    <!-- Mouse Flashlight Effect -->
+    <MouseFlashlight intensity="normal" size="medium" />
+    
     <!-- Progress Bar -->
     <ProgressBar />
 
@@ -43,6 +52,11 @@ export const profile: UserProfile = profileData as UserProfile;
     <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
     <script>
+      // Import space effects optimizer
+      import('/src/utils/performance/spaceEffectsOptimizer.js').catch(e => 
+        console.warn('Space effects optimizer not available:', e)
+      );
+
       // Core theme management functionality
       const themeToggle = document.getElementById('themeToggle');
       const html = document.documentElement;
@@ -228,6 +242,22 @@ export const profile: UserProfile = profileData as UserProfile;
         pointer-events: none;
         z-index: var(--z-base);
         opacity: 0.25;
+      }
+
+      /* Enhanced space theme grid with dynamic colors */
+      body.space-theme.digital-view::before {
+        background:
+          linear-gradient(90deg, rgba(var(--space-primary-rgb, 138, 43, 226), 0.06) 1px, transparent 1px) 0 0 / 60px 60px,
+          linear-gradient(0deg, rgba(var(--space-secondary-rgb, 30, 144, 255), 0.04) 1px, transparent 1px) 0 0 / 60px 60px;
+        opacity: 0.12;
+        animation: gridPulse 10s ease-in-out infinite alternate;
+        transition: background 0.8s ease-in-out, opacity 0.8s ease-in-out;
+      }
+
+      @keyframes gridPulse {
+        0% { opacity: 0.1; }
+        50% { opacity: 0.2; }
+        100% { opacity: 0.15; }
       }
 
       /* View modes */

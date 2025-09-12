@@ -1,0 +1,427 @@
+---
+/**
+ * Space Background Component
+ * Animated starfield with parallax layers and subtle nebula effects
+ */
+export interface SpaceBackgroundProps {
+  className?: string;
+  starCount?: number;
+  enableAnimations?: boolean;
+  intensity?: 'subtle' | 'normal' | 'intense';
+}
+
+const { 
+  className = '',
+  starCount = 200,
+  enableAnimations = true,
+  intensity = 'normal'
+} = Astro.props as SpaceBackgroundProps;
+---
+
+<div class={`space-background ${intensity} ${className}`} data-enable-animations={enableAnimations}>
+  <canvas id="starfield-canvas" class="starfield-layer"></canvas>
+  <div class="nebula-layer"></div>
+  <div class="cosmic-overlay"></div>
+</div>
+
+<style>
+.space-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  /* Dynamic background that responds to color schemes */
+  background: radial-gradient(
+    ellipse at center,
+    var(--space-bg-start, #0c1445) 0%,
+    var(--space-bg-mid, #0a0e2e) 30%,
+    var(--space-bg-end, #060b1f) 70%,
+    #000000 100%
+  );
+  transition: background 0.8s ease-in-out;
+}
+
+.starfield-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.nebula-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.03;
+  /* Subtle nebula colors that respond to color schemes */
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(var(--space-primary-rgb, 71, 85, 105), 0.02) 0%, transparent 80%),
+    radial-gradient(ellipse at 80% 70%, rgba(var(--space-secondary-rgb, 59, 130, 246), 0.015) 0%, transparent 80%),
+    radial-gradient(ellipse at 60% 20%, rgba(var(--space-primary-rgb, 100, 116, 139), 0.01) 0%, transparent 80%);
+  animation: nebulaDrift 120s ease-in-out infinite alternate;
+  transition: background 0.8s ease-in-out;
+}
+
+.cosmic-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.02;
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.2), transparent),
+    radial-gradient(2px 2px at 90px 40px, rgba(255,255,255,0.15), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.25), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,0.1), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: cosmicShimmer 20s linear infinite;
+}
+
+/* Intensity variations */
+.space-background.subtle .nebula-layer {
+  opacity: 0.01;
+}
+
+.space-background.intense .nebula-layer {
+  opacity: 0.06;
+}
+
+.space-background.intense .cosmic-overlay {
+  opacity: 0.04;
+}
+
+/* Animations */
+@keyframes nebulaDrift {
+  0% {
+    transform: translateX(-10px) translateY(-5px) scale(1);
+  }
+  50% {
+    transform: translateX(15px) translateY(8px) scale(1.05);
+  }
+  100% {
+    transform: translateX(-5px) translateY(-3px) scale(0.98);
+  }
+}
+
+@keyframes cosmicShimmer {
+  0% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(200px);
+  }
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .nebula-layer,
+  .cosmic-overlay {
+    animation: none;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .space-background.normal .nebula-layer,
+  .space-background.intense .nebula-layer {
+    opacity: 0.02;
+  }
+  
+  .cosmic-overlay {
+    opacity: 0.01;
+  }
+}
+
+/* Print mode */
+body.print-view .space-background {
+  display: none;
+}
+</style>
+
+<script>
+interface Star {
+  x: number;
+  y: number;
+  z: number;
+  size: number;
+  opacity: number;
+  speed: number;
+  color: string;
+  twinklePhase: number;
+}
+
+class StarfieldAnimator {
+  private canvas: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D;
+  private stars: Star[] = [];
+  private animationId: number | null = null;
+  private time: number = 0;
+  private mouseX: number = 0;
+  private mouseY: number = 0;
+  private enableAnimations: boolean = true;
+
+  constructor(canvasId: string, starCount: number = 200) {
+    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    if (!canvas) {
+      console.warn(`Canvas with id "${canvasId}" not found`);
+      return;
+    }
+
+    this.canvas = canvas;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.warn('Unable to get 2D context from canvas');
+      return;
+    }
+    this.ctx = ctx;
+
+    // Check if animations should be enabled
+    const container = canvas.closest('[data-enable-animations]');
+    this.enableAnimations = container?.getAttribute('data-enable-animations') !== 'false';
+
+    // Check for reduced motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.enableAnimations = false;
+    }
+
+    this.init(starCount);
+    this.setupEventListeners();
+    this.resize();
+    
+    if (this.enableAnimations) {
+      this.animate();
+    } else {
+      this.renderStatic();
+    }
+  }
+
+  private init(starCount: number): void {
+    this.stars = [];
+    
+    // Ensure canvas has proper dimensions before creating stars
+    this.resize();
+    
+    for (let i = 0; i < starCount; i++) {
+      this.stars.push({
+        x: Math.random() * this.canvas.width,
+        y: Math.random() * this.canvas.height,
+        z: Math.random() * 4 + 1, // Depth for parallax (1-5)
+        size: Math.random() * 1.5 + 0.3,
+        opacity: Math.random() * 0.4 + 0.1,
+        speed: Math.random() * 0.5 + 0.1,
+        color: this.getStarColor(),
+        twinklePhase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  private getStarColor(): string {
+    // Get current scheme colors from CSS variables
+    const rootStyles = getComputedStyle(document.documentElement);
+    const primaryRgb = rootStyles.getPropertyValue('--space-primary-rgb').trim();
+    const secondaryRgb = rootStyles.getPropertyValue('--space-secondary-rgb').trim();
+    
+    if (primaryRgb && secondaryRgb) {
+      // Create scheme-appropriate star colors with weighted distribution
+      const colors = [
+        '#ffffff', // Pure white for contrast - 20%
+        '#f8fafc', // Soft white - 20%
+        `rgba(${primaryRgb}, 0.9)`, // Primary color - 25%
+        `rgba(${primaryRgb}, 0.7)`, // Dimmer primary - 15%
+        `rgba(${secondaryRgb}, 0.8)`, // Secondary color - 15%
+        `rgba(${secondaryRgb}, 0.6)`, // Dimmer secondary - 5%
+      ];
+      
+      // Weighted random selection favoring theme colors
+      const weights = [0.2, 0.2, 0.25, 0.15, 0.15, 0.05];
+      const random = Math.random();
+      let weightSum = 0;
+      
+      for (let i = 0; i < colors.length; i++) {
+        weightSum += weights[i];
+        if (random <= weightSum) {
+          return colors[i];
+        }
+      }
+      
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+    
+    // Enhanced fallback colors
+    const fallbacks = ['#ffffff', '#f0f0ff', '#e2e8f0', '#cbd5e1'];
+    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  }
+
+  private setupEventListeners(): void {
+    window.addEventListener('resize', () => this.resize());
+    
+    // Track mouse for subtle interaction
+    document.addEventListener('mousemove', (e) => {
+      this.mouseX = e.clientX;
+      this.mouseY = e.clientY;
+    });
+
+    // Pause animations when page is hidden
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.pause();
+      } else {
+        this.resume();
+      }
+    });
+
+    // Listen for theme changes and update star colors
+    document.addEventListener('theme:changed', () => {
+      this.updateStarColors();
+    });
+  }
+
+  private updateStarColors(): void {
+    // Regenerate star colors with new scheme
+    this.stars.forEach(star => {
+      star.color = this.getStarColor();
+    });
+  }
+
+  private resize(): void {
+    const rect = this.canvas.getBoundingClientRect();
+    
+    // Set both the actual canvas size and the CSS size
+    this.canvas.width = Math.max(rect.width, window.innerWidth);
+    this.canvas.height = Math.max(rect.height, window.innerHeight);
+    
+    // Also set explicit CSS dimensions to ensure proper scaling
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = '100%';
+
+    // Redistribute stars across new canvas size if they already exist
+    this.stars.forEach(star => {
+      // Proportionally redistribute stars if canvas size changed
+      if (star.x > this.canvas.width) {
+        star.x = Math.random() * this.canvas.width;
+      }
+      if (star.y > this.canvas.height) {
+        star.y = Math.random() * this.canvas.height;
+      }
+    });
+  }
+
+  private animate = (): void => {
+    if (!this.enableAnimations) return;
+    
+    this.time += 0.016; // ~60fps timing
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.stars.forEach((star, index) => {
+      // Update star position with subtle movement
+      star.x += Math.sin(this.time * 0.1 + index * 0.01) * star.speed * 0.1;
+      star.y += Math.cos(this.time * 0.15 + index * 0.02) * star.speed * 0.1;
+
+      // Wrap around screen
+      if (star.x < 0) star.x = this.canvas.width;
+      if (star.x > this.canvas.width) star.x = 0;
+      if (star.y < 0) star.y = this.canvas.height;
+      if (star.y > this.canvas.height) star.y = 0;
+
+      // Twinkling effect
+      star.twinklePhase += 0.02;
+      const twinkle = Math.sin(star.twinklePhase) * 0.3 + 0.7;
+
+      // Mouse interaction - subtle attraction
+      const mouseDistance = Math.sqrt(
+        Math.pow(this.mouseX - star.x, 2) + Math.pow(this.mouseY - star.y, 2)
+      );
+      
+      let mouseInfluence = 1;
+      if (mouseDistance < 200) {
+        mouseInfluence = 1 + (200 - mouseDistance) / 1000; // Very subtle
+      }
+
+      // Draw star
+      this.ctx.save();
+      this.ctx.globalAlpha = star.opacity * twinkle * mouseInfluence;
+      this.ctx.fillStyle = star.color;
+      this.ctx.shadowBlur = star.size * 2;
+      this.ctx.shadowColor = star.color;
+      
+      this.ctx.beginPath();
+      this.ctx.arc(star.x, star.y, star.size * mouseInfluence, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.restore();
+    });
+
+    this.animationId = requestAnimationFrame(this.animate);
+  };
+
+  private renderStatic(): void {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    this.stars.forEach(star => {
+      this.ctx.save();
+      this.ctx.globalAlpha = star.opacity;
+      this.ctx.fillStyle = star.color;
+      
+      this.ctx.beginPath();
+      this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.restore();
+    });
+  }
+
+  public pause(): void {
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+  }
+
+  public resume(): void {
+    if (!this.animationId && this.enableAnimations) {
+      this.animate();
+    }
+  }
+
+  public destroy(): void {
+    this.pause();
+    window.removeEventListener('resize', () => this.resize());
+    document.removeEventListener('mousemove', () => {});
+  }
+}
+
+// Initialize when DOM is ready and after a short delay to ensure proper canvas sizing
+document.addEventListener('DOMContentLoaded', () => {
+  // Wait for the layout to settle
+  setTimeout(() => {
+    const container = document.querySelector('.space-background');
+    const starCountStr = container?.getAttribute('data-star-count');
+    const starCount = starCountStr ? parseInt(starCountStr) : 200;
+    
+    // Check if we're on mobile and reduce star count for performance
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const adjustedStarCount = isMobile ? Math.min(starCount, 80) : Math.min(starCount, 150);
+    
+    try {
+      const starfield = new StarfieldAnimator('starfield-canvas', adjustedStarCount);
+      
+      // Store reference for cleanup
+      (window as any).starfieldAnimator = starfield;
+      
+      console.log(`Starfield initialized with ${adjustedStarCount} stars`);
+    } catch (error) {
+      console.error('Failed to initialize starfield:', error);
+    }
+  }, 100);
+});
+</script>

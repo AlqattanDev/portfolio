@@ -1,0 +1,63 @@
+---
+---
+
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title"></h1>
+    <p class="hero-subtitle">I build beautiful and reliable web experiences.</p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full screen height */
+    background-color: var(--background-digital-space, var(--background-digital));
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+    color: var(--foreground-digital);
+    transition: 
+      background-color var(--transition-base) var(--ease-in-out),
+      color var(--transition-base) var(--ease-in-out);
+  }
+
+  .hero-title {
+    font-size: var(--font-size-4xl);
+    font-family: var(--font-heading);
+    margin-bottom: var(--space-md);
+    display: inline-block;
+    border-right: 2px solid var(--foreground-digital);
+    white-space: nowrap;
+    overflow: hidden;
+    animation: blink-cursor 1.5s step-end infinite;
+    transition: border-color var(--transition-base) var(--ease-in-out);
+  }
+
+  @keyframes blink-cursor {
+    0%, 50% { border-color: var(--foreground-digital); }
+    51%, 100% { border-color: transparent; }
+  }
+
+  .hero-subtitle {
+    font-size: var(--font-size-xl);
+  }
+</style>
+
+<script>
+  const title = document.querySelector('.hero-title');
+  const text = 'Digital Artisan';
+  let i = 0;
+
+  function typeWriter() {
+    if (i < text.length) {
+      title.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typeWriter, 150);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', typeWriter);
+</script>

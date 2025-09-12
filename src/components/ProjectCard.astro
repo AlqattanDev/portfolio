@@ -1,0 +1,112 @@
+---
+import type { Project } from '@/types/project.js';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props as Props;
+---
+
+<div class="project-card">
+  <div class="project-card-content">
+    <h3 class="project-title">{project.name}</h3>
+    <p class="project-description">{project.description}</p>
+    <div class="tech-stack">
+      {project.stack.map((tech: string) => <span class="tech-tag">{tech}</span>)}
+    </div>
+  </div>
+  <div class="project-card-footer">
+    <a href={project.url} class="project-link" target="_blank" rel="noopener noreferrer">View Project</a>
+  </div>
+</div>
+
+<style>
+  .project-card {
+    background-color: var(--accent-digital);
+    border: 1px solid var(--border-digital);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 
+      transform var(--transition-base) var(--ease-out), 
+      box-shadow var(--transition-base) var(--ease-out), 
+      border-color var(--transition-base) var(--ease-out),
+      background-color var(--transition-base) var(--ease-in-out);
+  }
+
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-elevated);
+    border-color: rgba(var(--space-primary-rgb), 0.6);
+    background-color: var(--accent-digital-hover, var(--accent-digital));
+  }
+
+  .project-title {
+    font-size: var(--font-size-xl);
+    font-family: var(--font-heading);
+    margin-bottom: var(--space-md);
+    color: var(--foreground-digital);
+    transition: color var(--transition-base) var(--ease-in-out);
+  }
+
+  .project-description {
+    margin-bottom: var(--space-md);
+    color: var(--muted-digital);
+    line-height: var(--line-height-relaxed);
+    transition: color var(--transition-base) var(--ease-in-out);
+  }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .tech-tag {
+    background-color: rgba(var(--space-primary-rgb), 0.15);
+    color: rgba(var(--space-primary-rgb), 1);
+    border: 1px solid rgba(var(--space-primary-rgb), 0.3);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    transition: 
+      background-color var(--transition-base) var(--ease-in-out),
+      border-color var(--transition-base) var(--ease-in-out),
+      color var(--transition-base) var(--ease-in-out);
+  }
+
+  .project-card-footer {
+    margin-top: auto;
+  }
+
+  .project-link {
+    color: rgba(var(--space-secondary-rgb), 1);
+    text-decoration: none;
+    font-weight: var(--font-weight-bold);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    transition: 
+      color var(--transition-base) var(--ease-in-out),
+      transform var(--transition-fast) var(--ease-out);
+  }
+
+  .project-link:hover {
+    color: rgba(var(--space-secondary-rgb), 0.8);
+    transform: translateX(4px);
+  }
+
+  .project-link::after {
+    content: '→';
+    transition: transform var(--transition-fast) var(--ease-out);
+  }
+
+  .project-link:hover::after {
+    transform: translateX(2px);
+  }
+</style>

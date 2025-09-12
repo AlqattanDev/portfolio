@@ -1,0 +1,561 @@
+/*
+========================================
+SPACE THEME ENHANCEMENT
+CSS variables and styling for space-themed background
+========================================
+*/
+
+:root {
+  /* ============ Space Theme Color Palette ============ */
+  --space-void: #000000;
+  --space-deep: #030612;
+  --space-dark: #060b1f;
+  --space-mid: #0a0e2e;
+  --space-light: #0c1445;
+  --space-accent: #1a1f5c;
+  
+  /* Professional color palette - muted and sophisticated */
+  --primary-slate: rgba(71, 85, 105, 0.6);      /* Slate gray */
+  --secondary-azure: rgba(59, 130, 246, 0.4);   /* Professional blue */
+  
+  --primary-charcoal: rgba(55, 65, 81, 0.6);    /* Dark charcoal */
+  --secondary-amber: rgba(251, 191, 36, 0.4);   /* Warm amber */
+  
+  --primary-navy: rgba(30, 41, 59, 0.6);        /* Deep navy */
+  --secondary-silver: rgba(148, 163, 184, 0.4); /* Cool silver */
+  
+  --primary-graphite: rgba(75, 85, 99, 0.6);    /* Graphite gray */
+  --secondary-cyan: rgba(34, 211, 238, 0.4);    /* Professional cyan */
+  
+  --primary-steel: rgba(100, 116, 139, 0.6);    /* Steel blue */
+  --secondary-gold: rgba(245, 158, 11, 0.4);    /* Refined gold */
+  
+  --primary-obsidian: rgba(17, 24, 39, 0.7);    /* Deep obsidian */
+  --secondary-blue: rgba(96, 165, 250, 0.4);    /* Clean blue */
+  
+  --primary-midnight: rgba(15, 23, 42, 0.7);    /* Midnight blue */
+  --secondary-emerald: rgba(52, 211, 153, 0.4); /* Professional emerald */
+  
+  --primary-carbon: rgba(31, 41, 55, 0.6);      /* Carbon black */
+  --secondary-purple: rgba(168, 85, 247, 0.4);  /* Refined purple */
+  
+  --primary-gunmetal: rgba(64, 73, 88, 0.6);    /* Gunmetal gray */
+  --secondary-orange: rgba(249, 115, 22, 0.4);  /* Professional orange */
+  
+  /* Star colors */
+  --star-white: #ffffff;
+  --star-blue: #f0f0ff;
+  --star-red: #ffdddd;
+  --star-yellow: #ffffdd;
+  --star-warm: #ffeedd;
+  
+  /* ============ Enhanced Digital Theme for Space ============ */
+  --background-digital-space: var(--space-deep);
+  --foreground-digital-space: #e0e6ff;
+  --muted-digital-space: #8891b0;
+  --border-digital-space: #2a3441;
+  --accent-digital-space: #4a90e2;
+  
+  /* Interactive elements in space */
+  --glow-primary: rgba(74, 144, 226, 0.3);
+  --glow-secondary: rgba(138, 43, 226, 0.2);
+  --glow-accent: rgba(255, 255, 255, 0.1);
+  
+  /* ============ Space-Specific Animation Variables ============ */
+  --star-twinkle-duration: 3s;
+  --nebula-drift-duration: 60s;
+  --cosmic-shimmer-duration: 20s;
+  --flashlight-transition: 0.3s;
+  
+  /* Particle system variables */
+  --particle-count-desktop: 200;
+  --particle-count-tablet: 150;
+  --particle-count-mobile: 100;
+  
+  /* ============ Interactive Effect Variables ============ */
+  --mouse-trail-opacity: 0.1;
+  --hover-intensity-boost: 1.5;
+  --interaction-glow-size: 40px;
+  --interaction-glow-blur: 20px;
+  
+  /* ============ Performance Variables ============ */
+  --animation-fps-desktop: 60;
+  --animation-fps-mobile: 30;
+  --gpu-acceleration: translateZ(0);
+}
+
+/* ============ Professional Dual-Color Schemes ============ */
+
+/* Slate & Azure - Professional corporate */
+body.scheme-slate-azure {
+  --theme-primary: var(--primary-slate);
+  --theme-secondary: var(--secondary-azure);
+  --space-primary-rgb: 71, 85, 105;
+  --space-secondary-rgb: 59, 130, 246;
+  /* Dynamic background gradient */
+  --space-bg-start: #1a1f2e;
+  --space-bg-mid: #0f1421;
+  --space-bg-end: #050811;
+  /* Override main space colors */
+  --background-digital-space: #0a0f1a;
+  --foreground-digital-space: #cbd5f0;
+  --muted-digital-space: #8891b0;
+  --border-digital-space: #374466;
+  --accent-digital-space: #3b82f6;
+}
+
+/* Charcoal & Amber - Warm professional */
+body.scheme-charcoal-amber {
+  --theme-primary: var(--primary-charcoal);
+  --theme-secondary: var(--secondary-amber);
+  --space-primary-rgb: 55, 65, 81;
+  --space-secondary-rgb: 251, 191, 36;
+  /* Warm charcoal background */
+  --space-bg-start: #2d1b0f;
+  --space-bg-mid: #1a0f08;
+  --space-bg-end: #0f0804;
+  --background-digital-space: #1a1108;
+  --foreground-digital-space: #f3e8d3;
+  --muted-digital-space: #a6936b;
+  --border-digital-space: #4a3d28;
+  --accent-digital-space: #fbbf24;
+}
+
+/* Navy & Silver - Clean corporate */
+body.scheme-navy-silver {
+  --theme-primary: var(--primary-navy);
+  --theme-secondary: var(--secondary-silver);
+  --space-primary-rgb: 30, 41, 59;
+  --space-secondary-rgb: 148, 163, 184;
+  /* Deep navy background */
+  --space-bg-start: #1e293b;
+  --space-bg-mid: #0f172a;
+  --space-bg-end: #020617;
+  --background-digital-space: #0a1121;
+  --foreground-digital-space: #e2e8f0;
+  --muted-digital-space: #94a3b8;
+  --border-digital-space: #334155;
+  --accent-digital-space: #94a3b8;
+}
+
+/* Graphite & Cyan - Tech professional */
+body.scheme-graphite-cyan {
+  --theme-primary: var(--primary-graphite);
+  --theme-secondary: var(--secondary-cyan);
+  --space-primary-rgb: 75, 85, 99;
+  --space-secondary-rgb: 34, 211, 238;
+  /* Graphite with cyan accents */
+  --space-bg-start: #1f2937;
+  --space-bg-mid: #111827;
+  --space-bg-end: #030712;
+  --background-digital-space: #0d1117;
+  --foreground-digital-space: #e0f2fe;
+  --muted-digital-space: #67e8f9;
+  --border-digital-space: #374151;
+  --accent-digital-space: #22d3ee;
+}
+
+/* Steel & Gold - Premium feel */
+body.scheme-steel-gold {
+  --theme-primary: var(--primary-steel);
+  --theme-secondary: var(--secondary-gold);
+  --space-primary-rgb: 100, 116, 139;
+  --space-secondary-rgb: 245, 158, 11;
+  /* Premium steel background */
+  --space-bg-start: #2c2f36;
+  --space-bg-mid: #1a1d23;
+  --space-bg-end: #0d0f14;
+  --background-digital-space: #151821;
+  --foreground-digital-space: #f7f3e9;
+  --muted-digital-space: #d1c7a3;
+  --border-digital-space: #4f5662;
+  --accent-digital-space: #f59e0b;
+}
+
+/* Obsidian & Blue - Deep professional */
+body.scheme-obsidian-blue {
+  --theme-primary: var(--primary-obsidian);
+  --theme-secondary: var(--secondary-blue);
+  --space-primary-rgb: 17, 24, 39;
+  --space-secondary-rgb: 96, 165, 250;
+  /* Deep obsidian background */
+  --space-bg-start: #1a1b23;
+  --space-bg-mid: #0f1015;
+  --space-bg-end: #050608;
+  --background-digital-space: #0b0d12;
+  --foreground-digital-space: #dbeafe;
+  --muted-digital-space: #93c5fd;
+  --border-digital-space: #1f2937;
+  --accent-digital-space: #60a5fa;
+}
+
+/* Midnight & Emerald - Sophisticated */
+body.scheme-midnight-emerald {
+  --theme-primary: var(--primary-midnight);
+  --theme-secondary: var(--secondary-emerald);
+  --space-primary-rgb: 15, 23, 42;
+  --space-secondary-rgb: 52, 211, 153;
+  /* Sophisticated midnight */
+  --space-bg-start: #172538;
+  --space-bg-mid: #0c1421;
+  --space-bg-end: #040911;
+  --background-digital-space: #081420;
+  --foreground-digital-space: #d1fae5;
+  --muted-digital-space: #6ee7b7;
+  --border-digital-space: #1e293b;
+  --accent-digital-space: #34d399;
+}
+
+/* Carbon & Purple - Modern elegant */
+body.scheme-carbon-purple {
+  --theme-primary: var(--primary-carbon);
+  --theme-secondary: var(--secondary-purple);
+  --space-primary-rgb: 31, 41, 55;
+  --space-secondary-rgb: 168, 85, 247;
+  /* Modern carbon elegance */
+  --space-bg-start: #2a1f3d;
+  --space-bg-mid: #1a1325;
+  --space-bg-end: #0f0a15;
+  --background-digital-space: #141218;
+  --foreground-digital-space: #f3e8ff;
+  --muted-digital-space: #c4b5fd;
+  --border-digital-space: #3f3356;
+  --accent-digital-space: #a855f7;
+}
+
+/* Gunmetal & Orange - Industrial chic */
+body.scheme-gunmetal-orange {
+  --theme-primary: var(--primary-gunmetal);
+  --theme-secondary: var(--secondary-orange);
+  --space-primary-rgb: 64, 73, 88;
+  --space-secondary-rgb: 249, 115, 22;
+  /* Industrial gunmetal */
+  --space-bg-start: #2d2318;
+  --space-bg-mid: #1a140e;
+  --space-bg-end: #0d0a08;
+  --background-digital-space: #1a1512;
+  --foreground-digital-space: #fed7aa;
+  --muted-digital-space: #fdba74;
+  --border-digital-space: #525866;
+  --accent-digital-space: #f97316;
+}
+
+/* ============ Space Theme Body Classes ============ */
+body.space-theme {
+  background: var(--background-digital-space);
+  color: var(--foreground-digital-space);
+  transition: background-color 0.8s ease, color 0.8s ease;
+}
+
+body.space-theme.digital-view {
+  /* Enhanced contrast for digital mode */
+  --foreground-digital: var(--foreground-digital-space);
+  --background-digital: var(--background-digital-space);
+  --muted-digital: var(--muted-digital-space);
+  --border-digital: var(--border-digital-space);
+  --accent-digital: var(--accent-digital-space);
+}
+
+/* ============ Deep Integration Transitions ============ */
+body.space-theme * {
+  transition: 
+    color 0.6s ease,
+    background-color 0.6s ease,
+    border-color 0.6s ease,
+    box-shadow 0.6s ease,
+    text-shadow 0.6s ease;
+}
+
+body.space-theme .container {
+  background: linear-gradient(135deg, 
+    rgba(var(--space-primary-rgb), 0.02) 0%, 
+    transparent 50%, 
+    rgba(var(--space-secondary-rgb), 0.01) 100%
+  );
+  border-radius: var(--radius-xl);
+  transition: background 0.8s ease;
+}
+
+/* ============ Enhanced Interactive Elements with Dual-Color Support ============ */
+body.space-theme .action-btn,
+body.space-theme button,
+body.space-theme a {
+  transition: all var(--transition-base) var(--ease-out),
+              box-shadow 0.3s ease,
+              text-shadow 0.3s ease;
+}
+
+body.space-theme .action-btn:hover,
+body.space-theme button:hover,
+body.space-theme a:hover {
+  box-shadow: 
+    0 0 var(--interaction-glow-size) rgba(var(--space-primary-rgb), 0.4),
+    0 0 calc(var(--interaction-glow-size) / 2) rgba(var(--space-secondary-rgb), 0.3);
+  text-shadow: 
+    0 0 10px rgba(var(--space-secondary-rgb), 0.6),
+    0 0 20px rgba(var(--space-primary-rgb), 0.4);
+}
+
+/* ============ Enhanced ASCII Canvas Integration ============ */
+body.space-theme .ascii-canvas-container {
+  background: 
+    radial-gradient(ellipse at center, rgba(var(--space-primary-rgb), 0.1) 0%, transparent 70%),
+    var(--background-digital-space);
+  border-radius: var(--radius-lg);
+  box-shadow: 
+    inset 0 0 50px rgba(var(--space-primary-rgb), 0.2),
+    0 0 20px rgba(var(--space-secondary-rgb), 0.1);
+}
+
+body.space-theme canvas {
+  filter: drop-shadow(0 0 5px rgba(var(--space-secondary-rgb), 0.3));
+}
+
+/* ============ Content Enhancement ============ */
+body.space-theme .section-title {
+  text-shadow: 
+    0 0 10px rgba(var(--space-secondary-rgb), 0.4),
+    0 0 20px rgba(var(--space-primary-rgb), 0.3);
+  background: linear-gradient(45deg, 
+    rgba(var(--space-secondary-rgb), 0.9), 
+    rgba(var(--space-primary-rgb), 0.7)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+body.space-theme .entry {
+  background: linear-gradient(135deg, 
+    rgba(var(--space-primary-rgb), 0.03) 0%, 
+    rgba(var(--space-secondary-rgb), 0.02) 50%, 
+    rgba(var(--space-primary-rgb), 0.03) 100%
+  );
+  border-color: rgba(var(--space-primary-rgb), 0.2);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base) var(--ease-out);
+}
+
+body.space-theme .entry:hover {
+  background: linear-gradient(135deg, 
+    rgba(var(--space-primary-rgb), 0.06) 0%, 
+    rgba(var(--space-secondary-rgb), 0.04) 50%, 
+    rgba(var(--space-primary-rgb), 0.06) 100%
+  );
+  box-shadow: 0 0 20px rgba(var(--space-secondary-rgb), 0.15);
+}
+
+/* ============ Tech Stack Enhancement ============ */
+body.space-theme .tech-tag {
+  background: linear-gradient(135deg, 
+    rgba(var(--space-primary-rgb), 0.8) 0%, 
+    rgba(var(--space-secondary-rgb), 0.6) 100%
+  );
+  color: var(--foreground-digital-space);
+  text-shadow: 0 0 5px rgba(var(--space-secondary-rgb), 0.4);
+  box-shadow: 
+    0 0 10px rgba(var(--space-primary-rgb), 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-fast) var(--ease-out);
+}
+
+body.space-theme .tech-tag:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 0 20px rgba(var(--space-secondary-rgb), 0.4),
+    0 5px 15px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ============ Progress Bar Enhancement ============ */
+body.space-theme .progress-bar .progress {
+  background: linear-gradient(90deg, 
+    rgba(var(--space-primary-rgb), 0.8) 0%, 
+    rgba(var(--space-secondary-rgb), 0.7) 50%, 
+    rgba(var(--space-primary-rgb), 0.6) 100%
+  );
+  box-shadow: 
+    0 0 10px rgba(var(--space-secondary-rgb), 0.4),
+    0 0 20px rgba(var(--space-primary-rgb), 0.3);
+}
+
+/* ============ Skill Constellation Enhancement ============ */
+body.space-theme .skill-constellation {
+  background: radial-gradient(ellipse at center, 
+    rgba(var(--space-primary-rgb), 0.08) 0%, 
+    rgba(var(--space-secondary-rgb), 0.03) 40%,
+    transparent 70%
+  );
+  border: 1px solid rgba(var(--space-primary-rgb), 0.1);
+  border-radius: var(--radius-xl);
+  transition: background 0.8s ease, border-color 0.8s ease;
+}
+
+/* ============ Enhanced Section Styling ============ */
+body.space-theme .section {
+  background: linear-gradient(145deg, 
+    rgba(var(--space-primary-rgb), 0.04) 0%, 
+    rgba(var(--space-secondary-rgb), 0.02) 50%,
+    transparent 100%
+  );
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-3xl);
+  transition: background 0.8s ease;
+}
+
+/* ============ Space-Specific Animations ============ */
+@keyframes cosmicPulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(var(--space-secondary-rgb), 0.3);
+  }
+  50% {
+    box-shadow: 
+      0 0 20px rgba(var(--space-secondary-rgb), 0.5), 
+      0 0 30px rgba(var(--space-primary-rgb), 0.3);
+  }
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 1; }
+  25% { opacity: 0.7; }
+  50% { opacity: 0.3; }
+  75% { opacity: 0.7; }
+}
+
+@keyframes nebulaFlow {
+  0% { 
+    background-position: 0% 0%; 
+    filter: hue-rotate(0deg);
+  }
+  25% { 
+    background-position: 50% 25%; 
+    filter: hue-rotate(90deg);
+  }
+  50% { 
+    background-position: 100% 50%; 
+    filter: hue-rotate(180deg);
+  }
+  75% { 
+    background-position: 50% 75%; 
+    filter: hue-rotate(270deg);
+  }
+  100% { 
+    background-position: 0% 100%; 
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* ============ Interactive Enhancements ============ */
+body.space-theme .project-actions .action-btn.primary {
+  background: linear-gradient(135deg, var(--cosmic-purple), var(--cosmic-blue));
+  animation: cosmicPulse 4s ease-in-out infinite;
+}
+
+body.space-theme .hero-title {
+  animation: starTwinkle var(--star-twinkle-duration) ease-in-out infinite;
+}
+
+/* ============ Responsive Space Theme ============ */
+@media (max-width: 768px) {
+  body.space-theme .entry {
+    background: rgba(138, 43, 226, 0.01);
+  }
+  
+  body.space-theme .tech-tag:hover {
+    transform: none; /* Disable transforms on mobile */
+  }
+  
+  /* Reduce particle effects on mobile */
+  body.space-theme {
+    --particle-count: var(--particle-count-mobile);
+    --animation-fps: var(--animation-fps-mobile);
+  }
+}
+
+@media (max-width: 480px) {
+  body.space-theme .section-title {
+    text-shadow: none; /* Simplify effects on small screens */
+  }
+  
+  body.space-theme .entry:hover {
+    box-shadow: none;
+  }
+}
+
+/* ============ Performance Optimizations ============ */
+body.space-theme * {
+  will-change: auto; /* Reset will-change to avoid memory issues */
+}
+
+body.space-theme .space-background,
+body.space-theme .mouse-flashlight,
+body.space-theme .ascii-canvas-container {
+  will-change: transform; /* Only for elements that actually animate */
+}
+
+/* ============ Accessibility Overrides ============ */
+@media (prefers-reduced-motion: reduce) {
+  body.space-theme * {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  body.space-theme .hero-title {
+    animation: none;
+  }
+  
+  body.space-theme .action-btn.primary {
+    animation: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  body.space-theme {
+    --foreground-digital-space: #ffffff;
+    --background-digital-space: #000000;
+    --border-digital-space: #ffffff;
+  }
+  
+  body.space-theme .section-title {
+    text-shadow: none;
+    -webkit-text-fill-color: initial;
+  }
+  
+  body.space-theme .tech-tag {
+    background: #ffffff;
+    color: #000000;
+    box-shadow: none;
+    text-shadow: none;
+  }
+}
+
+/* ============ Print Mode Override ============ */
+body.print-view.space-theme {
+  background: white;
+  color: black;
+}
+
+body.print-view.space-theme * {
+  background: transparent !important;
+  color: black !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+/* ============ Dark Mode Integration ============ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-digital-space: #f0f4ff;
+    --muted-digital-space: #9aa5c4;
+  }
+}
+
+/* ============ GPU Acceleration Hints ============ */
+body.space-theme .space-background,
+body.space-theme .mouse-flashlight,
+body.space-theme .ascii-canvas-container,
+body.space-theme .action-btn {
+  transform: var(--gpu-acceleration);
+}

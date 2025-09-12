@@ -1,0 +1,48 @@
+---
+const navLinks = [
+  { href: "#projects", label: "Projects" },
+  { href: "#skills", label: "Skills" },
+  { href: "#about", label: "About" },
+  { href: "#contact", label: "Contact" },
+];
+---
+
+<aside class="sidebar">
+  <nav class="sidebar-nav">
+    <ul>
+      {navLinks.map(link => (
+        <li>
+          <a href={link.href}>{link.label}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</aside>
+
+<style>
+  .sidebar {
+    width: 200px;
+    background-color: var(--background-digital);
+    padding: var(--space-lg);
+    border-right: 1px solid var(--color-border);
+  }
+
+  .sidebar-nav ul {
+    list-style: none;
+  }
+
+  .sidebar-nav li {
+    margin-bottom: var(--space-md);
+  }
+
+  .sidebar-nav a {
+    text-decoration: none;
+    color: var(--foreground-digital);
+    font-size: var(--font-size-md);
+    transition: color 0.2s ease;
+  }
+
+  .sidebar-nav a:hover {
+    color: var(--color-accent);
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+import type { UserProfile } from '@/types/index.ts';
+
+interface Props {
+  profile: UserProfile;
+}
+
+const { profile } = Astro.props as Props;
+---
+
+<div class="contact-content">
+  <p>I'm always open to discussing new projects and opportunities. Feel free to reach out to me.</p>
+  <a href={`mailto:${profile.contact.email}`} class="contact-button">Get in Touch</a>
+</div>
+
+<style>
+  .contact-content {
+    background-color: #2a2a2a;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    color: #ccc;
+    text-align: center;
+  }
+
+  .contact-button {
+    display: inline-block;
+    margin-top: var(--space-lg);
+    padding: var(--space-md) var(--space-xl);
+    background-color: var(--color-accent);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-bold);
+    transition: background-color 0.3s ease;
+  }
+
+  .contact-button:hover {
+    background-color: #00bfa5; /* Darker accent color */
+  }
+</style>
+

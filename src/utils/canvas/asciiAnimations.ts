@@ -317,32 +317,32 @@ export class ASCIIAnimationSystem {
     const isHovering = distance < 30;
 
     switch (this.currentEffect) {
-      case 0: // Matrix Rain - Enhanced
+      case 0: // Slate & Azure - Professional
         particle.offsetY = Math.sin(time * 0.02 + index * 0.05) * 0.5;
         if (isHovering) {
-          // Enhanced hover effect with cascading animation
+          // Professional cascading effect
           const cascadeDelay = index * 2;
-          const cascadePhase = Math.max(0, time - cascadeDelay) * 0.1;
-          particle.offsetX = Math.sin(cascadePhase + index) * 3;
-          particle.offsetY += Math.cos(cascadePhase * 0.5) * 1.5;
+          const cascadePhase = Math.max(0, time - cascadeDelay) * 0.08;
+          particle.offsetX = Math.sin(cascadePhase + index) * 2;
+          particle.offsetY += Math.cos(cascadePhase * 0.5) * 1;
           
-          // Dynamic color transition
-          const intensity = Math.sin(cascadePhase) * 0.5 + 0.5;
-          particle.color = `hsl(${60 + intensity * 20}, 100%, ${70 + intensity * 20}%)`;
+          // Sophisticated color transition
+          const intensity = Math.sin(cascadePhase) * 0.3 + 0.7;
+          particle.color = `rgba(59, 130, 246, ${intensity})`;
           
-          // Character morphing effect
-          const matrixChars = ['0', '1', 'ア', 'カ', 'サ', 'タ', 'ナ', 'ハ'];
-          if (Math.floor(time / 3) % 2 === 0) {
-            particle.char = matrixChars[Math.floor(Math.random() * matrixChars.length)] || particle.originalChar;
+          // Subtle character effects
+          const techChars = ['▓', '▒', '░', '█', '◆', '◇'];
+          if (Math.floor(time / 4) % 2 === 0) {
+            particle.char = techChars[Math.floor(Math.random() * techChars.length)] || particle.originalChar;
           }
         } else {
-          particle.color = '#00ff41';
+          particle.color = 'rgba(71, 85, 105, 0.8)';
           particle.char = particle.originalChar;
-          particle.offsetX *= 0.92;
+          particle.offsetX *= 0.95;
         }
         break;
 
-      case 1: // Blockchain Validation - Enhanced
+      case 1: // Charcoal & Amber - Warm Professional
         if (isHovering) {
           const validationDelay = particle.blockIndex * 8;
           const validationProgress = Math.min(1, Math.max(0, (time - validationDelay) / 30));
@@ -355,25 +355,24 @@ export class ASCIIAnimationSystem {
             const hashIndex = Math.floor(time / 4 + index) % hashChars.length;
             particle.char = hashChars[hashIndex] || particle.originalChar;
             
-            // Color progression from pending to validated
-            const hue = 180 + validationProgress * 40; // Blue to teal progression
-            const saturation = 80 + validationProgress * 20;
-            const lightness = 50 + validationProgress * 30;
-            particle.color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            // Warm amber progression
+            const intensity = validationProgress * 0.8 + 0.2;
+            particle.color = `rgba(251, 191, 36, ${intensity})`;
             
-            // Validation pulse effect
-            const pulseIntensity = Math.sin(time * 0.2 + index * 0.1) * 0.3 + 0.7;
-            particle.offsetY = Math.sin(time * 0.1 + validationProgress * Math.PI) * pulseIntensity;
-            particle.offsetX = Math.cos(time * 0.08 + index * 0.2) * (validationProgress * 2);
+            // Professional pulse effect
+            const pulseIntensity = Math.sin(time * 0.15 + index * 0.1) * 0.2 + 0.8;
+            particle.offsetY = Math.sin(time * 0.08 + validationProgress * Math.PI) * pulseIntensity;
+            particle.offsetX = Math.cos(time * 0.06 + index * 0.2) * (validationProgress * 1.5);
           } else {
-            // Pending validation state
-            particle.color = `hsl(0, 0%, ${30 + Math.sin(time * 0.1) * 10}%)`;
-            particle.offsetY = Math.sin(time * 0.05 + index) * 0.5;
+            // Charcoal pending state
+            const grayIntensity = 0.4 + Math.sin(time * 0.08) * 0.1;
+            particle.color = `rgba(55, 65, 81, ${grayIntensity})`;
+            particle.offsetY = Math.sin(time * 0.04 + index) * 0.3;
           }
         } else {
           particle.validated = false;
           particle.char = particle.originalChar;
-          particle.color = '#ffffff';
+          particle.color = 'rgba(55, 65, 81, 0.7)';
           particle.offsetX *= 0.9;
           particle.offsetY *= 0.9;
         }
