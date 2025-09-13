@@ -1,4 +1,4 @@
-name = "ali-portfolio"
+name = "ali-portfolio-prod"
 compatibility_date = "2024-09-13"
 pages_build_output_dir = "dist"
 
