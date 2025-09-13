@@ -3,7 +3,7 @@
  * ASCII Canvas Component
  * Extracted from Header.astro - handles ASCII art animation
  */
-import type { BaseComponentProps } from '@/types/component.js';
+import type { BaseComponentProps } from '@/types';
 
 export interface ASCIICanvasProps extends BaseComponentProps {
   canvasId?: string;
@@ -171,7 +171,7 @@ body.print-view .digital-only {
 </style>
 
 <script>
-import { ASCIIAnimationSystem } from '@/utils/canvas/asciiAnimations.js';
+import { ASCIIAnimationSystem } from '@/utils/animations';
 
 // Mobile-optimized ASCII animation initialization
 document.addEventListener('DOMContentLoaded', () => {

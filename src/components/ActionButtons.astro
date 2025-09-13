@@ -3,8 +3,7 @@
  * Action Buttons Component
  * Extracted from ProjectEntry.astro - displays project action buttons
  */
-import type { BaseComponentProps } from '@/types/component.js';
-import type { ProjectAction } from '@/types/project.js';
+import type { BaseComponentProps, ProjectAction } from '@/types';
 
 export interface ActionButtonsProps extends BaseComponentProps {
   demoUrl?: string;
@@ -71,8 +70,7 @@ const actions = customActions || defaultActions;
 </div>
 
 <style>
-/* Import component base styles */
-@import '../../styles/components.css';
+/* Base styles already imported in Layout.astro */
 
 /* Component-specific styles */
 .project-actions {
@@ -287,7 +285,7 @@ body.print-view .project-actions {
 </style>
 
 <script>
-import { initActionButtons } from '@/utils/client/actionButtons.js';
+import { initActionButtons } from '@/utils/client';
 
 // Initialize action buttons when component is ready
 document.addEventListener('DOMContentLoaded', () => {

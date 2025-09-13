@@ -3,9 +3,9 @@
  * Header Component - Refactored
  * Now uses decomposed sub-components for better maintainability
  */
-import ASCIICanvas from './header/ASCIICanvas.astro';
-import SystemInfo from './header/SystemInfo.astro';
-import type { BaseComponentProps, UserProfile } from '@/types/index.js';
+import ASCIICanvas from './ASCIICanvas.astro';
+import SystemInfo from './SystemInfo.astro';
+import type { BaseComponentProps, UserProfile } from '@/types';
 
 export interface HeaderProps extends BaseComponentProps {
   profile: UserProfile;

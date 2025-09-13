@@ -3,8 +3,8 @@
  * Extracted from Skills.astro component
  */
 
-import type { SkillLevel, SkillBarConfig, ProgressSegment } from '@/types/skill.js';
-import { ASCII_CHARS } from '@/utils/constants/theme.js';
+import type { SkillLevel, SkillBarConfig, ProgressSegment } from '@/types';
+import { ASCII_CHARS } from '@/utils/constants';
 
 /**
  * Generate skill bar configuration for different skill levels

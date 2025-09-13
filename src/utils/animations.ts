@@ -7,12 +7,12 @@ import type {
   CanvasParticle,
   VimMode,
   EffectSystem,
-} from '@/types/component.js';
+} from '@/types';
 import {
   COLOR_SCHEMES,
   EFFECT_NAMES,
   VIM_MODES,
-} from '@/utils/constants/theme.js';
+} from '@/utils/constants';
 
 export class ASCIIAnimationSystem {
   private canvas: HTMLCanvasElement;
@@ -638,3 +638,524 @@ export class ASCIIAnimationSystem {
     }
   }
 }
+/**
+ * Effect System for ASCII Canvas
+ * Handles different visual effects and color schemes
+ */
+
+// Imports already declared above
+
+export class EffectSystem {
+  private currentEffect: number = 0;
+  private currentMode: VimMode['mode'] = 'NORMAL';
+  private mousePos: { x: number; y: number } = { x: 0, y: 0 };
+
+  constructor() {
+    this.updateColorScheme();
+  }
+
+  setCurrentEffect(effect: number): void {
+    this.currentEffect = Math.max(0, Math.min(effect, EFFECT_NAMES.length - 1));
+    this.updateColorScheme();
+  }
+
+  setCurrentMode(mode: VimMode['mode']): void {
+    this.currentMode = mode;
+    this.updateBodyClasses();
+  }
+
+  setMousePosition(x: number, y: number): void {
+    this.mousePos.x = x;
+    this.mousePos.y = y;
+  }
+
+  getCurrentEffect(): number {
+    return this.currentEffect;
+  }
+
+  getCurrentEffectName(): string {
+    return EFFECT_NAMES[this.currentEffect] || 'Unknown';
+  }
+
+  getCurrentMode(): VimMode['mode'] {
+    return this.currentMode;
+  }
+
+  applyEffectToParticle(particle: CanvasParticle, time: number): void {
+    const distance = Math.sqrt(
+      Math.pow(this.mousePos.x - particle.baseX, 2) +
+        Math.pow(this.mousePos.y - particle.baseY, 2)
+    );
+
+    const isHovering = distance < 30;
+
+    switch (this.currentEffect) {
+      case 0: // Matrix Rain
+        particle.offsetY = Math.sin(time * 0.02 + particle.index * 0.05) * 0.5;
+        particle.color = isHovering ? '#fabd2f' : '#00ff41';
+        if (isHovering) {
+          particle.offsetX = Math.sin(time * 0.05 + particle.index) * 2;
+        } else {
+          particle.offsetX *= 0.9;
+        }
+        break;
+
+      case 1: // Blockchain Validation
+        if (isHovering) {
+          const validationDelay = particle.blockIndex * 10;
+          if (time > validationDelay) {
+            particle.validated = true;
+            const hashChars = ['0', '1', 'a', 'b', 'c', 'd', 'e', 'f'];
+            particle.char =
+              hashChars[Math.floor(Math.random() * hashChars.length)] ||
+              particle.originalChar;
+            particle.color = '#00d4aa';
+          } else {
+            particle.color = '#666666';
+          }
+        } else {
+          particle.validated = false;
+          particle.char = particle.originalChar;
+          particle.color = '#ffffff';
+        }
+        break;
+
+      case 2: // Real-time Trading
+        particle.phase += 0.1;
+        if (isHovering) {
+          particle.price += (Math.random() - 0.5) * 10 * particle.trend;
+          particle.offsetY = Math.sin(particle.phase) * (particle.price / 50);
+          const priceChars = ['$', '€', '¥', '£', '+', '-', '↑', '↓'];
+          particle.char =
+            priceChars[Math.floor(Math.random() * priceChars.length)] ||
+            particle.originalChar;
+          particle.color = particle.trend > 0 ? '#00ff88' : '#ff4444';
+        } else {
+          particle.offsetY *= 0.9;
+          particle.char = particle.originalChar;
+          particle.color = '#ffffff';
+        }
+        break;
+
+      default:
+        particle.color = '#ffffff';
+        break;
+    }
+  }
+
+  private updateColorScheme(): void {
+    // Remove all existing scheme classes
+    Object.values(COLOR_SCHEMES).forEach((scheme) => {
+      document.body.classList.remove(scheme);
+    });
+
+    // Apply the current scheme
+    const currentScheme = Object.values(COLOR_SCHEMES)[this.currentEffect];
+    if (currentScheme) {
+      document.body.classList.add(currentScheme);
+    }
+  }
+
+  private updateBodyClasses(): void {
+    // Remove existing vim mode classes
+    document.body.className = document.body.className.replace(
+      /\bvim-\w+\b/g,
+      ''
+    );
+    document.body.classList.add(`vim-${this.currentMode.toLowerCase()}`);
+  }
+
+  updateVimModeDisplay(): void {
+    const modeElement = document.getElementById('statusMode');
+    const schemeElement = document.getElementById('statusScheme');
+    
+    if (modeElement) {
+      modeElement.textContent = this.currentMode;
+      modeElement.className = `status-mode ${this.currentMode.toLowerCase()}`;
+    }
+    
+    if (schemeElement) {
+      schemeElement.textContent = this.getCurrentEffectName();
+    }
+  }
+}
+/**
+ * Particle System for ASCII Canvas
+ * Handles particle creation, positioning, and rendering
+ */
+
+import type { CanvasParticle } from '@/types';
+
+export class ParticleSystem {
+  private particles: CanvasParticle[] = [];
+  private canvas: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D;
+
+  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+    this.canvas = canvas;
+    this.ctx = ctx;
+  }
+
+  createParticles(asciiName: string): void {
+    this.particles = [];
+    const fontSize = 12;
+    const lines = asciiName.split('\n');
+    const lineHeight = fontSize * 1.2;
+    const firstLine = lines[0] || '';
+    const totalWidth = firstLine.length * (fontSize * 0.6);
+    const startX = (this.canvas.width - totalWidth) / 2;
+    const startY = 30;
+
+    lines.forEach((line, lineIndex) => {
+      for (let charIndex = 0; charIndex < line.length; charIndex++) {
+        const char = line[charIndex] || '';
+        if (char && char !== ' ') {
+          const x = startX + charIndex * (fontSize * 0.6);
+          const y = startY + lineIndex * lineHeight;
+
+          // Use deterministic values based on position for better predictability
+          const deterministicSeed = lineIndex * 100 + charIndex;
+          this.particles.push({
+            char,
+            originalChar: char,
+            x,
+            y,
+            baseX: x,
+            baseY: y,
+            offsetX: 0,
+            offsetY: 0,
+            opacity: 0,
+            targetOpacity: 1,
+            color: '#00ff41',
+            typed: false,
+            index: this.particles.length,
+            phase: (deterministicSeed * 0.1) % (Math.PI * 2),
+            blockIndex: Math.floor(charIndex / 8),
+            validated: false,
+            price: 500 + (deterministicSeed % 500), // Deterministic price between 500-1000
+            trend: deterministicSeed % 2 === 0 ? 1 : -1, // Alternating trend
+            riskLevel: (deterministicSeed % 100) / 100, // Deterministic risk 0-1
+            highlighted: false,
+          });
+        }
+      }
+    });
+  }
+
+  getParticles(): CanvasParticle[] {
+    return this.particles;
+  }
+
+  updateParticle(index: number, updates: Partial<CanvasParticle>): void {
+    if (this.particles[index]) {
+      Object.assign(this.particles[index], updates);
+    }
+  }
+
+  resetParticles(): void {
+    this.particles.forEach((p) => {
+      p.validated = false;
+      p.offsetX = 0;
+      p.offsetY = 0;
+      p.highlighted = false;
+      // Use deterministic values based on particle index
+      p.trend = p.index % 2 === 0 ? 1 : -1;
+      p.price = 500 + (p.index % 500);
+      p.riskLevel = (p.index % 100) / 100;
+    });
+  }
+
+  renderParticles(): void {
+    this.ctx.font = '12px monospace';
+    const isPrintMode = !document.body.classList.contains('digital-view');
+
+    this.particles.forEach((particle) => {
+      // Type-in effect
+      if (!particle.typed && Date.now() > particle.index * 50) {
+        // Simplified timing
+        particle.typed = true;
+        particle.targetOpacity = 1;
+      }
+
+      particle.opacity += (particle.targetOpacity - particle.opacity) * 0.1;
+
+      // Set color and effects based on mode
+      if (isPrintMode) {
+        // Print mode: static black text, no effects
+        particle.color = '#000000';
+        particle.offsetX = 0;
+        particle.offsetY = 0;
+        particle.targetOpacity = 1;
+      }
+
+      this.ctx.fillStyle = particle.color;
+      this.ctx.globalAlpha = particle.opacity;
+      this.ctx.fillText(
+        particle.char,
+        particle.baseX + particle.offsetX,
+        particle.baseY + particle.offsetY
+      );
+    });
+
+    this.ctx.globalAlpha = 1;
+  }
+
+  resize(): void {
+    // Recreate particles when canvas resizes
+    this.createParticles(this.getASCIIArt());
+  }
+
+  private getASCIIArt(): string {
+    // This would be passed in or configured
+    return `█████╗ ██╗     ██╗      █████╗ ██╗      ██████╗  █████╗ ████████╗████████╗ █████╗ ███╗   ██╗
+██╔══██╗██║     ██║     ██╔══██╗██║     ██╔═══██╗██╔══██╗╚══██╔══╝╚══██╔══╝██╔══██╗████╗  ██║
+███████║██║     ██║     ███████║██║     ██║   ██║███████║   ██║      ██║   ███████║██╔██╗ ██║
+██╔══██║██║     ██║     ██╔══██║██║     ██║▄▄ ██║██╔══██║   ██║      ██║   ██╔══██║██║╚██╗██║
+██║  ██║███████╗██║     ██║  ██║███████╗╚██████╔╝██║  ██║   ██║      ██║   ██║  ██║██║ ╚████║
+╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚══════╝ ╚══▀▀═╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝`;
+  }
+}
+/**
+ * Unified Animation System
+ * Provides consistent, performant animations across components
+ */
+
+// Central RAF scheduler for all animations
+class AnimationScheduler {
+  constructor() {
+    this.tasks = new Set();
+    this.isRunning = false;
+  }
+
+  add(task) {
+    this.tasks.add(task);
+    if (!this.isRunning) {
+      this.start();
+    }
+  }
+
+  remove(task) {
+    this.tasks.delete(task);
+    if (this.tasks.size === 0) {
+      this.stop();
+    }
+  }
+
+  start() {
+    if (this.isRunning) return;
+    this.isRunning = true;
+    this.tick();
+  }
+
+  stop() {
+    this.isRunning = false;
+  }
+
+  tick = () => {
+    if (!this.isRunning) return;
+    
+    // Execute all animation tasks
+    for (const task of this.tasks) {
+      try {
+        task();
+      } catch (error) {
+        console.error('Animation task failed:', error);
+        this.tasks.delete(task);
+      }
+    }
+
+    if (this.tasks.size > 0) {
+      requestAnimationFrame(this.tick);
+    } else {
+      this.isRunning = false;
+    }
+  };
+}
+
+// Global animation scheduler instance
+const scheduler = new AnimationScheduler();
+
+/**
+ * Utility functions for common animations
+ */
+export const animations = {
+  // Smooth fade in/out
+  fadeIn(element, duration = 300) {
+    return new Promise((resolve) => {
+      element.style.opacity = '0';
+      element.style.transition = `opacity ${duration}ms ease-in-out`;
+      
+      // Force reflow
+      element.offsetHeight;
+      
+      element.style.opacity = '1';
+      setTimeout(resolve, duration);
+    });
+  },
+
+  fadeOut(element, duration = 300) {
+    return new Promise((resolve) => {
+      element.style.transition = `opacity ${duration}ms ease-in-out`;
+      element.style.opacity = '0';
+      setTimeout(resolve, duration);
+    });
+  },
+
+  // Smooth slide animations
+  slideDown(element, duration = 300) {
+    return new Promise((resolve) => {
+      const startHeight = element.scrollHeight;
+      element.style.height = '0px';
+      element.style.overflow = 'hidden';
+      element.style.transition = `height ${duration}ms ease-in-out`;
+      
+      // Force reflow
+      element.offsetHeight;
+      
+      element.style.height = startHeight + 'px';
+      setTimeout(() => {
+        element.style.height = 'auto';
+        element.style.overflow = '';
+        resolve();
+      }, duration);
+    });
+  },
+
+  slideUp(element, duration = 300) {
+    return new Promise((resolve) => {
+      const startHeight = element.scrollHeight;
+      element.style.height = startHeight + 'px';
+      element.style.overflow = 'hidden';
+      element.style.transition = `height ${duration}ms ease-in-out`;
+      
+      // Force reflow
+      element.offsetHeight;
+      
+      element.style.height = '0px';
+      setTimeout(resolve, duration);
+    });
+  },
+
+  // Scale animation with spring easing
+  scaleIn(element, duration = 250) {
+    return new Promise((resolve) => {
+      element.style.transform = 'scale(0)';
+      element.style.transition = `transform ${duration}ms cubic-bezier(0.68, -0.55, 0.265, 1.55)`;
+      
+      // Force reflow
+      element.offsetHeight;
+      
+      element.style.transform = 'scale(1)';
+      setTimeout(resolve, duration);
+    });
+  },
+
+  // Stagger animation for lists
+  staggerIn(elements, delay = 100, duration = 300) {
+    const promises = [];
+    elements.forEach((element, index) => {
+      const promise = new Promise((resolve) => {
+        setTimeout(() => {
+          this.fadeIn(element, duration).then(resolve);
+        }, index * delay);
+      });
+      promises.push(promise);
+    });
+    return Promise.all(promises);
+  }
+};
+
+/**
+ * Performance utilities
+ */
+export const performance = {
+  // Throttle function for scroll events
+  throttle(func, limit = 16) {
+    let inThrottle;
+    return function(...args) {
+      if (!inThrottle) {
+        func.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, limit);
+      }
+    };
+  },
+
+  // Debounce function for resize events
+  debounce(func, wait = 250) {
+    let timeout;
+    return function(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func.apply(this, args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  },
+
+  // RAF-based animation loop
+  animate(callback) {
+    const task = () => {
+      if (callback() !== false) {
+        scheduler.add(task);
+      }
+    };
+    scheduler.add(task);
+    
+    // Return cleanup function
+    return () => scheduler.remove(task);
+  },
+
+  // Intersection Observer with performance optimizations
+  observeIntersection(elements, callback, options = {}) {
+    const defaultOptions = {
+      rootMargin: '50px',
+      threshold: 0.1,
+      ...options
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      // Use RAF to batch DOM updates
+      requestAnimationFrame(() => {
+        entries.forEach(callback);
+      });
+    }, defaultOptions);
+
+    elements.forEach(el => observer.observe(el));
+    
+    return () => {
+      observer.disconnect();
+    };
+  }
+};
+
+/**
+ * CSS Custom Properties Animation
+ * Smoothly animate CSS custom properties
+ */
+export const cssVariables = {
+  animate(element, property, from, to, duration = 300, easing = 'ease-in-out') {
+    return new Promise((resolve) => {
+      element.style.setProperty(property, from);
+      element.style.transition = `${property} ${duration}ms ${easing}`;
+      
+      // Force reflow
+      element.offsetHeight;
+      
+      element.style.setProperty(property, to);
+      setTimeout(resolve, duration);
+    });
+  },
+
+  // Animate multiple properties simultaneously
+  animateMultiple(element, properties, duration = 300, easing = 'ease-in-out') {
+    const promises = Object.entries(properties).map(([property, { from, to }]) => {
+      return this.animate(element, property, from, to, duration, easing);
+    });
+    return Promise.all(promises);
+  }
+};
+
+// Export the scheduler for advanced use cases
+export { scheduler };

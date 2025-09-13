@@ -3,8 +3,8 @@
  * GitHub Stats Component
  * Extracted from ProjectEntry.astro - displays real-time GitHub repository statistics
  */
-import type { BaseComponentProps } from '@/types/component.js';
-import type { GitHubStats as GitHubStatsType } from '@/types/project.js';
+import type { BaseComponentProps } from '@/types';
+import type { GitHubStats as GitHubStatsType } from '@/types';
 
 export interface GitHubStatsProps extends BaseComponentProps {
   repoUrl?: string;
@@ -108,7 +108,7 @@ body.print-view .github-stats .loading {
 </style>
 
 <script>
-import { initGitHubStats } from '@/utils/client/githubStats.js';
+import { initGitHubStats } from '@/utils/client';
 
 // Initialize GitHub stats when component is ready
 document.addEventListener('DOMContentLoaded', () => {

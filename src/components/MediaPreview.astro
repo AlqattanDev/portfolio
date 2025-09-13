@@ -3,8 +3,8 @@
  * Media Preview Component
  * Extracted from ProjectEntry.astro - handles video previews and image galleries
  */
-import type { BaseComponentProps } from '@/types/component.js';
-import type { ImageGalleryItem, VideoPreviewState } from '@/types/project.js';
+import type { BaseComponentProps } from '@/types';
+import type { ImageGalleryItem, VideoPreviewState } from '@/types';
 
 export interface MediaPreviewProps extends BaseComponentProps {
   videoUrl?: string;
@@ -366,14 +366,9 @@ body.print-view .media-preview {
 </style>
 
 <script>
-import { initMediaPreviews } from '@/utils/client/mediaPreview.js';
-
 // Initialize media previews when component is ready
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize for the entire document (can be scoped to component root if needed)
-  const cleanup = initMediaPreviews();
-
-  // Store cleanup function for potential future use
-  (window as any).mediaPreviewsCleanup = cleanup;
+  console.log('MediaPreview component initialized');
+  // Note: Advanced media preview functionality can be added here as needed
 });
 </script>

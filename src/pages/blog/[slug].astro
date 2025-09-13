@@ -3,46 +3,18 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Section from '../../components/Section.astro';
-import type { UserProfile } from '@/types/index.js';
-import { validateData, userProfileSchema } from '@/utils/validation/schemas.js';
+import type { UserProfile } from '@/types';
 
-// Import and validate profile data
+// Import profile data
 import profileData from '../../data/profile.json';
-const profileValidation = validateData(userProfileSchema, profileData);
 
-const profile: UserProfile = profileValidation.success
-  ? profileValidation.data
-  : ({
-      personal: {
-        name: 'Unknown User',
-        title: 'System Architect',
-        email: 'user@example.com',
-      },
-      social: {},
-      contact: { email: 'user@example.com' },
-    } as UserProfile);
-
-if (!profileValidation.success) {
-  console.warn('Profile data validation failed:', profileValidation.error);
-}
+const profile: UserProfile = profileData as UserProfile;
 
 // This function is required for dynamic routes
 export async function getStaticPaths() {
-  // Import and validate profile data within the function
+  // Import profile data within the function
   const profileData = (await import('../../data/profile.json')).default;
-  const profileValidation = validateData(userProfileSchema, profileData);
-  
-  const profile: UserProfile = profileValidation.success
-    ? profileValidation.data
-    : ({
-        personal: {
-          name: 'Unknown User',
-          title: 'System Architect',
-          email: 'user@example.com',
-        },
-        social: {},
-        contact: { email: 'user@example.com' },
-      } as UserProfile);
+  const profile: UserProfile = profileData as UserProfile;
       
   const allPosts = await getCollection('blog');
   return allPosts.map(post => ({
@@ -83,4 +55,3 @@ const { Content } = await post.render();
         </div>
     </Section>
 </Layout>
-

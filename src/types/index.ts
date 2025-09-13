@@ -1,13 +1,520 @@
 /**
- * Main type exports for the application
+ * Consolidated type definitions for the application
+ * All types are now in this single file for simplicity
  */
 
-// Re-export all types for easy importing
-export * from './component.js';
-export * from './project.js';
-export * from './skill.js';
+import { z } from 'zod';
 
-// Profile and user data types
+// ====================
+// UI & Component Types
+// ====================
+
+export interface BaseComponentProps {
+  className?: string;
+  id?: string;
+}
+
+export interface WithChildren {
+  children?: any;
+}
+
+export interface ViewMode {
+  mode: 'digital' | 'print';
+}
+
+export interface ThemeVariant {
+  variant?:
+    | 'matrix'
+    | 'blockchain'
+    | 'trading'
+    | 'encryption'
+    | 'ledger'
+    | 'swift'
+    | 'risk'
+    | 'compliance'
+    | 'settlement'
+    | 'gruvbox'
+    | 'gruvbox-visual'
+    | 'gruvbox-syntax';
+}
+
+export interface LoadingState {
+  isLoading: boolean;
+  error?: string | null;
+}
+
+export interface InteractiveState {
+  isHovered?: boolean;
+  isFocused?: boolean;
+  isPressed?: boolean;
+}
+
+export interface ResponsiveConfig {
+  mobile?: boolean;
+  tablet?: boolean;
+  desktop?: boolean;
+}
+
+export interface BreakpointConfig {
+  xs?: number;
+  sm?: number;
+  md?: number;
+  lg?: number;
+  xl?: number;
+  xxl?: number;
+}
+
+export interface ValidationResult<T = any> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  errors?: Record<string, string[]>;
+}
+
+export interface ValidationSchema<T> {
+  validate: (data: unknown) => ValidationResult<T>;
+}
+
+// ====================
+// Animation Types
+// ====================
+
+export interface Position {
+  x: number;
+  y: number;
+}
+
+export interface AnimationConfig {
+  duration?: number;
+  easing?: 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'linear';
+  delay?: number;
+}
+
+export interface CanvasParticle {
+  char: string;
+  originalChar: string;
+  x: number;
+  y: number;
+  baseX: number;
+  baseY: number;
+  offsetX: number;
+  offsetY: number;
+  opacity: number;
+  targetOpacity: number;
+  color: string;
+  typed: boolean;
+  index: number;
+  phase: number;
+  blockIndex: number;
+  validated: boolean;
+  price: number;
+  trend: number;
+  riskLevel: number;
+  highlighted: boolean;
+}
+
+export interface VimMode {
+  mode: 'NORMAL' | 'INSERT' | 'VISUAL' | 'COMMAND';
+}
+
+export interface EffectSystem {
+  currentEffect: number;
+  effectNames: string[];
+  colorSchemes: string[];
+}
+
+// ====================
+// Error Types
+// ====================
+
+export interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+  errorInfo?: any;
+}
+
+export interface ErrorContext {
+  component: string;
+  props?: Record<string, unknown>;
+  timestamp: number;
+  userAgent?: string;
+}
+
+export interface ErrorReport {
+  message: string;
+  stack?: string;
+  context: ErrorContext;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+}
+
+// ====================
+// Performance Types
+// ====================
+
+export interface PerformanceMetrics {
+  renderTime?: number;
+  loadTime?: number;
+  interactionTime?: number;
+  memoryUsage?: number;
+}
+
+export interface WebVitalsMetric {
+  name: string;
+  value: number;
+  delta: number;
+  id: string;
+  navigationType: 'navigate' | 'reload' | 'back-forward' | 'back-forward-cache';
+}
+
+// ====================
+// Media Types
+// ====================
+
+export interface MediaConfig {
+  lazy?: boolean;
+  placeholder?: string;
+  fallback?: string;
+}
+
+export interface ApiConfig {
+  timeout?: number;
+  retries?: number;
+  fallbackData?: unknown;
+}
+
+// ====================
+// Project Types
+// ====================
+
+export type ProjectStatus = 'PRODUCTION' | 'BETA' | 'DEVELOPMENT' | 'ARCHIVED';
+
+export interface ProjectMetrics {
+  scale?: string;
+  security?: string;
+  performance?: string;
+  innovation?: string;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  status: ProjectStatus;
+  features: string[];
+  stack: string[];
+  demoUrl?: string;
+  githubUrl?: string;
+  videoUrl?: string;
+  images?: string[];
+  metrics?: ProjectMetrics;
+}
+
+export interface ProjectWithMeta extends Project {
+  primaryMetric?: string;
+  primaryMetricLabel?: string;
+  metaString: string;
+  isProduction: boolean;
+  hasDemo: boolean;
+  hasGitHub: boolean;
+  hasVideo: boolean;
+  hasImages: boolean;
+}
+
+export interface GitHubRepo {
+  name: string;
+  full_name: string;
+  description?: string;
+  stargazers_count: number;
+  forks_count: number;
+  language?: string;
+  updated_at: string;
+  html_url: string;
+  topics: string[];
+  open_issues_count: number;
+  subscribers_count: number;
+}
+
+export interface GitHubStats {
+  stars: number;
+  forks: number;
+  language: string;
+  isLoading: boolean;
+  error?: string;
+}
+
+export interface ProjectEntryProps extends BaseComponentProps {
+  project: Project;
+  variant?: 'default' | 'compact' | 'detailed';
+  showExpanded?: boolean;
+  mediaConfig?: MediaConfig;
+}
+
+export interface ProjectAction {
+  type: 'demo' | 'github' | 'case-study' | 'download';
+  label: string;
+  url?: string;
+  icon: string;
+  primary?: boolean;
+  disabled?: boolean;
+}
+
+export interface VideoPreviewState {
+  isHovered: boolean;
+  isLoaded: boolean;
+  videoElement?: HTMLVideoElement;
+  error?: string;
+}
+
+export interface ImageGalleryItem {
+  src: string;
+  alt: string;
+  thumbnail?: string;
+  caption?: string;
+}
+
+export interface LiveDemoConfig {
+  src: string;
+  title: string;
+  sandbox: string[];
+  width?: number;
+  height?: number;
+  scale?: number;
+  interactive?: boolean;
+}
+
+export interface AchievementBadge {
+  text: string;
+  icon: string;
+  variant: 'production' | 'beta' | 'development';
+  color?: string;
+}
+
+export interface ProjectFilters {
+  status?: ProjectStatus[];
+  technologies?: string[];
+  hasDemo?: boolean;
+  hasGitHub?: boolean;
+  search?: string;
+}
+
+export interface ProjectSortOptions {
+  field: 'name' | 'status' | 'updated' | 'stars';
+  direction: 'asc' | 'desc';
+}
+
+// Project Validation Schemas
+export const ProjectStatusSchema = z.enum([
+  'PRODUCTION',
+  'BETA',
+  'DEVELOPMENT',
+  'ARCHIVED',
+]);
+
+export const ProjectMetricsSchema = z.object({
+  scale: z.string().optional(),
+  security: z.string().optional(),
+  performance: z.string().optional(),
+  innovation: z.string().optional(),
+});
+
+export const ProjectSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  description: z.string().min(1),
+  status: ProjectStatusSchema,
+  features: z.array(z.string()).min(1),
+  stack: z.array(z.string()).min(1),
+  demoUrl: z.string().url().optional(),
+  githubUrl: z.string().url().optional(),
+  videoUrl: z.string().url().optional(),
+  images: z.array(z.string().url()).optional(),
+  metrics: ProjectMetricsSchema.optional(),
+});
+
+export const GitHubRepoSchema = z.object({
+  name: z.string(),
+  full_name: z.string(),
+  description: z.string().nullable().optional(),
+  stargazers_count: z.number(),
+  forks_count: z.number(),
+  language: z.string().nullable().optional(),
+  updated_at: z.string(),
+  html_url: z.string().url(),
+  topics: z.array(z.string()).default([]),
+  open_issues_count: z.number(),
+  subscribers_count: z.number(),
+});
+
+// ====================
+// Skill Types
+// ====================
+
+export type SkillLevel =
+  | 'Expert'
+  | 'Advanced'
+  | 'Proficient'
+  | 'Intermediate'
+  | 'Beginner';
+
+export interface SkillItem {
+  name: string;
+  level: SkillLevel;
+  years: string;
+  projects: string;
+  highlight: string;
+}
+
+export interface SkillCategory {
+  header: string;
+  years: string;
+  items: SkillItem[];
+}
+
+export interface SkillsProps extends BaseComponentProps {
+  skills: SkillCategory[];
+  variant?: 'grid' | 'list' | 'compact';
+  showProgressBars?: boolean;
+  interactive?: boolean;
+}
+
+export interface SkillBarConfig {
+  level: SkillLevel;
+  bar: string;
+  html: string;
+}
+
+export interface SkillVisualization {
+  filled: string;
+  dither1: string;
+  dither2: string;
+  dither3: string;
+  brackets: string;
+}
+
+export type ProgressBarType =
+  | 'filled'
+  | 'dither-1'
+  | 'dither-2'
+  | 'dither-3'
+  | 'empty';
+
+export interface ProgressSegment {
+  type: ProgressBarType;
+  content: string;
+  opacity: number;
+}
+
+export interface SkillAssessment {
+  technical: number;
+  practical: number;
+  experience: number;
+  projects: number;
+  confidence: number;
+}
+
+export interface SkillMetrics {
+  totalSkills: number;
+  averageLevel: number;
+  totalExperience: number;
+  topSkills: SkillItem[];
+  skillsByLevel: Record<SkillLevel, number>;
+}
+
+export interface SkillFilters {
+  level?: SkillLevel[];
+  category?: string[];
+  minYears?: number;
+  search?: string;
+}
+
+export interface SkillSearchResult {
+  item: SkillItem;
+  category: string;
+  relevanceScore: number;
+  matchedFields: string[];
+}
+
+export interface Education {
+  degree: string;
+  university: string;
+  thesis: string;
+  year?: string;
+  gpa?: string;
+  honors?: string[];
+  relevantCourses?: string[];
+}
+
+export interface EducationProps extends BaseComponentProps {
+  edu: Education;
+  variant?: 'default' | 'compact';
+  showDetails?: boolean;
+}
+
+// Skill Validation Schemas
+export const SkillLevelSchema = z.enum([
+  'Expert',
+  'Advanced',
+  'Proficient',
+  'Intermediate',
+  'Beginner',
+]);
+
+export const SkillItemSchema = z.object({
+  name: z.string().min(1, 'Skill name is required'),
+  level: SkillLevelSchema,
+  years: z.string().min(1, 'Years of experience is required'),
+  projects: z.string().min(1, 'Project information is required'),
+  highlight: z.string().min(1, 'Highlight information is required'),
+});
+
+export const SkillCategorySchema = z.object({
+  header: z.string().min(1, 'Category header is required'),
+  years: z.string().min(1, 'Category years is required'),
+  items: z.array(SkillItemSchema).min(1, 'At least one skill item is required'),
+});
+
+export const EducationSchema = z.object({
+  degree: z.string().min(1, 'Degree is required'),
+  university: z.string().min(1, 'University is required'),
+  thesis: z.string().min(1, 'Thesis information is required'),
+  year: z.string().optional(),
+  gpa: z.string().optional(),
+  honors: z.array(z.string()).optional(),
+  relevantCourses: z.array(z.string()).optional(),
+});
+
+// Skill Constants
+export const SKILL_LEVEL_VALUES: Record<SkillLevel, number> = {
+  Expert: 5,
+  Advanced: 4,
+  Proficient: 3,
+  Intermediate: 2,
+  Beginner: 1,
+} as const;
+
+export const SKILL_LEVEL_COLORS: Record<SkillLevel, string> = {
+  Expert: '#00ff41',
+  Advanced: '#00d4aa',
+  Proficient: '#ffaa00',
+  Intermediate: '#ff6b35',
+  Beginner: '#ff4444',
+} as const;
+
+export const PROGRESS_CHARS = {
+  FILLED: '██',
+  DITHER_1: '▓▓',
+  DITHER_2: '▒▒',
+  DITHER_3: '░░',
+  EMPTY: '  ',
+  BRACKET_LEFT: '[',
+  BRACKET_RIGHT: ']',
+  SEPARATOR: ' ',
+} as const;
+
+// ====================
+// User Profile Types
+// ====================
+
 export interface UserProfile {
   personal: {
     name: string;
@@ -32,7 +539,10 @@ export interface UserProfile {
   };
 }
 
-// Site configuration types
+// ====================
+// Site Configuration
+// ====================
+
 export interface SiteConfig {
   title: string;
   description: string;
@@ -53,7 +563,10 @@ export interface SiteConfig {
   };
 }
 
-// Content types (for Astro collections)
+// ====================
+// Content Types
+// ====================
+
 export interface BlogPost {
   title: string;
   description: string;
@@ -64,7 +577,10 @@ export interface BlogPost {
   canonicalURL?: string;
 }
 
-// Layout and page types
+// ====================
+// Layout & Page Types
+// ====================
+
 export interface LayoutProps {
   title?: string;
   description?: string;
@@ -85,7 +601,10 @@ export interface PageProps {
   layout?: 'default' | 'blog' | 'project';
 }
 
-// Global state types
+// ====================
+// Application State
+// ====================
+
 export interface AppState {
   theme: 'digital' | 'print';
   colorScheme: string;
@@ -99,7 +618,10 @@ export interface AppState {
   };
 }
 
-// API and external service types
+// ====================
+// API Types
+// ====================
+
 export interface APIResponse<T = any> {
   success: boolean;
   data?: T;
@@ -115,7 +637,10 @@ export interface APIError {
   details?: any;
 }
 
-// Form and input types
+// ====================
+// Form Types
+// ====================
+
 export interface FormField {
   name: string;
   label: string;
@@ -137,10 +662,13 @@ export interface ContactForm {
   email: string;
   subject: string;
   message: string;
-  honeypot?: string; // Anti-spam field
+  honeypot?: string;
 }
 
-// Utility and helper types
+// ====================
+// Utility Types
+// ====================
+
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type RequiredOnly<T, K extends keyof T> = Partial<T> &
   Required<Pick<T, K>>;
@@ -148,7 +676,10 @@ export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-// Event and interaction types
+// ====================
+// Event Types
+// ====================
+
 export interface CustomEvent<T = any> {
   type: string;
   detail: T;
@@ -164,7 +695,10 @@ export interface InteractionEvent extends CustomEvent {
   };
 }
 
-// Environment and configuration types
+// ====================
+// Environment Types
+// ====================
+
 export interface EnvironmentConfig {
   NODE_ENV: 'development' | 'production' | 'test';
   BUILD_MODE: 'static' | 'ssr' | 'hybrid';
@@ -173,7 +707,38 @@ export interface EnvironmentConfig {
   ANALYTICS_ID?: string;
 }
 
-// Module declarations for non-TypeScript files
+// ====================
+// Type Guards
+// ====================
+
+export const isProject = (obj: unknown): obj is Project => {
+  return ProjectSchema.safeParse(obj).success;
+};
+
+export const isGitHubRepo = (obj: unknown): obj is GitHubRepo => {
+  return GitHubRepoSchema.safeParse(obj).success;
+};
+
+export const isSkillLevel = (level: string): level is SkillLevel => {
+  return SkillLevelSchema.safeParse(level).success;
+};
+
+export const isSkillItem = (obj: unknown): obj is SkillItem => {
+  return SkillItemSchema.safeParse(obj).success;
+};
+
+export const isSkillCategory = (obj: unknown): obj is SkillCategory => {
+  return SkillCategorySchema.safeParse(obj).success;
+};
+
+export const isEducation = (obj: unknown): obj is Education => {
+  return EducationSchema.safeParse(obj).success;
+};
+
+// ====================
+// Module Declarations
+// ====================
+
 declare module '*.json' {
   const value: any;
   export default value;
@@ -189,10 +754,12 @@ declare module '*.astro' {
   export default component;
 }
 
-// Global augmentations
+// ====================
+// Global Augmentations
+// ====================
+
 declare global {
   interface Window {
-    // Custom properties that might be added to window
     gtag?: (...args: any[]) => void;
     plausible?: (...args: any[]) => void;
     webVitals?: {
