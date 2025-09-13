@@ -5,11 +5,6 @@ import Header from '../../components/Header.astro';
 import Section from '../../components/Section.astro';
 import type { UserProfile } from '@/types';
 
-// Import profile data
-import profileData from '../../data/profile.json';
-
-const profile: UserProfile = profileData as UserProfile;
-
 // This function is required for dynamic routes
 export async function getStaticPaths() {
   // Import profile data within the function
@@ -26,10 +21,13 @@ export async function getStaticPaths() {
 // Get the specific post for this page
 const { post, profile: profileProp } = Astro.props;
 const { Content } = await post.render();
+
+// Use profile from props (passed from getStaticPaths)
+const profile = profileProp;
 ---
 
 <Layout>
-    <Header profile={profileProp} />
+    <Header profile={profile} />
 
     <div class="execute-protocol">
         <p class="terminal-command">$ ./blog --read {post.slug}</p>

@@ -2,12 +2,7 @@
 import '../styles/main.css';
 import ProgressBar from '../components/ProgressBar.astro';
 import StatusBar from '../components/StatusBar.astro';
-import type { UserProfile } from '@/types/index.ts';
-
-// Import profile data
-import profileData from '../data/profile.json';
-
-export const profile: UserProfile = profileData as UserProfile;
+import ProfileProvider from '../components/ProfileProvider.astro';
 ---
 
 <html lang="en">
@@ -24,20 +19,22 @@ export const profile: UserProfile = profileData as UserProfile;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body class="digital-view">
-    <!-- Progress Bar -->
-    <ProgressBar />
+    <ProfileProvider>
+      <!-- Progress Bar -->
+      <ProgressBar />
 
-    <!-- Bottom Status Bar Navigation -->
-    <StatusBar />
+      <!-- Bottom Status Bar Navigation -->
+      <StatusBar />
 
-    <div class="container page">
-      <div class="content">
-        <slot />
+      <div class="container page">
+        <div class="content">
+          <slot />
+        </div>
       </div>
-    </div>
 
-    <!-- Screen Reader Announcements -->
-    <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+      <!-- Screen Reader Announcements -->
+      <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+    </ProfileProvider>
 
     <script>
       // Core theme management functionality

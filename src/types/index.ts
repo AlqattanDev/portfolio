@@ -375,12 +375,26 @@ export interface SkillsProps extends BaseComponentProps {
   variant?: 'grid' | 'list' | 'compact';
   showProgressBars?: boolean;
   interactive?: boolean;
+  barStyle?: SkillBarStyle;
+  animations?: boolean;
 }
+
+// Enhanced Skill Bar Types
+export type SkillBarStyle = 
+  | 'terminal'      // Command-line style: $ skill --level expert
+  | 'matrix'        // Matrix loading style: LOADING... [■■■■□□]
+  | 'execution'     // Code execution tree style
+  | 'meter'         // Retro terminal meter style
+  | 'classic';      // Original ASCII blocks
 
 export interface SkillBarConfig {
   level: SkillLevel;
+  style: SkillBarStyle;
   bar: string;
   html: string;
+  percentage: number;
+  animated?: boolean;
+  interactive?: boolean;
 }
 
 export interface SkillVisualization {
@@ -389,6 +403,8 @@ export interface SkillVisualization {
   dither2: string;
   dither3: string;
   brackets: string;
+  accent: string;
+  background: string;
 }
 
 export type ProgressBarType =
@@ -396,12 +412,36 @@ export type ProgressBarType =
   | 'dither-1'
   | 'dither-2'
   | 'dither-3'
-  | 'empty';
+  | 'empty'
+  | 'accent'
+  | 'glow';
 
 export interface ProgressSegment {
   type: ProgressBarType;
   content: string;
   opacity: number;
+  animationDelay?: number;
+  glowEffect?: boolean;
+}
+
+export interface SkillMetadata {
+  command?: string;
+  status?: string;
+  impact?: string;
+  execTime?: string;
+  processId?: string;
+}
+
+export interface EnhancedSkillBar {
+  config: SkillBarConfig;
+  metadata: SkillMetadata;
+  segments: ProgressSegment[];
+  animations: {
+    typing?: boolean;
+    progressive?: boolean;
+    glow?: boolean;
+    hover?: boolean;
+  };
 }
 
 export interface SkillAssessment {
@@ -434,6 +474,26 @@ export interface SkillSearchResult {
   matchedFields: string[];
 }
 
+export interface EducationEntry {
+  type: 'university' | 'school';
+  institution: string;
+  degree: string;
+  years: string;
+  thesis?: string;
+  specialization?: string;
+  status: 'completed' | 'in-progress' | 'planned';
+  gpa?: string;
+  honors?: string[];
+  relevantCourses?: string[];
+}
+
+export interface EducationProps extends BaseComponentProps {
+  education: EducationEntry[];
+  variant?: 'default' | 'timeline';
+  showDetails?: boolean;
+}
+
+// Legacy Education interface for backward compatibility
 export interface Education {
   degree: string;
   university: string;
@@ -442,12 +502,6 @@ export interface Education {
   gpa?: string;
   honors?: string[];
   relevantCourses?: string[];
-}
-
-export interface EducationProps extends BaseComponentProps {
-  edu: Education;
-  variant?: 'default' | 'compact';
-  showDetails?: boolean;
 }
 
 // Skill Validation Schemas

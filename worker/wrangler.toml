@@ -1,0 +1,19 @@
+name = "portfolio-voice-backend"
+main = "voice-worker.js"
+compatibility_date = "2024-01-15"
+compatibility_flags = [ "nodejs_compat" ]
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+# Environment variables (set these in Cloudflare dashboard)
+# OPENAI_API_KEY = "your-openai-api-key-here"
+
+# Enable WebSocket support
+[[env.production.durable_objects]]
+name = "VOICE_WEBSOCKET"
+class_name = "VoiceWebSocket"
+
+# Workers routing (will be configured in Cloudflare dashboard)
+[env.production.routes]
+# Example: voice.yourdomain.com/*

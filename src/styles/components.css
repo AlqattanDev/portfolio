@@ -1,0 +1,350 @@
+/*
+========================================
+COMPONENT STYLES
+Styles for specific UI components
+========================================
+*/
+
+/* ============ Section Components ============ */
+.section {
+  margin-bottom: var(--space-2xl);
+}
+
+.section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--foreground-digital);
+  margin-bottom: var(--space-lg);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+body.print-view .section-title {
+  color: var(--foreground-print);
+}
+
+/* ============ Entry Components ============ */
+.entry {
+  margin-bottom: var(--space-lg);
+  padding: var(--space-xl);
+  border: 1px solid var(--border-digital);
+  border-radius: var(--radius-2xl);
+  background: linear-gradient(135deg, 
+    rgba(var(--foreground-digital-rgb), 0.02), 
+    rgba(var(--foreground-digital-rgb), 0.005));
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.entry:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(var(--foreground-digital-rgb), 0.3);
+}
+
+body.print-view .entry {
+  border: 1px solid var(--border-print);
+  background: none;
+  backdrop-filter: none;
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-sm);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.entry-title {
+  font-weight: var(--font-weight-bold);
+  color: var(--foreground-digital);
+  font-size: var(--font-size-md);
+}
+
+body.print-view .entry-title {
+  color: var(--foreground-print);
+}
+
+.entry-meta {
+  font-size: var(--font-size-sm);
+  color: var(--muted-digital);
+  white-space: nowrap;
+}
+
+body.print-view .entry-meta {
+  color: var(--muted-print);
+}
+
+.entry-description {
+  font-size: var(--font-size-base);
+  color: var(--muted-digital);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--space-sm);
+}
+
+body.print-view .entry-description {
+  color: var(--muted-print);
+}
+
+/* ============ Tech Stack Components ============ */
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.tech-tag {
+  background: var(--accent-digital);
+  color: var(--foreground-digital);
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--border-digital);
+  font-family: var(--font-body);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.tech-tag:hover {
+  background: rgba(var(--foreground-digital-rgb), 0.1);
+  border-color: var(--foreground-digital);
+  transform: translateY(-1px);
+}
+
+body.print-view .tech-tag {
+  background: var(--background-print);
+  color: var(--foreground-print);
+  border-color: var(--border-print);
+}
+
+/* ============ Contact Components ============ */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-sm);
+}
+
+.contact-grid.modern-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-xl);
+  margin-top: var(--space-lg);
+}
+
+.contact-item {
+  margin-bottom: var(--space-md);
+  position: relative;
+  padding: var(--space-lg);
+  border: 1px solid var(--border-digital);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, 
+    rgba(var(--foreground-digital-rgb), 0.02), 
+    rgba(var(--foreground-digital-rgb), 0.005));
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.contact-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--foreground-digital-rgb), 0.3);
+  box-shadow: var(--shadow-md);
+}
+
+body.print-view .contact-item {
+  border: 1px solid var(--border-print);
+  background: none;
+  backdrop-filter: none;
+}
+
+.contact-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+  background: linear-gradient(135deg, 
+    rgba(var(--foreground-digital-rgb), 0.08), 
+    rgba(var(--foreground-digital-rgb), 0.02));
+  border: 1px solid var(--border-digital);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.contact-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(var(--foreground-digital-rgb), 0.3);
+}
+
+.contact-icon {
+  font-size: var(--font-size-3xl);
+  flex-shrink: 0;
+  opacity: 0.8;
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.contact-card:hover .contact-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.contact-content {
+  flex: 1;
+}
+
+.contact-title {
+  font-weight: var(--font-weight-bold);
+  color: var(--foreground-digital);
+  font-size: var(--font-size-md);
+  margin-bottom: var(--space-xs);
+}
+
+body.print-view .contact-title {
+  color: var(--foreground-print);
+}
+
+.contact-meta {
+  font-size: var(--font-size-sm);
+  color: var(--muted-digital);
+  margin-bottom: var(--space-xs);
+}
+
+body.print-view .contact-meta {
+  color: var(--muted-print);
+}
+
+.contact-description {
+  font-size: var(--font-size-base);
+  color: var(--muted-digital);
+  line-height: var(--line-height-relaxed);
+}
+
+body.print-view .contact-description {
+  color: var(--muted-print);
+}
+
+/* ============ Checksum Component ============ */
+.checksum {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-digital);
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--muted-digital);
+  font-family: var(--font-body);
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+body.print-view .checksum {
+  border-top-color: var(--border-print);
+  color: var(--muted-print);
+}
+
+/* ============ Project Card Component ============ */
+.project-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--foreground-digital), 
+    transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.project-card:hover::before {
+  transform: translateX(100%);
+}
+
+/* ============ Button Components ============ */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--accent-digital);
+  color: var(--foreground-digital);
+  border: 1px solid var(--border-digital);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.button:hover {
+  background: rgba(var(--foreground-digital-rgb), 0.1);
+  border-color: var(--foreground-digital);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button.button-primary {
+  background: var(--foreground-digital);
+  color: var(--background-digital);
+}
+
+.button.button-primary:hover {
+  background: rgba(var(--foreground-digital-rgb), 0.9);
+}
+
+/* ============ Badge Components ============ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2xs) var(--space-sm);
+  background: var(--accent-digital);
+  color: var(--foreground-digital);
+  border: 1px solid var(--border-digital);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.badge.badge-success {
+  background: rgba(var(--color-success-rgb), 0.1);
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.badge.badge-warning {
+  background: rgba(var(--color-warning-rgb), 0.1);
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.badge.badge-error {
+  background: rgba(var(--color-error-rgb), 0.1);
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.badge.badge-info {
+  background: rgba(var(--color-info-rgb), 0.1);
+  color: var(--color-info);
+  border-color: var(--color-info);
+}

@@ -3,6 +3,7 @@
  * Media Preview Component
  * Extracted from ProjectEntry.astro - handles video previews and image galleries
  */
+import { Image } from 'astro:assets';
 import type { BaseComponentProps } from '@/types';
 import type { ImageGalleryItem, VideoPreviewState } from '@/types';
 
@@ -83,14 +84,28 @@ const hasMedia = hasVideo || hasImages;
             tabindex="0"
             aria-label={`Image ${index + 1} of ${processedImages.length}: ${image.alt}`}
           >
-            <img 
-              src={image.src}
-              alt={image.alt}
-              loading={lazyLoading ? "lazy" : "eager"}
-              class="gallery-image"
-              data-full-src={image.src}
-              aria-hidden="true"
-            />
+            {image.src.startsWith('http') ? (
+              <img 
+                src={image.src}
+                alt={image.alt}
+                loading={lazyLoading ? "lazy" : "eager"}
+                class="gallery-image"
+                data-full-src={image.src}
+                aria-hidden="true"
+              />
+            ) : (
+              <Image 
+                src={image.src}
+                alt={image.alt}
+                loading={lazyLoading ? "lazy" : "eager"}
+                class="gallery-image"
+                width={120}
+                height={80}
+                format="webp"
+                quality={80}
+                aria-hidden="true"
+              />
+            )}
             <span class="sr-only loading-status" aria-live="polite"></span>
             {image.caption && (
                <div class="image-caption">{image.caption}</div>
@@ -107,7 +122,7 @@ const hasMedia = hasVideo || hasImages;
 .media-preview {
   margin-bottom: 12px;
   border: 1px solid var(--border-digital);
-  border-radius: 4px;
+  border-radius: var(--radius-base);
   overflow: hidden;
   background: rgba(0, 0, 0, 0.2);
 }
@@ -128,7 +143,7 @@ const hasMedia = hasVideo || hasImages;
 
 .video-preview:hover {
   background: rgba(26, 26, 26, 0.8);
-  border-color: #64ffda;
+  border-color: var(--color-info);
   box-shadow: 0 2px 12px rgba(100, 255, 218, 0.1);
 }
 
@@ -143,18 +158,18 @@ const hasMedia = hasVideo || hasImages;
 }
 
 .video-preview:hover .video-placeholder {
-  color: #64ffda;
+  color: var(--color-info);
 }
 
 .play-icon {
   font-size: 20px;
-  color: #64ffda;
+  color: var(--color-info);
   transition: all 0.3s ease;
 }
 
 .video-preview:hover .play-icon {
   transform: scale(1.1);
-  filter: drop-shadow(0 0 8px #64ffda);
+  filter: drop-shadow(0 0 8px var(--color-info));
 }
 
 .play-text {
@@ -191,7 +206,7 @@ const hasMedia = hasVideo || hasImages;
 
 .image-gallery::-webkit-scrollbar-thumb {
   background: var(--border-digital);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
 }
 
 .gallery-item {
@@ -200,7 +215,7 @@ const hasMedia = hasVideo || hasImages;
   width: 60px;
   height: 40px;
   border: 1px solid var(--border-digital);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -208,7 +223,7 @@ const hasMedia = hasVideo || hasImages;
 
 .gallery-item:hover {
   transform: scale(1.1);
-  border-color: #64ffda;
+  border-color: var(--color-info);
   z-index: 10;
   box-shadow: 0 4px 12px rgba(100, 255, 218, 0.2);
 }
@@ -307,21 +322,21 @@ const hasMedia = hasVideo || hasImages;
 /* Error states */
 .video-preview.error {
   background: rgba(255, 68, 68, 0.1);
-  border-color: #ff4444;
+  border-color: var(--color-error);
 }
 
 .video-preview.error .play-icon {
-  color: #ff4444;
+  color: var(--color-error);
 }
 
 .video-preview.error .play-text::before {
   content: '⚠ ';
-  color: #ff4444;
+  color: var(--color-error);
 }
 
 .gallery-item.error {
   background: rgba(255, 68, 68, 0.1);
-  border-color: #ff4444;
+  border-color: var(--color-error);
 }
 
 .gallery-item.error::after {
@@ -330,7 +345,7 @@ const hasMedia = hasVideo || hasImages;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #ff4444;
+  color: var(--color-error);
   font-size: 16px;
 }
 

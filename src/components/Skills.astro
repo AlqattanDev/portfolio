@@ -1,12 +1,14 @@
 ---
 /**
- * Skills Component - Refactored
- * Now uses utility functions and proper type definitions
+ * Modern Skills Component
+ * Minimalist design with elegant progress indicators
  */
-import type { SkillsProps, SkillLevel } from '@/types';
+import type { SkillsProps, SkillLevel, SkillBarStyle } from '@/types';
 import {
   generateSkillBarConfig,
+  generateEnhancedSkillBar,
   isValidSkillLevel,
+  skillLevelToPercentage,
 } from '@/utils/helpers';
 
 const {
@@ -14,571 +16,433 @@ const {
   variant = 'grid',
   showProgressBars = true,
   interactive = true,
+  barStyle = 'terminal',
+  animations = true,
   className = '',
   ...props
 } = Astro.props as SkillsProps;
 
-// Enhanced skill bar generation with validation
-const getSkillBarStyle = (level: string) => {
-  if (!isValidSkillLevel(level)) {
-    console.warn(`Invalid skill level: ${level}, defaulting to Beginner`);
-    return generateSkillBarConfig('Beginner');
-  }
-  return generateSkillBarConfig(level as SkillLevel);
+// Get percentage for level
+const getPercentage = (level: string): number => {
+  if (!isValidSkillLevel(level)) return 0;
+  return skillLevelToPercentage(level as SkillLevel);
 };
 ---
 
-<div class={`skills-container skills-${variant} ${className}`} {...props}>
-  <div class="skills-header">
-    <span class="command-prompt">$ cat ~/.skills</span>
-  </div>
-
-  {
-    skills && skills.length > 0 ? (
-      <div class="skills-grid">
-        {skills.map((category) => (
-          <div class="category-section">
+<div class={`skills-container modern-design ${className}`} {...props}>
+  <div class="skills-grid">
+    {
+      skills && skills.length > 0 ? (
+        skills.map((category) => (
+          <div class="skill-category-card">
             <div class="category-header">
-              <h3 class="category-name">{category.header}</h3>
-              <span class="category-meta">{category.years}</span>
+              <h3 class="category-title">{category.header}</h3>
+              <span class="category-experience">{category.years}</span>
             </div>
 
-            <div class="skills-list">
+            <div class="skills-collection">
               {category.items.map((skill) => (
-                <div class={`skill-item ${interactive ? 'interactive' : ''}`}>
-                  <div class="skill-info">
-                    <div class="skill-name">{skill.name}</div>
-                    <div class="skill-details">
-                      <span class="skill-meta">
-                        {skill.years} • {skill.projects}
-                      </span>
-                      <span class="skill-highlight">{skill.highlight}</span>
+                <div class={`skill-card ${interactive ? 'interactive' : ''}`}>
+                  <div class="skill-content">
+                    <div class="skill-main">
+                      <h4 class="skill-name">{skill.name}</h4>
+                      <div class="skill-level-indicator">
+                        <span class="level-text">{skill.level}</span>
+                        <span class="level-percentage">{getPercentage(skill.level)}%</span>
+                      </div>
                     </div>
-                  </div>
 
-                  {showProgressBars && (
-                    <div class="skill-progress">
-                      <span class="skill-level">{skill.level}</span>
-                      <code
-                        class="skill-bar"
-                        set:html={getSkillBarStyle(skill.level).html}
-                      />
-                    </div>
-                  )}
+                    {showProgressBars && (
+                      <div class="skill-visualization">
+                        <div class="progress-ring">
+                          <svg class="progress-svg" viewBox="0 0 42 42">
+                            <circle class="progress-bg" 
+                              cx="21" cy="21" r="15.9155" 
+                              fill="none" 
+                              stroke-width="2"
+                            />
+                            <circle class="progress-bar" 
+                              cx="21" cy="21" r="15.9155" 
+                              fill="none" 
+                              stroke-width="2"
+                              stroke-dasharray={`${getPercentage(skill.level)} 100`}
+                              stroke-dashoffset="25"
+                            />
+                          </svg>
+                          <div class="progress-text">
+                            <span class="progress-value">{getPercentage(skill.level)}</span>
+                          </div>
+                        </div>
+                        
+                        <div class="skill-details">
+                          <div class="detail-item">
+                            <span class="detail-label">Experience</span>
+                            <span class="detail-value">{skill.years}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">Projects</span>
+                            <span class="detail-value">{skill.projects}</span>
+                          </div>
+                          {skill.highlight && (
+                            <div class="detail-highlight">
+                              {skill.highlight}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-        ))}
-      </div>
-    ) : (
-      <div class="skills-error">
-        <span class="error-message">! No skills data available</span>
-        <span class="error-details">Skills data not provided</span>
-      </div>
-    )
-  }
+        ))
+      ) : (
+        <div class="skills-empty">
+          <span class="empty-message">No skills data available</span>
+        </div>
+      )
+    }
+  </div>
 </div>
 
 <style>
-  .skills-container {
-    background: transparent;
-    border: none;
+  /* Modern Skills Container */
+  .skills-container.modern-design {
     padding: 0;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-
-  .skills-header {
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border-digital);
-  }
-
-  .command-prompt {
-    color: var(--foreground-digital);
-    font-weight: bold;
+    font-family: var(--font-body);
+    --skill-primary: var(--foreground-digital);
+    --skill-secondary: var(--muted-digital);
+    --skill-accent: var(--foreground-digital);
+    --skill-gradient-start: rgba(0, 255, 65, 0.08);
+    --skill-gradient-end: rgba(0, 255, 65, 0.01);
+    --skill-border: var(--border-digital);
+    --skill-shadow: var(--shadow-md);
   }
 
   .skills-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 40px 80px;
-    align-items: start;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
   }
 
-  .category-section {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-width: 0;
+  /* Category Card */
+  .skill-category-card {
+    background: linear-gradient(135deg, var(--skill-gradient-start), var(--skill-gradient-end));
+    border: 1px solid var(--skill-border);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(10px);
+    transition: all var(--transition-base) var(--ease-in-out);
+  }
+
+  .skill-category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--skill-accent);
   }
 
   .category-header {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-digital);
+    align-items: center;
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--skill-border);
   }
 
-  .category-name {
-    color: var(--foreground-digital);
-    font-size: 14px;
-    font-weight: bold;
+  .category-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--skill-primary);
     margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: var(--letter-spacing-tight);
   }
 
-  .category-meta {
-    color: var(--muted-digital);
-    font-size: 11px;
-    font-weight: normal;
+  .category-experience {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--skill-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-full);
   }
 
-  .skills-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  /* Skills Collection */
+  .skills-collection {
+    display: grid;
+    gap: var(--space-lg);
   }
 
-  .skill-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 12px;
-    padding: 10px 0;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    width: 100%;
+  /* Individual Skill Card */
+  .skill-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    transition: all var(--transition-base) var(--ease-in-out);
   }
 
-  .skill-item.interactive:hover {
-    background: rgba(0, 255, 65, 0.05);
+  .skill-card.interactive:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--skill-accent);
     transform: translateX(4px);
   }
 
-  .skill-info {
+  .skill-content {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-    flex: 1;
+    gap: 16px;
+  }
+
+  .skill-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .skill-name {
-    color: var(--foreground-digital);
-    font-weight: 500;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--skill-primary);
+    margin: 0;
+    letter-spacing: -0.01em;
   }
 
+  .skill-level-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .level-text {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--skill-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    background: rgba(0, 255, 65, 0.1);
+    border-radius: var(--radius-base);
+  }
+
+  .level-percentage {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--skill-secondary);
+  }
+
+  /* Progress Visualization */
+  .skill-visualization {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 16px;
+    align-items: center;
+  }
+
+  /* Circular Progress */
+  .progress-ring {
+    position: relative;
+    width: 60px;
+    height: 60px;
+  }
+
+  .progress-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .progress-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 2;
+  }
+
+  .progress-bar {
+    fill: none;
+    stroke: var(--skill-accent);
+    stroke-linecap: round;
+    stroke-width: 2;
+    transition: stroke-dasharray 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .progress-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--skill-primary);
+  }
+
+  /* Skill Details */
   .skill-details {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
   }
 
-  .skill-meta {
-    color: var(--muted-digital);
-    font-size: 10px;
-  }
-
-  .skill-highlight {
-    color: var(--muted-digital);
-    font-size: 9px;
-    font-style: italic;
-    opacity: 0.8;
-  }
-
-  .skill-progress {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-
-  .skill-level {
-    color: var(--muted-digital);
-    font-size: 11px;
-    white-space: nowrap;
-  }
-
-  .skill-bar {
-    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
-    background: rgba(0, 0, 0, 0.1);
-    border: 1px solid var(--border-digital);
-    border-radius: 4px;
-    padding: 2px 6px;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: -0.5px;
-    white-space: nowrap;
-    color: var(--foreground-digital);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Code-like styling for different block types */
-  .skill-bar .filled {
-    color: #00ff41;
-    text-shadow: 0 0 2px rgba(0, 255, 65, 0.3);
-    font-weight: 600;
-  }
-
-  .skill-bar .dither-1 {
-    color: #ffff00;
-    text-shadow: 0 0 2px rgba(255, 255, 0, 0.2);
-    font-weight: 500;
-  }
-
-  .skill-bar .dither-2 {
-    color: #ff8c00;
-    text-shadow: 0 0 2px rgba(255, 140, 0, 0.2);
-    font-weight: 400;
-  }
-
-  .skill-bar .dither-3 {
-    color: #666;
-    font-weight: 300;
-  }
-
-  /* Print Mode Styles - Strict Black and White */
-  body.print-view .skills-container {
-    background: white !important;
-    color: black !important;
-  }
-
-  body.print-view .skills-header {
-    border-bottom-color: black !important;
-  }
-
-  body.print-view .command-prompt,
-  body.print-view .category-name,
-  body.print-view .skill-name {
-    color: black !important;
-  }
-
-  body.print-view .category-header {
-    border-bottom-color: black !important;
-  }
-
-  body.print-view .skill-bar {
-    background: white !important;
-    border: 1px solid black !important;
-    box-shadow: none !important;
-    color: black !important;
-  }
-
-  body.print-view .skill-bar .filled {
-    color: black !important;
-    text-shadow: none !important;
-    font-weight: 700 !important;
-  }
-
-  body.print-view .skill-bar .dither-1 {
-    color: black !important;
-    text-shadow: none !important;
-    font-weight: 600 !important;
-  }
-
-  body.print-view .skill-bar .dither-2 {
-    color: black !important;
-    text-shadow: none !important;
-    font-weight: 500 !important;
-  }
-
-  body.print-view .skill-bar .dither-3 {
-    color: black !important;
-    text-shadow: none !important;
-    font-weight: 400 !important;
-  }
-
-  body.print-view .category-meta,
-  body.print-view .skill-level,
-  body.print-view .skill-meta,
-  body.print-view .skill-highlight {
-    color: black !important;
-  }
-
-  body.print-view .skill-item {
-    background: white !important;
-  }
-
-  body.print-view .skill-item:hover {
-    background: white !important;
-    transform: none !important;
-  }
-
-  /* Error handling styles */
-  .skills-error {
+  .detail-item {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    padding: 40px 20px;
-    text-align: center;
-    border: 1px dashed var(--border-digital);
-    background: rgba(255, 68, 68, 0.05);
-  }
-
-  .error-message {
-    color: var(--color-error);
-    font-weight: bold;
-    font-size: 14px;
-  }
-
-  .error-details {
-    color: var(--muted-digital);
     font-size: 11px;
+  }
+
+  .detail-label {
+    color: var(--skill-secondary);
+    opacity: 0.7;
+  }
+
+  .detail-value {
+    color: var(--skill-primary);
+    font-weight: 500;
+  }
+
+  .detail-highlight {
+    font-size: 10px;
+    color: var(--skill-accent);
     opacity: 0.8;
+    margin-top: 4px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  body.print-view .skills-error {
-    border-color: var(--border-print);
-    background: transparent;
+  /* Empty State */
+  .skills-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--skill-secondary);
   }
 
-  body.print-view .error-message {
-    color: var(--foreground-print) !important;
+  .empty-message {
+    font-size: 14px;
+    opacity: 0.6;
   }
 
-  body.print-view .error-details {
-    color: var(--muted-print) !important;
-  }
-
-  /* Variant-specific styles */
-  .skills-list {
-    variant: 'list';
-  }
-
-  .skills-container.skills-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .skills-container.skills-compact .skills-grid {
-    gap: 16px;
-  }
-
-  .skills-container.skills-compact .skill-item {
-    padding: 6px 0;
-    gap: 16px;
-  }
-
-  .skills-container.skills-compact .category-name {
-    font-size: 13px;
-  }
-
-  .skills-container.skills-compact .skill-name {
-    font-size: 12px;
-  }
-
-  /* Enhanced Mobile-First Responsive Design with Container Queries */
-  @media (max-width: 1024px) {
+  /* Responsive Design */
+  @media (min-width: 768px) {
     .skills-grid {
-      gap: clamp(20px, 4vw, 30px) clamp(40px, 8vw, 60px);
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
     }
   }
 
-  @media (max-width: 768px) {
-    .skills-container {
-      font-size: var(--font-size-base);
+  @media (min-width: 1024px) {
+    .skill-category-card {
+      padding: 32px;
     }
 
-    .skills-grid {
-      grid-template-columns: 1fr;
-      gap: clamp(16px, 3vw, 24px);
-      /* Add container query support when available */
-      container-type: inline-size;
-    }
-
-    .skill-item {
-      gap: clamp(12px, 2.5vw, 16px);
-      padding: clamp(6px, 1.5vw, 10px) 0;
-      /* Enhanced touch targets for mobile */
-      min-height: var(--touch-target-min);
-    }
-
-    .skill-meta,
-    .skill-highlight {
-      font-size: var(--font-size-xs);
-    }
-
-    .skill-bar {
-      font-size: var(--font-size-sm);
-      padding: clamp(2px, 0.5vw, 4px) clamp(6px, 1.5vw, 8px);
-    }
-  }
-
-  @media (max-width: 414px) {
-    .skills-container {
-      font-size: var(--font-size-sm);
-    }
-
-    .category-name {
-      font-size: var(--font-size-md);
+    .category-title {
+      font-size: 20px;
     }
 
     .skill-name {
-      font-size: var(--font-size-base);
-    }
-
-    .skill-item {
-      padding: clamp(4px, 1vw, 8px) 0;
-      gap: clamp(8px, 2vw, 12px);
-      /* Improve touch interactions */
-      touch-action: manipulation;
-    }
-
-    .skill-progress {
-      gap: clamp(4px, 1vw, 8px);
-    }
-
-    .skill-bar {
-      font-size: var(--font-size-xs);
-      padding: clamp(1px, 0.3vw, 3px) clamp(4px, 1vw, 6px);
+      font-size: 15px;
     }
   }
 
-  @media (max-width: 375px) {
-    .skills-container {
-      font-size: var(--font-size-xs);
+  @media (max-width: 640px) {
+    .skill-category-card {
+      padding: 20px;
+      border-radius: var(--radius-xl);
     }
 
-    .category-name {
-      font-size: var(--font-size-base);
+    .category-title {
+      font-size: 16px;
     }
 
-    .skill-name {
-      font-size: var(--font-size-sm);
+    .skills-collection {
+      gap: 12px;
     }
 
-    .skill-item {
-      flex-direction: column;
-      gap: clamp(6px, 1.5vw, 10px);
-      align-items: flex-start;
-      padding: clamp(6px, 1.5vw, 10px) 0;
-      /* Enhanced mobile interactions */
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: rgba(0, 255, 65, 0.1);
+    .skill-card {
+      padding: 12px;
     }
 
-    .skill-progress {
-      align-self: stretch;
-      grid-template-columns: 1fr auto;
-      gap: clamp(6px, 1.5vw, 10px);
-      width: 100%;
+    .skill-visualization {
+      grid-template-columns: 50px 1fr;
+      gap: 12px;
     }
 
-    .skill-level {
-      order: 2;
-      font-size: var(--font-size-2xs);
+    .progress-ring {
+      width: 50px;
+      height: 50px;
     }
 
-    .skill-bar {
-      order: 1;
-      font-size: var(--font-size-2xs);
-      min-width: 0; /* Allow shrinking */
-      flex: 1;
+    .progress-value {
+      font-size: 12px;
     }
   }
 
-  @media (max-width: 320px) {
-    .skills-container {
-      font-size: var(--font-size-2xs);
-    }
+  /* Animation Classes */
+  .skill-card {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+  }
 
-    .skills-grid {
-      gap: clamp(12px, 2vw, 16px);
-    }
+  .skill-card:nth-child(1) { animation-delay: 0.1s; }
+  .skill-card:nth-child(2) { animation-delay: 0.2s; }
+  .skill-card:nth-child(3) { animation-delay: 0.3s; }
+  .skill-card:nth-child(4) { animation-delay: 0.4s; }
 
-    .category-section {
-      gap: clamp(8px, 1.5vw, 12px);
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
     }
-
-    .category-name {
-      font-size: var(--font-size-xs);
-    }
-
-    .skill-name {
-      font-size: var(--font-size-2xs);
-    }
-
-    .skill-item {
-      padding: clamp(4px, 1vw, 6px) 0;
-      gap: clamp(4px, 1vw, 6px);
-    }
-
-    .skill-meta,
-    .skill-highlight {
-      font-size: calc(var(--font-size-2xs) - 1px);
-      line-height: 1.3;
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 
-  /* Enhanced Touch Device Optimizations */
-  @media (hover: none) {
-    .skill-item.interactive {
-      cursor: default;
-      /* Enhanced touch feedback */
-      -webkit-tap-highlight-color: rgba(0, 255, 65, 0.2);
-      tap-highlight-color: rgba(0, 255, 65, 0.2);
-    }
-
-    .skill-item.interactive:active {
-      background: rgba(0, 255, 65, 0.15);
-      transform: scale(0.98);
-      transition: all 0.1s ease-out;
-    }
-
-    /* Larger touch targets on touch devices */
-    .skill-item {
-      min-height: var(--touch-target-comfortable);
-      padding: clamp(8px, 2vw, 12px) 0;
-    }
-
-    .category-header {
-      min-height: var(--touch-target-min);
-    }
-
-    /* Enhanced scrolling on mobile */
-    .skills-grid {
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
+  /* Dark Mode Optimizations */
+  @media (prefers-color-scheme: dark) {
+    .skill-category-card {
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.03), 
+        rgba(255, 255, 255, 0.01));
     }
   }
 
-  /* Progressive Web App optimizations */
-  @media (display-mode: standalone) {
-    .skills-container {
-      /* Account for PWA status bar on mobile */
-      margin-top: env(safe-area-inset-top);
+  /* Print Styles */
+  @media print {
+    .skill-category-card {
+      border: 1px solid var(--foreground-print);
+      background: none;
+      page-break-inside: avoid;
+    }
+
+    .progress-bar {
+      stroke: var(--foreground-print);
+    }
+
+    .skill-card {
+      animation: none;
+      opacity: 1;
     }
   }
 
-  /* High contrast mode support */
-  @media (prefers-contrast: high) {
-    .skill-bar {
-      border-width: 2px;
-      font-weight: var(--font-weight-bold);
-    }
-    
-    .skill-bar .filled {
-      font-weight: 800;
-    }
-  }
-
-  /* Reduced motion support */
+  /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .skill-item {
-      transition: none;
+    .skill-card,
+    .progress-bar {
+      animation: none;
     }
-    
-    .skill-item.interactive:hover,
-    .skill-item.interactive:active {
-      transform: none;
+
+    .skill-card {
+      opacity: 1;
+    }
+
+    * {
+      transition: none !important;
     }
   }
 </style>

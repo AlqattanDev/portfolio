@@ -5,7 +5,9 @@ import Section from '../components/Section.astro';
 import ProjectEntry from '../components/ProjectEntry.astro';
 import Skills from '../components/Skills.astro';
 import Education from '../components/Education.astro';
-import profile from '../data/profile.json';
+
+// Get profile from context (set by ProfileProvider in Layout)
+const profile = Astro.locals.profile || await import('../data/profile.json').then(m => m.default);
 
 // Normalize projects to ensure metrics are available in expected shape
 const normalizedProjects = (profile.projects || []).map((p: any) => ({
@@ -23,35 +25,41 @@ const normalizedProjects = (profile.projects || []).map((p: any) => ({
   <Header profile={profile} />
 
   <Section id="contact-info" title="Contact Info">
-    <div class="contact-grid">
-      {profile.personal?.location && (
-        <div>
-          <div class="contact-title">Location</div>
-          <div class="contact-description">{profile.personal.location}</div>
-        </div>
-      )}
-      <div>
-        <div class="contact-title">Email</div>
-        <a class="contact-description" href={`mailto:${profile.contact.email}`}>{profile.contact.email}</a>
+    <div class="terminal-contact">
+      <div class="terminal-header">
+        <span class="terminal-prompt">$ ./connect --list</span>
       </div>
-      {profile.personal?.website && (
-        <div>
-          <div class="contact-title">Website</div>
-          <a class="contact-description" href={profile.personal.website} target="_blank" rel="noopener noreferrer">{profile.personal.website}</a>
+      <div class="contact-terminal-output">
+        <div class="contact-entry">
+          <span class="contact-method">[EMAIL]</span>
+          <span class="contact-separator">></span>
+          <a href={`mailto:${profile.contact.email}`} class="contact-value">{profile.contact.email}</a>
         </div>
-      )}
-      {profile.social?.linkedin && (
-        <div>
-          <div class="contact-title">LinkedIn</div>
-          <a class="contact-description" href={profile.social.linkedin} target="_blank" rel="noopener noreferrer">{profile.social.linkedin}</a>
-        </div>
-      )}
-      {profile.social?.github && (
-        <div>
-          <div class="contact-title">GitHub</div>
-          <a class="contact-description" href={profile.social.github} target="_blank" rel="noopener noreferrer">{profile.social.github}</a>
-        </div>
-      )}
+        {profile.personal?.website && (
+          <div class="contact-entry">
+            <span class="contact-method">[WEB]</span>
+            <span class="contact-separator">></span>
+            <a href={profile.personal.website} target="_blank" rel="noopener noreferrer" class="contact-value">{profile.personal.website}</a>
+          </div>
+        )}
+        {profile.social?.linkedin && (
+          <div class="contact-entry">
+            <span class="contact-method">[LINKEDIN]</span>
+            <span class="contact-separator">></span>
+            <a href={profile.social.linkedin} target="_blank" rel="noopener noreferrer" class="contact-value">linkedin.com/in/alqattandev</a>
+          </div>
+        )}
+        {profile.social?.github && (
+          <div class="contact-entry">
+            <span class="contact-method">[GITHUB]</span>
+            <span class="contact-separator">></span>
+            <a href={profile.social.github} target="_blank" rel="noopener noreferrer" class="contact-value">github.com/AlqattanDev</a>
+          </div>
+        )}
+      </div>
+      <div class="terminal-footer">
+        <span class="terminal-cursor">█</span>
+      </div>
     </div>
   </Section>
 
@@ -62,12 +70,13 @@ const normalizedProjects = (profile.projects || []).map((p: any) => ({
   </Section>
 
   <Section id="skill-matrix" title="Skill Matrix">
-    <Skills skills={profile.skills} />
+    <Skills skills={profile.skills} barStyle="terminal" animations={true} />
   </Section>
 
   <Section id="education-log" title="Education Log">
-    <Education edu={profile.education} />
+    <Education education={profile.education} />
   </Section>
 
   <div class="checksum">Checksum: {profile.checksum}</div>
+  
 </Layout>

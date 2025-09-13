@@ -1,0 +1,156 @@
+/*
+========================================
+BASE STYLES
+Reset and fundamental element styles
+========================================
+*/
+
+/* Digital/Print View Toggle Classes */
+.digital-only {
+  display: block;
+}
+
+.print-only {
+  display: none;
+}
+
+body.print-view .digital-only {
+  display: none;
+}
+
+body.print-view .print-only {
+  display: block;
+}
+
+/* Links */
+a {
+  color: var(--foreground-digital);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--muted-digital);
+}
+
+body.print-view a {
+  color: var(--foreground-print);
+  border-bottom-color: var(--muted-print);
+}
+
+a:hover {
+  border-bottom-style: solid;
+}
+
+/* Code blocks */
+code, .code {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  background: var(--accent-digital);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  color: var(--foreground-digital);
+}
+
+body.print-view code,
+body.print-view .code {
+  background: var(--accent-print);
+  color: var(--foreground-print);
+}
+
+/* Comments */
+.comment {
+  color: var(--muted-digital);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+body.print-view .comment {
+  color: var(--muted-print);
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid var(--foreground-digital);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+body.print-view :focus-visible {
+  outline-color: var(--foreground-print);
+}
+
+/* Selection */
+::selection {
+  background: rgba(var(--foreground-digital-rgb), 0.3);
+  color: var(--background-digital);
+}
+
+body.print-view ::selection {
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--foreground-print);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-digital);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-digital);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground-digital);
+}
+
+/* Print specific styles */
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+  
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+  
+  pre, blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+  
+  tr, img {
+    page-break-inside: avoid;
+  }
+  
+  p, h2, h3 {
+    orphans: 3;
+    widows: 3;
+  }
+  
+  h2, h3 {
+    page-break-after: avoid;
+  }
+}

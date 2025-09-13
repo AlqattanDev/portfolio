@@ -240,10 +240,23 @@
       ]
     }
   ],
-  "education": {
-    "degree": "Computer Science / Software Engineering",
-    "university": "University of Technology Bahrain",
-    "thesis": "UTB Codebase - Student code repository and app distribution platform"
-  },
+  "education": [
+    {
+      "type": "university",
+      "institution": "University of Technology Bahrain",
+      "degree": "Bachelor's in Computer Science / Software Engineering",
+      "years": "2020 - 2024",
+      "thesis": "UTB Codebase - Student code repository and app distribution platform",
+      "status": "completed"
+    },
+    {
+      "type": "school",
+      "institution": "Bahrain School",
+      "degree": "High School Diploma",
+      "years": "2017 - 2020", 
+      "specialization": "Science Track",
+      "status": "completed"
+    }
+  ],
   "checksum": "f4a9b1c8d0e7f6a5"
 }

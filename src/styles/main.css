@@ -1,864 +1,308 @@
 /*
 ========================================
-DESIGN SYSTEM VARIABLES
-Centralized spacing, typography, and animation values
+MAIN STYLESHEET
+Imports all modular CSS files
 ========================================
 */
 
-:root {
-  /* ============ Fluid Spacing System ============ */
-  /* Fluid spacing that scales with screen size */
-  --space-2xs: clamp(1px, 0.2vw, 3px);
-  --space-xs: clamp(2px, 0.5vw, 6px);
-  --space-sm: clamp(4px, 1vw, 12px);
-  --space-md: clamp(8px, 2vw, 20px);
-  --space-lg: clamp(12px, 3vw, 32px);
-  --space-xl: clamp(16px, 4vw, 48px);
-  --space-2xl: clamp(24px, 5vw, 64px);
-  --space-3xl: clamp(32px, 6vw, 80px);
-  --space-4xl: clamp(40px, 8vw, 120px);
+/* Import modular stylesheets */
+@import './variables.css';
+@import './themes.css';
+@import './base.css';
+@import './components.css';
+@import './utilities.css';
 
-  /* Static fallback spacing for browsers without clamp support */
-  --space-static-2xs: 2px;
-  --space-static-xs: 4px;
-  --space-static-sm: 8px;
-  --space-static-md: 16px;
-  --space-static-lg: 24px;
-  --space-static-xl: 32px;
-  --space-static-2xl: 40px;
-  --space-static-3xl: 56px;
-  --space-static-4xl: 64px;
-
-  /* ============ Enhanced Breakpoint System ============ */
-  /* Mobile-first granular breakpoints */
-  --breakpoint-2xs: 320px;   /* Very small phones (iPhone SE) */
-  --breakpoint-xs: 360px;    /* Small phones (Galaxy S10) */
-  --breakpoint-sm: 375px;    /* iPhone standard */
-  --breakpoint-md: 414px;    /* Large phones (iPhone Pro Max) */
-  --breakpoint-lg: 480px;    /* Small tablets / Large phones landscape */
-  --breakpoint-xl: 768px;    /* Tablets portrait */
-  --breakpoint-2xl: 1024px;  /* Desktop / Tablets landscape */
-  --breakpoint-3xl: 1280px;  /* Large desktop */
-  --breakpoint-4xl: 1440px;  /* Wide desktop */
-  --breakpoint-5xl: 1920px;  /* Ultra-wide screens */
-  
-  /* Legacy breakpoint names (for compatibility) */
-  --breakpoint-mobile: 480px;
-  --breakpoint-tablet: 768px;
-  --breakpoint-desktop: 1024px;
-  --breakpoint-wide: 1280px;
-
-  /* Container query breakpoints */
-  --container-xs: 320px;
-  --container-sm: 480px;
-  --container-md: 640px;
-  --container-lg: 768px;
-  --container-xl: 1024px;
-
-  /* ============ Fluid Typography Scale with clamp() ============ */
-  /* Fluid font sizes that scale smoothly across all screen sizes */
-  --font-size-2xs: clamp(7px, 1.5vw, 8px);
-  --font-size-xs: clamp(8px, 1.8vw, 10px);
-  --font-size-sm: clamp(9px, 2vw, 11px);
-  --font-size-base: clamp(10px, 2.2vw, 13px);
-  --font-size-md: clamp(11px, 2.4vw, 14px);
-  --font-size-lg: clamp(12px, 2.6vw, 15px);
-  --font-size-xl: clamp(14px, 3vw, 17px);
-  --font-size-2xl: clamp(16px, 3.5vw, 20px);
-  --font-size-3xl: clamp(18px, 4vw, 24px);
-  --font-size-4xl: clamp(20px, 5vw, 32px);
-
-  /* Static fallback sizes for browsers without clamp support */
-  --font-size-static-2xs: 8px;
-  --font-size-static-xs: 9px;
-  --font-size-static-sm: 10px;
-  --font-size-static-base: 12px;
-  --font-size-static-md: 13px;
-  --font-size-static-lg: 14px;
-  --font-size-static-xl: 16px;
-  --font-size-static-2xl: 18px;
-
-  /* ============ Line Heights ============ */
-  --line-height-tight: 1.2;
-  --line-height-base: 1.4;
-  --line-height-relaxed: 1.6;
-
-  /* ============ Font Weights ============ */
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
-  /* ============ Letter Spacing ============ */
-  --letter-spacing-tight: -0.05em;
-  --letter-spacing-normal: 0;
-  --letter-spacing-wide: 0.05em;
-  --letter-spacing-wider: 0.1em;
-  --letter-spacing-widest: 0.15em;
-
-  /* ============ Transitions ============ */
-  --transition-fast: 150ms;
-  --transition-base: 250ms;
-  --transition-slow: 350ms;
-  --transition-slower: 500ms;
-
-  /* ============ Easing Functions ============ */
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
-  --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-
-  /* ============ Border Radius ============ */
-  --radius-sm: 2px;
-  --radius-base: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
-  --radius-full: 9999px;
-
-  /* ============ Shadows ============ */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-base: 0 4px 8px rgba(0, 0, 0, 0.15);
-  --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.25);
-  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.3);
-
-  /* ============ Z-Index Scale ============ */
-  --z-base: 1;
-  --z-dropdown: 100;
-  --z-sticky: 200;
-  --z-overlay: 300;
-  --z-modal: 400;
-  --z-popover: 500;
-  --z-tooltip: 600;
-  --z-toast: 700;
-  --z-top: 9999;
-
-  /* ============ Grid System ============ */
-  --grid-columns: 12;
-  --grid-gap-mobile: var(--space-md);
-  --grid-gap-tablet: var(--space-lg);
-  --grid-gap-desktop: var(--space-xl);
-
-  /* ============ Container Widths ============ */
-  --container-sm: 640px;
-  --container-md: 768px;
-  --container-lg: 980px;
-  --container-xl: 1280px;
-
-  /* ============ Animation Durations ============ */
-  --duration-instant: 50ms;
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
-  --duration-slow: 500ms;
-  --duration-slower: 1000ms;
-  
-  /* ============ Touch & Interaction ============ */
-  --touch-target-min: 44px;     /* Minimum touch target size */
-  --touch-target-comfortable: 48px; /* Comfortable touch target size */
-  --safe-area-inset-top: env(safe-area-inset-top);
-  --safe-area-inset-right: env(safe-area-inset-right);
-  --safe-area-inset-bottom: env(safe-area-inset-bottom);
-  --safe-area-inset-left: env(safe-area-inset-left);
-}
-
-/* ============ Responsive Breakpoint Mixins ============ */
-/* These will be used in media queries throughout the application */
-
-/* Usage examples in components:
-@media (max-width: 360px) { // Extra small phones
-@media (max-width: 480px) { // Small phones  
-@media (max-width: 768px) { // Tablets
-@media (max-width: 1024px) { // Desktop
-@media (hover: none) { // Touch devices
-@media (prefers-reduced-motion: reduce) { // Reduced motion
-*/
-
-/* ============ Core Utility Classes ============ */
-
-/* Essential utilities only - unused classes removed for optimization */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}/*
-========================================
-THEME COLOR SCHEMES
-All color schemes consolidated in one place
-========================================
-*/
-
-:root {
-  /* Default Theme Colors (used as fallback) */
-  --background-digital: #0a0a0a;
-  --foreground-digital: #00ff41;
-  --muted-digital: #888888;
-  --border-digital: #333333;
-  --accent-digital: #101010;
-
-  --background-print: #ffffff;
-  --foreground-print: #000000;
-  --muted-print: #666666;
-  --border-print: #000000;
-  --accent-print: #000000;
-
-  /* Font Families */
-  --font-body: 'JetBrains Mono', 'Courier New', monospace;
-  --font-accent: 'Space Mono', monospace;
-
-  /* Transition Speed - using design system variable */
-  --transition-speed: var(--transition-base);
-}
-
-/* ============ Matrix Theme (Default) ============ */
-body.scheme-matrix {
-  --foreground-digital: #00ff41;
-  --background-digital: #0a0a0a;
-  --muted-digital: #004d1a;
-  --border-digital: #00ff41;
-  --accent-digital: #003d14;
-}
-
-/* ============ Blockchain Theme ============ */
-body.scheme-blockchain {
-  --foreground-digital: #f7931a;
-  --background-digital: #1a1a1a;
-  --muted-digital: #4d2e0a;
-  --border-digital: #f7931a;
-  --accent-digital: #3d240a;
-}
-
-/* ============ Trading Theme ============ */
-body.scheme-trading {
-  --foreground-digital: #ff6b6b;
-  --background-digital: #0f0f0f;
-  --muted-digital: #4d1a1a;
-  --border-digital: #ff6b6b;
-  --accent-digital: #3d1414;
-}
-
-/* ============ Encryption Theme ============ */
-body.scheme-encryption {
-  --foreground-digital: #4ecdc4;
-  --background-digital: #0a1a1a;
-  --muted-digital: #1a4d4a;
-  --border-digital: #4ecdc4;
-  --accent-digital: #143d3a;
-}
-
-/* ============ Ledger Theme ============ */
-body.scheme-ledger {
-  --foreground-digital: #45b7d1;
-  --background-digital: #0a1520;
-  --muted-digital: #1a3a4d;
-  --border-digital: #45b7d1;
-  --accent-digital: #142e3d;
-}
-
-/* ============ Swift Theme ============ */
-body.scheme-swift {
-  --foreground-digital: #96ceb4;
-  --background-digital: #0f1a15;
-  --muted-digital: #2a4d3a;
-  --border-digital: #96ceb4;
-  --accent-digital: #1e3d2a;
-}
-
-/* ============ Risk Theme ============ */
-body.scheme-risk {
-  --foreground-digital: #feca57;
-  --background-digital: #1a1510;
-  --muted-digital: #4d3e1a;
-  --border-digital: #feca57;
-  --accent-digital: #3d3114;
-}
-
-/* ============ Compliance Theme ============ */
-body.scheme-compliance {
-  --foreground-digital: #ff9ff3;
-  --background-digital: #1a0f1a;
-  --muted-digital: #4d2a4d;
-  --border-digital: #ff9ff3;
-  --accent-digital: #3d1e3d;
-}
-
-/* ============ Settlement Theme ============ */
-body.scheme-settlement {
-  --foreground-digital: #54a0ff;
-  --background-digital: #0f1520;
-  --muted-digital: #1a3a4d;
-  --border-digital: #54a0ff;
-  --accent-digital: #142e3d;
-}
-
-/* ============ Gruvbox Theme ============ */
-body.scheme-gruvbox {
-  --foreground-digital: #ebdbb2;
-  --background-digital: #282828;
-  --muted-digital: #504945;
-  --border-digital: #ebdbb2;
-  --accent-digital: #3c3836;
-}
-
-/* ============ Gruvbox Visual Theme ============ */
-body.scheme-gruvbox-visual {
-  --foreground-digital: #fe8019;
-  --background-digital: #282828;
-  --muted-digital: #504945;
-  --border-digital: #fe8019;
-  --accent-digital: #3c3836;
-}
-
-/* ============ Gruvbox Syntax Theme ============ */
-body.scheme-gruvbox-syntax {
-  --foreground-digital: #458588;
-  --background-digital: #fbf1c7;
-  --muted-digital: #bdae93;
-  --border-digital: #458588;
-  --accent-digital: #ebdbb2;
-}
-
-/* ============ Light/Dark Mode Toggle Variables ============ */
-[data-theme="light"] {
-  --bg-color: #ffffff;
-  --text-color: #333333;
-  --text-secondary: #666666;
-  --border-color: rgba(0, 0, 0, 0.1);
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --shadow-color: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="dark"] {
-  --bg-color: #1a1a1a;
-  --text-color: #ffffff;
-  --text-secondary: #cccccc;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --glass-bg: rgba(0, 0, 0, 0.3);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --shadow-color: rgba(0, 0, 0, 0.3);
-}
-
-/* ============ Semantic Color Aliases ============ */
-:root {
-  /* Status Colors */
-  --color-success: #00ff88;
-  --color-warning: #ffa726;
-  --color-error: #ff4444;
-  --color-info: #64ffda;
-  
-  /* Interactive States */
-  --color-hover: var(--foreground-digital);
-  --color-active: var(--accent-digital);
-  --color-disabled: var(--muted-digital);
-  
-  /* Component Specific */
-  --color-link: var(--foreground-digital);
-  --color-link-hover: var(--foreground-digital);
-  --color-focus-ring: rgba(0, 255, 65, 0.3);
-}/*
-========================================
-SIMPLIFIED PORTFOLIO CSS
-Clean layout with digital/print modes
-Uses CSS custom properties defined in Layout.astro
-========================================
-*/
-
-/* Digital/Print View Toggle Classes */
-.digital-only {
-  display: block;
-}
-
-.print-only {
-  display: none;
-}
-
-body.print-view .digital-only {
-  display: none;
-}
-
-body.print-view .print-only {
-  display: block;
-}
-
-/*
-========================================
-CONTENT SECTIONS STYLING
-========================================
-*/
-.section {
-  margin-bottom: var(--space-2xl);
-}
-
-.section-title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--foreground-digital);
-  margin-bottom: var(--space-lg);
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wider);
-}
-
-body.print-view .section-title {
-  color: var(--foreground-print);
-}
-
-.entry {
-  margin-bottom: var(--space-lg);
-  padding: var(--space-md) 0;
-  border-bottom: 1px solid var(--border-digital);
-}
-
-body.print-view .entry {
-  border-bottom-color: var(--border-print);
-}
-
-.entry-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--space-sm);
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-}
-
-.entry-title {
-  font-weight: var(--font-weight-bold);
-  color: var(--foreground-digital);
-  font-size: var(--font-size-md);
-}
-
-body.print-view .entry-title {
-  color: var(--foreground-print);
-}
-
-.entry-meta {
-  font-size: var(--font-size-sm);
-  color: var(--muted-digital);
-  white-space: nowrap;
-}
-
-body.print-view .entry-meta {
-  color: var(--muted-print);
-}
-
-.entry-description {
-  font-size: var(--font-size-base);
-  color: var(--muted-digital);
-  line-height: var(--line-height-relaxed);
-  margin-bottom: var(--space-sm);
-}
-
-body.print-view .entry-description {
-  color: var(--muted-print);
-}
-
-.tech-stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-  margin-top: var(--space-sm);
-}
-
-.tech-tag {
-  background: var(--accent-digital);
-  color: var(--foreground-digital);
-  padding: var(--space-2xs) var(--space-sm);
-  font-size: var(--font-size-sm);
-  border: 1px solid var(--border-digital);
-  font-family: var(--font-body);
-  border-radius: var(--radius-sm);
-}
-
-body.print-view .tech-tag {
-  background: var(--background-print);
-  color: var(--foreground-print);
-  border-color: var(--border-print);
-}
-
-/* Legacy skill classes removed - now handled by Skills.astro component */
-
-a {
-  color: var(--foreground-digital);
-  text-decoration: none;
-  border-bottom: 1px dotted var(--muted-digital);
-}
-
-body.print-view a {
-  color: var(--foreground-print);
-  border-bottom-color: var(--muted-print);
-}
-
-a:hover {
-  border-bottom-style: solid;
-}
-
-/* Contact Grid - Auto-fitting responsive grid with minimum column width */
-.contact-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-lg);
-  margin-top: var(--space-sm);
-}
-
-.contact-item {
-  margin-bottom: var(--space-md);
-  position: relative;
-  padding: var(--space-md) 0;
-  border-bottom: 1px solid var(--border-digital);
-}
-
-body.print-view .contact-item {
-  border-bottom-color: var(--border-print);
-}
-
-.contact-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--space-sm);
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-}
-
-.contact-title {
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-md);
-  color: var(--foreground-digital);
-}
-
-body.print-view .contact-title {
-  color: var(--foreground-print);
-}
-
-.contact-meta {
-  font-size: var(--font-size-sm);
-  color: var(--muted-digital);
-  white-space: nowrap;
-}
-
-body.print-view .contact-meta {
-  color: var(--muted-print);
-}
-
-.contact-description {
-  font-size: var(--font-size-base);
-  color: var(--muted-digital);
-  line-height: var(--line-height-relaxed);
-  margin-bottom: var(--space-sm);
-}
-
-body.print-view .contact-description {
-  color: var(--muted-print);
-}
-
-.contact-description a {
-  text-decoration: none;
-  border-bottom: 1px dotted var(--muted-digital);
-  color: var(--foreground-digital);
-}
-
-body.print-view .contact-description a {
-  color: var(--foreground-print);
-  border-bottom-color: var(--muted-print);
-}
-
-.contact-description a:hover {
-  border-bottom-style: solid;
-}
-
-.checksum {
-  font-size: var(--font-size-2xs);
-  text-align: right;
-  margin-top: var(--space-sm);
-  font-style: italic;
-  color: var(--muted-digital);
-}
-
-body.print-view .checksum {
-  color: var(--muted-print);
-}
-
-/*
-========================================
-RESPONSIVE ADJUSTMENTS
-========================================
-*/
-@media (max-width: 768px) {
-  .skills-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .entry-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/*
-========================================
-PRINT STYLES
-High contrast black/white optimized for physical printing
-Overrides all color schemes for maximum ink efficiency
-========================================
-*/
-@media print {
-  /* Force high contrast colors for print */
-  body {
-    background: white !important;
-    color: black !important;
-    font-size: 9pt !important;
-  }
-
-  /* Hierarchical text sizing for print readability */
-  .section-title {
-    color: black !important;
-    font-size: 12pt !important;
-  }
-
-  .entry-title {
-    color: black !important;
-  }
-
-  /* Secondary content in medium gray for contrast */
-  .entry-meta,
-  .entry-description,
-  .contact-meta,
-  .contact-description {
-    color: #666 !important;
-  }
-
-  /* Tech tags with minimal ink usage */
-  .tech-tag {
-    background: white !important;
-    color: black !important;
-    border-color: black !important;
-  }
-
-  /* Links optimized for print visibility */
-  a {
-    color: black !important;
-    border-bottom-color: #666 !important;
-  }
-}
-/* Shared component styles */
-
-/* Action Button Base Styles */
-.action-btn {
-  background: transparent;
-  border: 1px solid var(--border-digital);
-  color: var(--foreground-digital);
-  padding: var(--space-xs) var(--space-sm);
-  font-size: var(--font-size-xs);
-  font-family: var(--font-body);
-  cursor: pointer;
-  transition: all var(--transition-fast) var(--ease-in-out);
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wide);
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--radius-sm);
-}
-
-.action-btn:not(.disabled):hover {
-  background: var(--accent-digital);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.action-btn:not(.disabled):active {
-  transform: translateY(0);
-}
-
-/* Button Type-specific Hover Effects */
-.demo-btn:not(.disabled):hover {
-  border-color: #00ff41;
-  color: #00ff41;
-  box-shadow: 0 2px 8px rgba(0, 255, 65, 0.2);
-}
-
-.github-btn:not(.disabled):hover {
-  border-color: #64ffda;
-  color: #64ffda;
-  box-shadow: 0 2px 8px rgba(100, 255, 218, 0.2);
-}
-
-.case-study-btn:not(.disabled):hover {
-  border-color: #ffa726;
-  color: #ffa726;
-  box-shadow: 0 2px 8px rgba(255, 167, 38, 0.2);
-}
-
-/* Primary Button Styling */
-.action-btn.primary {
-  border-width: 2px;
-  font-weight: var(--font-weight-semibold);
-}
-
-.action-btn.primary:not(.disabled):hover {
-  background: var(--foreground-digital);
-  color: var(--background-digital);
-}
-
-/* Disabled Button Styling */
-.action-btn.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  border-style: dashed;
-}
-
-.action-btn.disabled:hover {
-  background: transparent;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Button Icon and Label Styling */
-.action-icon {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-normal);
-}
-
-.action-label {
-  font-size: var(--font-size-xs);
-  font-weight: inherit;
-}
-
-/* Stat Item Base Styles */
-.stat-item {
-  font-family: var(--font-body);
-  transition: all var(--transition-base) var(--ease-in-out);
-}
-
-.github-stats.loaded .stat-item {
-  opacity: 1;
-}
-
-.github-stats.loaded .stat-item:hover {
-  color: var(--foreground-digital);
-  transform: translateY(-1px);
-}
-
-.github-stats.error .stat-item {
-  color: #ff6b6b;
-  opacity: 0.7;
-}
-
-/* Component-specific comment style (not in global.css) */
-.entry-description.comment {
-  font-family: var(--font-body);
-  color: var(--muted-digital);
-  font-size: var(--font-size-base);
-}
-
-/* Print Mode Overrides - Button specific only */
-body.print-view .action-btn {
-  background: transparent !important;
-  border-color: var(--border-print) !important;
-  color: var(--foreground-print) !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .action-btn {
-    font-size: var(--font-size-2xs);
-    padding: var(--space-2xs) var(--space-xs);
-  }
-
-  .action-icon {
-    font-size: var(--font-size-xs);
-  }
-
-  .action-label {
-    font-size: var(--font-size-2xs);
-  }
-}
 /* 
 ========================================
-PAGE BREAK INDICATORS
-Visual indicators for print preview mode
-Hidden when actually printing
+RESPONSIVE DESIGN
+Mobile-first responsive adjustments
 ========================================
 */
-body.print-view {
-  position: relative;
-}
 
-/* Page break lines */
-.page-break-line {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 210mm;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    #ff6b6b 10%,
-    #ff6b6b 90%,
-    transparent 100%
-  );
-  border-top: 1px dashed #ff6b6b;
-  z-index: 100;
-  pointer-events: none;
-}
-
-.page-break-line:nth-child(2) {
-  background-color: #ff9800;
-  border-color: #ff9800;
-}
-.page-break-line:nth-child(3) {
-  background-color: #4caf50;
-  border-color: #4caf50;
-}
-.page-break-line:nth-child(4) {
-  background-color: #2196f3;
-  border-color: #2196f3;
-}
-.page-break-line:nth-child(5) {
-  background-color: #9c27b0;
-  border-color: #9c27b0;
-}
-
-/* Page labels */
-.page-indicator {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  color: #333;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-family: var(--font-body);
-  border: 1px solid #ccc;
-  z-index: 101;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: none; /* Hidden by default, shown by JS */
-}
-
-/* Hide indicators when actually printing */
-@media print {
-  body.print-view {
-    background-image: none !important;
+/* Enhanced responsive design with container query fallbacks */
+@supports (container-type: inline-size) {
+  .container {
+    container-type: inline-size;
   }
+  
+  @container (max-width: 768px) {
+    .entry {
+      padding: var(--space-lg);
+    }
+    
+    .tech-stack {
+      gap: var(--space-xs);
+    }
+    
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @container (max-width: 480px) {
+    .entry {
+      padding: var(--space-md);
+      border-radius: var(--radius-lg);
+    }
+    
+    .section-title {
+      font-size: var(--font-size-md);
+    }
+    
+    .entry-title {
+      font-size: var(--font-size-base);
+    }
+  }
+}
 
-  body.print-view .page-indicator {
-    display: none !important;
+/* Fallback for browsers without container query support */
+@supports not (container-type: inline-size) {
+  @media (max-width: 768px) {
+    .entry {
+      padding: var(--space-lg);
+    }
+    
+    .tech-stack {
+      gap: var(--space-xs);
+    }
+    
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .entry {
+      padding: var(--space-md);
+      border-radius: var(--radius-lg);
+    }
+    
+    .section-title {
+      font-size: var(--font-size-md);
+    }
+    
+    .entry-title {
+      font-size: var(--font-size-base);
+    }
+    
+    .tech-tag {
+      font-size: var(--font-size-xs);
+      padding: var(--space-2xs) var(--space-sm);
+    }
+  }
+  
+  @media (max-width: 360px) {
+    .entry {
+      padding: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    
+    .section {
+      margin-bottom: var(--space-xl);
+    }
+    
+    .section-title {
+      font-size: var(--font-size-base);
+      margin-bottom: var(--space-md);
+      letter-spacing: var(--letter-spacing-wide);
+    }
+    
+    .entry-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .entry-meta {
+      font-size: var(--font-size-xs);
+    }
+    
+    .tech-stack {
+      gap: 2px;
+    }
+    
+    .tech-tag {
+      font-size: 8px;
+      padding: 1px 4px;
+      border-radius: var(--radius-sm);
+    }
+    
+    .contact-grid {
+      gap: var(--space-sm);
+    }
+    
+    .contact-item {
+      padding: var(--space-md);
+    }
+  }
+}
+
+/* Ultra-small mobile devices */
+@media (max-width: 320px) {
+  .entry {
+    padding: var(--space-xs);
+    border-radius: var(--radius-md);
+  }
+  
+  .section-title {
+    font-size: 10px;
+  }
+  
+  .entry-title {
+    font-size: 9px;
+  }
+  
+  .entry-description {
+    font-size: 8px;
+  }
+  
+  .tech-tag {
+    font-size: 7px;
+    padding: 0 2px;
+  }
+}
+
+/* Print-specific responsive adjustments */
+@media print {
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+  
+  .section {
+    page-break-inside: avoid;
+    margin-bottom: 1cm;
+  }
+  
+  .entry {
+    page-break-inside: avoid;
+    padding: 0.5cm;
+    margin-bottom: 0.5cm;
+    border: 1pt solid black;
+  }
+  
+  .tech-stack {
+    display: inline;
+  }
+  
+  .tech-tag {
+    display: inline;
+    padding: 0 0.2cm;
+    border: none;
+  }
+  
+  .tech-tag::after {
+    content: ', ';
+  }
+  
+  .tech-tag:last-child::after {
+    content: '';
+  }
+  
+  .contact-grid {
+    display: block;
+  }
+  
+  .contact-item {
+    margin-bottom: 0.3cm;
+    padding: 0.2cm;
+  }
+}
+
+/* 
+========================================
+ANIMATIONS (respects prefers-reduced-motion)
+========================================
+*/
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Subtle page load animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .section {
+    animation: fadeIn 0.6s ease-out;
+    animation-fill-mode: both;
+  }
+  
+  .section:nth-child(1) { animation-delay: 0.1s; }
+  .section:nth-child(2) { animation-delay: 0.2s; }
+  .section:nth-child(3) { animation-delay: 0.3s; }
+  .section:nth-child(4) { animation-delay: 0.4s; }
+  .section:nth-child(5) { animation-delay: 0.5s; }
+  
+  /* Hover animations */
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+  
+  .contact-icon:hover {
+    animation: pulse 1s ease-in-out infinite;
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .entry {
+    border-width: 2px;
+  }
+  
+  .tech-tag {
+    border-width: 2px;
+    font-weight: var(--font-weight-bold);
+  }
+  
+  .section-title {
+    text-decoration: underline;
+  }
+}
+
+/* Wide screen optimizations */
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1600px;
+  }
+  
+  .contact-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .entry {
+    padding: var(--space-xl);
+  }
+  
+  .tech-tag {
+    padding: var(--space-sm) var(--space-lg);
+  }
+  
+  a {
+    padding: var(--space-xs) 0;
+  }
+  
+  .button {
+    padding: var(--space-md) var(--space-xl);
+    font-size: var(--font-size-md);
   }
 }
