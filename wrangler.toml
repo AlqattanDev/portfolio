@@ -1,0 +1,13 @@
+name = "ali-portfolio"
+compatibility_date = "2024-09-13"
+pages_build_output_dir = "dist"
+
+[env.production.vars]
+PUBLIC_VOICE_ENABLED = "true"
+PUBLIC_VOICE_WS_URL = "wss://portfolio-voice-backend.exidiful.workers.dev"
+PUBLIC_VOICE_WORKER_URL = "https://portfolio-voice-backend.exidiful.workers.dev"
+
+[env.preview.vars]
+PUBLIC_VOICE_ENABLED = "true"
+PUBLIC_VOICE_WS_URL = "wss://portfolio-voice-backend.exidiful.workers.dev"
+PUBLIC_VOICE_WORKER_URL = "https://portfolio-voice-backend.exidiful.workers.dev"
