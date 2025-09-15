@@ -4,6 +4,14 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   site: 'https://alialqattan.dev',
   // No base needed since we're using a custom domain
+  compilerOptions: {
+    // Disable source maps and debugging attributes
+    sourcemap: false,
+  },
+  devToolbar: {
+    // Disable dev toolbar
+    enabled: false
+  },
   vite: {
     server: {
       fs: {

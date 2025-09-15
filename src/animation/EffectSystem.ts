@@ -296,7 +296,7 @@ export class EffectSystem {
 
   public updateVimModeDisplay(): void {
     const modeElement = document.getElementById('statusMode');
-    const schemeElement = document.getElementById('statusScheme');
+    const schemeElement = document.getElementById('colorSchemeDisplay');
     
     if (modeElement) {
       modeElement.textContent = this.currentMode;
@@ -304,7 +304,7 @@ export class EffectSystem {
     }
     
     if (schemeElement) {
-      schemeElement.textContent = this.getCurrentEffectName();
+      schemeElement.textContent = `Scheme: ${this.getCurrentEffectName()}`;
     }
   }
 

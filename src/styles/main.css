@@ -575,16 +575,44 @@ body.print-view .contact-description a {
   border-bottom-style: solid;
 }
 
-.checksum {
-  font-size: var(--font-size-2xs);
-  text-align: right;
+.footer-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: var(--space-sm);
+  font-size: var(--font-size-2xs);
+  gap: var(--space-md);
+}
+
+.checksum {
   font-style: italic;
   color: var(--muted-digital);
 }
 
+.color-scheme {
+  color: var(--foreground-digital);
+  font-weight: var(--font-weight-normal);
+  padding: 1px var(--space-xs);
+  border: 1px solid var(--border-digital);
+  border-radius: var(--radius-sm);
+  opacity: 0.8;
+}
+
 body.print-view .checksum {
   color: var(--muted-print);
+}
+
+body.print-view .color-scheme {
+  color: var(--muted-print);
+  border-color: var(--border-print);
+}
+
+@media (max-width: 768px) {
+  .footer-info {
+    flex-direction: column;
+    gap: var(--space-xs);
+    align-items: flex-start;
+  }
 }
 
 /*

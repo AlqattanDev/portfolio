@@ -13,7 +13,6 @@ const { className = '' } = Astro.props as StatusBarProps;
 <nav class={`status-bar ${className}`} role="navigation" aria-label="Section Navigation">
   <div class="status-left">
     <div class="status-mode" id="statusMode">NORMAL</div>
-    <div class="status-scheme" id="statusScheme">Matrix Rain</div>
     <div class="status-file">portfolio.md</div>
   </div>
   <div class="status-center">
@@ -94,7 +93,6 @@ body.print-view .status-bar {
 
 /* Hide digital-only elements in print mode */
 body.print-view .status-mode,
-body.print-view .status-scheme,
 body.print-view .status-help,
 body.print-view .status-position,
 body.print-view .status-progress-container {
@@ -153,7 +151,7 @@ body.print-view .status-separator {
   letter-spacing: var(--letter-spacing-wide);
   transition: all var(--transition-base) var(--ease-in-out);
   /* Fixed width to prevent layout shift */
-  min-width: 120px;
+  min-width: 85px;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -182,15 +180,6 @@ body.print-view .status-separator {
   font-weight: var(--font-weight-medium);
 }
 
-.status-scheme {
-  color: var(--foreground-digital);
-  font-weight: var(--font-weight-normal);
-  font-size: var(--font-size-xs);
-  opacity: 0.8;
-  padding: 1px var(--space-xs);
-  border: 1px solid var(--border-digital);
-  border-radius: var(--radius-sm);
-}
 
 
 .status-center {
@@ -378,7 +367,7 @@ body.print-view .status-button:hover .icon-print {
     font-size: var(--font-size-xs); 
     min-height: var(--touch-target-min);
     /* Maintain fixed width on mobile */
-    min-width: 100px;
+    min-width: 70px;
   }
   .status-center { gap: var(--space-xs); }
   .status-item { 
@@ -414,7 +403,7 @@ body.print-view .status-button:hover .icon-print {
     padding: var(--space-2xs) var(--space-2xs); 
     font-size: var(--font-size-2xs); 
     /* Maintain fixed width on smaller mobile */
-    min-width: 80px;
+    min-width: 55px;
   }
   .status-center { gap: var(--space-2xs); }
   .status-item { 
@@ -427,7 +416,6 @@ body.print-view .status-button:hover .icon-print {
 @media (max-width: 375px) {
   .status-file { display: none; }
   .status-text { display: none; }
-  .status-scheme { display: none; } /* Hide scheme on very small screens */
   .status-help { display: none; } /* Hide help on very small screens */
   
   /* Print mode mobile adjustments */
@@ -474,9 +462,9 @@ body.print-view .status-button:hover .icon-print {
     overflow: hidden;
     text-overflow: ellipsis;
     /* Fixed width even on smallest screens */
-    min-width: 60px;
-    max-width: 60px;
-    width: 60px;
+    min-width: 45px;
+    max-width: 45px;
+    width: 45px;
   }
 }
 </style>

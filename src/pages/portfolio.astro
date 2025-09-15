@@ -69,5 +69,8 @@ const normalizedProjects = (profile.projects || []).map((p: any) => ({
     <Education edu={profile.education} />
   </Section>
 
-  <div class="checksum">Checksum: {profile.checksum}</div>
+  <div class="footer-info">
+    <span class="checksum">Checksum: {profile.checksum}</span>
+    <span class="color-scheme" id="colorSchemeDisplay">Scheme: Matrix Rain</span>
+  </div>
 </Layout>
