@@ -1,13 +1,13 @@
+/* ============ Import Additional Stylesheets ============ */
+@import url('./global.css');
+@import url('./utilities.css');
+
 /*
 ========================================
 DESIGN SYSTEM VARIABLES
 Centralized spacing, typography, and animation values
 ========================================
 */
-
-/* ============ Import Additional Stylesheets ============ */
-@import url('./global.css');
-@import url('./utilities.css');
 
 :root {
   /* ============ Fluid Spacing System ============ */
@@ -190,9 +190,7 @@ Centralized spacing, typography, and animation values
 
 /* ============ Core Utility Classes ============ */
 
-/* ============ Import Additional Stylesheets ============ */
-@import url('./global.css');
-@import url('./utilities.css');/*
+/*
 ========================================
 THEME COLOR SCHEMES
 All color schemes consolidated in one place
