@@ -197,21 +197,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Always initialize animation system to enable vim bindings
-            // Only respect reduced motion preference, ignore other performance checks
-            if (hasReducedMotion) {
-                console.log('ASCII animations disabled due to reduced motion preference');
-                return;
-            }
+            // Ignore all performance checks and browser preferences - always enable animations
             
-            // Create animation system with mobile optimizations
+            // Create animation system with maximum quality settings
             const animationSystem = new ASCIIAnimationSystem('ascii-canvas');
             
-            // Optimize for mobile performance
-            if (isMobile) {
-                // Reduce animation frame rate on mobile
-                animationSystem.setFrameRate?.(30); // 30fps instead of 60fps
-                animationSystem.setComplexity?.('low'); // Reduce particle count
-            }
+            // Always run at highest quality - no mobile optimizations
             
             // Store reference for potential cleanup
             (window as any).asciiAnimationSystem = animationSystem;

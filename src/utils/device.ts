@@ -261,35 +261,15 @@ export const mobileOptimizations = {
     const tier = capabilities.getPerformanceTier();
     const reducedMotion = capabilities.prefersReducedMotion();
     
-    if (reducedMotion) {
-      return {
-        frameRate: 0,
-        complexity: 'low',
-        enableEffects: false
-      };
-    }
+    // Always enable effects regardless of reduced motion preference
+    // User wants animations to work in all scenarios
 
-    switch (tier) {
-      case 'low':
-        return {
-          frameRate: 45,
-          complexity: 'low',
-          enableEffects: true  // Always enable effects - let users decide
-        };
-      case 'medium':
-        return {
-          frameRate: 60,
-          complexity: 'medium',
-          enableEffects: true
-        };
-      case 'high':
-      default:
-        return {
-          frameRate: 60,
-          complexity: 'high',
-          enableEffects: true
-        };
-    }
+    // Always return highest quality settings regardless of device
+    return {
+      frameRate: 60,
+      complexity: 'high',
+      enableEffects: true
+    };
   },
 
   /**

@@ -134,24 +134,13 @@ export class ASCIIAnimationSystem {
   }
 
   private applyMobileOptimizations(): void {
-    // Apply optimizations for all devices, not just mobile
+    // Always run at highest quality regardless of device
     const config = mobileOptimizations.getMobileAnimationConfig();
     
-    // Only disable if user explicitly prefers reduced motion
-    if (perfUtils.prefersReducedMotion()) {
-      console.log('ASCII animations disabled due to reduced motion preference');
-      this.isPaused = true;
-      return;
-    }
-
-    // Always enable effects - let users decide via browser settings
-    console.log(`Animation config: complexity=${config.complexity}, frameRate=${config.frameRate}`);
-
-    // Adjust animation quality based on device capability
-    if (config.complexity === 'low') {
-      // Reduce particle update frequency or complexity
-      this.time += 0.5; // Slower animation
-    }
+    // Always enable animations with best quality settings
+    console.log(`Animation config: complexity=${config.complexity}, frameRate=${config.frameRate}, forceEnabled=true, quality=maximum`);
+    
+    // No quality adjustments - always run at full quality
   }
 
   private setupMobileOptimizations(): void {
