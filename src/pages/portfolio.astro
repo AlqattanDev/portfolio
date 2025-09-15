@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Section from '../components/Section.astro';
+import ProjectEntry from '../components/ProjectEntry.astro';
+import Skills from '../components/Skills.astro';
+import Education from '../components/Education.astro';
+import profile from '../data/profile.json';
+
+// Normalize projects to ensure metrics are available in expected shape
+const normalizedProjects = (profile.projects || []).map((p: any) => ({
+  ...p,
+  metrics: p.metrics ?? {
+    scale: (p as any).scale,
+    security: (p as any).security,
+    performance: (p as any).performance,
+    innovation: (p as any).innovation,
+  },
+}));
+---
+
+<Layout>
+  <Header profile={profile} />
+
+  <Section id="contact-info" title="Contact Info">
+    <div class="contact-grid">
+      {profile.personal?.location && (
+        <div>
+          <div class="contact-title">Location</div>
+          <div class="contact-description">{profile.personal.location}</div>
+        </div>
+      )}
+      <div>
+        <div class="contact-title">Email</div>
+        <a class="contact-description" href={`mailto:${profile.contact.email}`}>{profile.contact.email}</a>
+      </div>
+      {profile.personal?.website && (
+        <div>
+          <div class="contact-title">Website</div>
+          <a class="contact-description" href={profile.personal.website} target="_blank" rel="noopener noreferrer">{profile.personal.website}</a>
+        </div>
+      )}
+      {profile.social?.linkedin && (
+        <div>
+          <div class="contact-title">LinkedIn</div>
+          <a class="contact-description" href={profile.social.linkedin} target="_blank" rel="noopener noreferrer">{profile.social.linkedin}</a>
+        </div>
+      )}
+      {profile.social?.github && (
+        <div>
+          <div class="contact-title">GitHub</div>
+          <a class="contact-description" href={profile.social.github} target="_blank" rel="noopener noreferrer">{profile.social.github}</a>
+        </div>
+      )}
+    </div>
+  </Section>
+
+  <Section id="project-manifest" title="Project Manifest">
+    {normalizedProjects.map((project) => (
+      <ProjectEntry project={project} />
+    ))}
+  </Section>
+
+  <Section id="skill-matrix" title="Skill Matrix">
+    <Skills skills={profile.skills} />
+  </Section>
+
+  <Section id="education-log" title="Education Log">
+    <Education edu={profile.education} />
+  </Section>
+
+  <div class="checksum">Checksum: {profile.checksum}</div>
+</Layout>
