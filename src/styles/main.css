@@ -5,6 +5,10 @@ Centralized spacing, typography, and animation values
 ========================================
 */
 
+/* ============ Import Additional Stylesheets ============ */
+@import url('./global.css');
+@import url('./utilities.css');
+
 :root {
   /* ============ Fluid Spacing System ============ */
   /* Fluid spacing that scales with screen size */
