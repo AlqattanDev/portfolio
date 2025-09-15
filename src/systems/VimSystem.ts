@@ -27,12 +27,19 @@ export class VimSystem {
   }
 
   private setupEventListeners(): void {
+    console.log('VimSystem: Setting up event listeners');
     document.addEventListener('keydown', (e) => this.handleKeydown(e));
   }
 
   public handleKeydown(e: KeyboardEvent): boolean {
     // Only handle keys in digital view
-    if (!document.body.classList.contains('digital-view')) return false;
+    const hasDigitalView = document.body.classList.contains('digital-view');
+    console.log(`VimSystem: Key '${e.key}' pressed, digital-view: ${hasDigitalView}`);
+    
+    if (!hasDigitalView) {
+      console.log('VimSystem: Ignoring key - not in digital view');
+      return false;
+    }
 
     let modeChanged = false;
     let actionTaken = false;

@@ -194,9 +194,10 @@ export const capabilities = {
     const cores = this.getCPUCores();
     const isMobile = device.isMobile();
 
-    if (memory <= 2 || cores <= 2 || isMobile) {
+    // Much less aggressive performance detection - prioritize user experience
+    if (memory <= 1 || cores <= 1) {
       return 'low';
-    } else if (memory <= 4 || cores <= 4) {
+    } else if (memory <= 2 || cores <= 2 || isMobile) {
       return 'medium';
     } else {
       return 'high';
@@ -271,13 +272,13 @@ export const mobileOptimizations = {
     switch (tier) {
       case 'low':
         return {
-          frameRate: 30,
+          frameRate: 45,
           complexity: 'low',
-          enableEffects: false
+          enableEffects: true  // Always enable effects - let users decide
         };
       case 'medium':
         return {
-          frameRate: 45,
+          frameRate: 60,
           complexity: 'medium',
           enableEffects: true
         };

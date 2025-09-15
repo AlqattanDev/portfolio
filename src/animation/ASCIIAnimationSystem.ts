@@ -134,15 +134,18 @@ export class ASCIIAnimationSystem {
   }
 
   private applyMobileOptimizations(): void {
-    if (!device.isMobile()) return;
-
+    // Apply optimizations for all devices, not just mobile
     const config = mobileOptimizations.getMobileAnimationConfig();
     
-    if (!config.enableEffects || perfUtils.prefersReducedMotion()) {
-      console.log('ASCII animations disabled for performance');
+    // Only disable if user explicitly prefers reduced motion
+    if (perfUtils.prefersReducedMotion()) {
+      console.log('ASCII animations disabled due to reduced motion preference');
       this.isPaused = true;
       return;
     }
+
+    // Always enable effects - let users decide via browser settings
+    console.log(`Animation config: complexity=${config.complexity}, frameRate=${config.frameRate}`);
 
     // Adjust animation quality based on device capability
     if (config.complexity === 'low') {

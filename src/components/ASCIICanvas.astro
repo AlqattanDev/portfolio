@@ -196,9 +196,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 isLowPowerMode = false;
             }
             
-            // Skip complex animations on low-power mobile devices
-            if (hasReducedMotion || (isMobile && isLowPowerMode)) {
-                console.log('ASCII animations disabled for performance');
+            // Always initialize animation system to enable vim bindings
+            // Only respect reduced motion preference, ignore other performance checks
+            if (hasReducedMotion) {
+                console.log('ASCII animations disabled due to reduced motion preference');
                 return;
             }
             
