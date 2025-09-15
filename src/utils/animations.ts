@@ -23,6 +23,8 @@ export class ASCIIAnimationSystem {
   private particles: CanvasParticle[] = [];
   private currentEffect: number = 0;
   private animationId: number | null = null;
+  private lastKey: string = '';
+  private lastKeyTime: number = 0;
 
   private readonly ASCII_NAME = `█████╗ ██╗     ██╗      █████╗ ██╗      ██████╗  █████╗ ████████╗████████╗ █████╗ ███╗   ██╗
 ██╔══██╗██║     ██║     ██╔══██╗██║     ██╔═══██╗██╔══██╗╚══██╔══╝╚══██╔══╝██╔══██╗████╗  ██║
@@ -154,26 +156,65 @@ export class ASCIIAnimationSystem {
     let effectChanged = false;
 
     if (e.key === 'Escape') {
+      this.showCommand('Esc (normal mode)');
       this.currentMode = 'NORMAL';
       modeChanged = true;
     } else if (this.currentMode === 'NORMAL') {
       if (e.key === 'i') {
+        this.showCommand('i (insert mode)');
         this.currentMode = 'INSERT';
         modeChanged = true;
       } else if (e.key === 'v') {
+        this.showCommand('v (visual mode)');
         this.currentMode = 'VISUAL';
         modeChanged = true;
       } else if (e.key === ':') {
+        this.showCommand(': (command mode)');
         this.currentMode = 'COMMAND';
         modeChanged = true;
       } else if (e.key === 'n') {
         e.preventDefault();
         this.nextScheme();
+        this.showCommand('n (next scheme)');
         effectChanged = true;
-      } else if (e.key === 'p') {
+      } else if (e.key === 'N') {
         e.preventDefault();
         this.prevScheme();
+        this.showCommand('N (prev scheme)');
         effectChanged = true;
+      } else if (e.key === 'j') {
+        e.preventDefault();
+        this.showCommand('j (scroll down)');
+        window.scrollBy(0, 50);
+      } else if (e.key === 'k') {
+        e.preventDefault();
+        this.showCommand('k (scroll up)');
+        window.scrollBy(0, -50);
+      } else if (e.key === 'g') {
+        e.preventDefault();
+        // Handle 'gg' sequence for going to top
+        if (this.lastKeyTime && Date.now() - this.lastKeyTime < 500 && this.lastKey === 'g') {
+          this.showCommand('gg (go to top)');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          this.lastKey = '';
+          this.lastKeyTime = 0;
+        } else {
+          this.showCommand('g (waiting for g)');
+          this.lastKey = 'g';
+          this.lastKeyTime = Date.now();
+          // Clear the waiting message after timeout
+          setTimeout(() => {
+            if (this.lastKey === 'g') {
+              this.clearCommand();
+              this.lastKey = '';
+              this.lastKeyTime = 0;
+            }
+          }, 500);
+        }
+      } else if (e.key === 'G') {
+        e.preventDefault();
+        this.showCommand('G (go to bottom)');
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       }
     }
 
@@ -197,6 +238,28 @@ export class ASCIIAnimationSystem {
     
     if (schemeElement) {
       schemeElement.textContent = this.effectNames[this.currentEffect] || 'Unknown';
+    }
+  }
+
+  private showCommand(command: string): void {
+    const modeElement = document.getElementById('statusMode');
+    if (modeElement) {
+      const originalText = modeElement.textContent;
+      modeElement.textContent = command;
+      
+      // Restore original mode after 1.5 seconds
+      setTimeout(() => {
+        if (modeElement.textContent === command) {
+          modeElement.textContent = this.currentMode;
+        }
+      }, 1500);
+    }
+  }
+
+  private clearCommand(): void {
+    const modeElement = document.getElementById('statusMode');
+    if (modeElement) {
+      modeElement.textContent = this.currentMode;
     }
   }
 
@@ -601,7 +664,6 @@ export class ASCIIAnimationSystem {
     this.currentEffect = (this.currentEffect + 1) % this.effectNames.length;
     this.resetParticleStates();
     this.updateColorScheme();
-    this.updateVimModeDisplay();
     this.updateBodyClasses();
   }
 
@@ -610,7 +672,6 @@ export class ASCIIAnimationSystem {
       (this.currentEffect - 1 + this.effectNames.length) % this.effectNames.length;
     this.resetParticleStates();
     this.updateColorScheme();
-    this.updateVimModeDisplay();
     this.updateBodyClasses();
   }
 

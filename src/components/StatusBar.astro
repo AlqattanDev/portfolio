@@ -34,7 +34,6 @@ const { className = '' } = Astro.props as StatusBarProps;
     </a>
   </div>
   <div class="status-right">
-    <div class="status-position">1:1</div>
     <div class="status-progress-container" role="progressbar" aria-label="Page scroll progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <svg width="20" height="20" viewBox="0 0 60 60" aria-hidden="true">
         <circle cx="30" cy="30" r="25" fill="none" stroke="var(--muted-digital)" stroke-width="2"></circle>
@@ -96,6 +95,7 @@ body.print-view .status-bar {
 /* Hide digital-only elements in print mode */
 body.print-view .status-mode,
 body.print-view .status-scheme,
+body.print-view .status-help,
 body.print-view .status-position,
 body.print-view .status-progress-container {
   display: none;
@@ -183,6 +183,7 @@ body.print-view .status-separator {
   border: 1px solid var(--border-digital);
   border-radius: var(--radius-sm);
 }
+
 
 .status-center {
   display: flex;
@@ -415,6 +416,7 @@ body.print-view .status-button:hover .icon-print {
   .status-file { display: none; }
   .status-text { display: none; }
   .status-scheme { display: none; } /* Hide scheme on very small screens */
+  .status-help { display: none; } /* Hide help on very small screens */
   
   /* Print mode mobile adjustments */
   body.print-view .status-text {
