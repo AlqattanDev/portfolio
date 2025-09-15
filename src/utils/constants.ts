@@ -39,6 +39,53 @@ export const VIM_MODES = {
   COMMAND: 'COMMAND',
 } as const;
 
+// Vim keybindings configuration
+export const VIM_KEYBINDINGS = {
+  // Mode switching keys
+  MODE_KEYS: {
+    ESCAPE: 'Escape',
+    INSERT: 'i',
+    VISUAL: 'v',
+    COMMAND: ':',
+  },
+  // Navigation keys
+  NAVIGATION: {
+    SCROLL_DOWN: 'j',
+    SCROLL_UP: 'k',
+    GO_TO_TOP: 'g',
+    GO_TO_BOTTOM: 'G',
+  },
+  // Color scheme keys
+  SCHEME: {
+    NEXT: 'n',
+    PREVIOUS: 'N',
+  },
+  // Key sequences
+  SEQUENCES: {
+    GO_TO_TOP: ['g', 'g'],
+  },
+  // Timeouts and delays
+  TIMINGS: {
+    SEQUENCE_TIMEOUT: 500,
+    COMMAND_DISPLAY_DURATION: 1500,
+    SCROLL_AMOUNT: 50,
+  },
+  // Command descriptions for status display
+  COMMAND_DESCRIPTIONS: {
+    'Escape': 'Esc (normal mode)',
+    'i': 'i (insert mode)',
+    'v': 'v (visual mode)',
+    ':': ': (command mode)',
+    'n': 'n (next scheme)',
+    'N': 'N (prev scheme)',
+    'j': 'j (scroll down)',
+    'k': 'k (scroll up)',
+    'g': 'g (waiting for g)',
+    'gg': 'gg (go to top)',
+    'G': 'G (go to bottom)',
+  },
+} as const;
+
 export const TRANSITION_SPEEDS = {
   FAST: '150ms',
   NORMAL: '250ms',
@@ -110,6 +157,15 @@ export const DEFAULT_THEME = {
 } as const;
 
 // ASCII art constants
+export const ASCII_ART = {
+  PORTFOLIO_NAME: `█████╗ ██╗     ██╗      █████╗ ██╗      ██████╗  █████╗ ████████╗████████╗ █████╗ ███╗   ██╗
+██╔══██╗██║     ██║     ██╔══██╗██║     ██╔═══██╗██╔══██╗╚══██╔══╝╚══██╔══╝██╔══██╗████╗  ██║
+███████║██║     ██║     ███████║██║     ██║   ██║███████║   ██║      ██║   ███████║██╔██╗ ██║
+██╔══██║██║     ██║     ██╔══██║██║     ██║▄▄ ██║██╔══██║   ██║      ██║   ██╔══██║██║╚██╗██║
+██║  ██║███████╗██║     ██║  ██║███████╗╚██████╔╝██║  ██║   ██║      ██║   ██║  ██║██║ ╚████║
+╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚══════╝ ╚══▀▀═╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝`,
+} as const;
+
 export const ASCII_CHARS = {
   FILLED_BLOCKS: ['█', '▉', '▊', '▋', '▌', '▍', '▎', '▏'],
   SHADE_BLOCKS: ['░', '▒', '▓', '█'],
