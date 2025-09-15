@@ -384,66 +384,176 @@ class TradeSettlementEffect implements EffectStrategy {
   }
 }
 
-// Gruvbox Typing Animation Effect
+// Gruvbox Code Compilation & Debugging Effect - TRULY AWESOME VERSION!
 class GruvboxTypingEffect implements EffectStrategy {
-  private typingProgress: number = 0;
+  private compilationPhase: number = 0;
+  private debuggerState = { breakpoints: new Set<number>(), currentLine: 0, stackTrace: [] as number[] };
+  private buildSystem = { progress: 0, errors: new Map<number, string>(), warnings: new Set<number>() };
   
   apply(particle: CanvasParticle, context: EffectContext): void {
-    const { time, isHovering } = context;
+    const { time, isHovering, distance } = context;
     
     if (isHovering) {
-      const codeChars = ['(', ')', '{', '}', '[', ']', '<', '>', ';', ':', ',', '.'];
-      const keywords = ['if', 'for', 'let', 'var', 'fn', 'def'];
-      const operators = ['=', '+', '-', '*', '/', '&', '|', '!', '?'];
-      const cursors = ['_', '|', '▌', '▐', '█', '▇'];
+      // COMPILATION PHASES - Epic 6-stage build process
+      this.compilationPhase = (time * 0.15) % (Math.PI * 12); // 6 phases * 2π each
+      const phase = Math.floor(this.compilationPhase / (Math.PI * 2));
       
-      // Typewriter wave - sequential appearance
-      this.typingProgress = (time * 3) % 100;
-      const shouldType = (particle.index * 2) <= this.typingProgress;
+      // Advanced code symbols and build artifacts
+      const sourceCode = ['fn', 'impl', 'struct', 'enum', 'trait', 'mod', 'use', 'pub'];
+      const buildSteps = ['🔧', '⚙️', '🏗️', '📦', '🔗', '✨'];
+      const debugSymbols = ['🐛', '🔍', '⚡', '💡', '🎯', '🚨', '✅', '❌'];
+      const memoryManagement = ['📊', '🧠', '♻️', '🔒', '🔓', '⚠️', '💾'];
+      const optimization = ['🚀', '⚡', '🎯', '🔥', '💯', '⭐', '🌟'];
+      const deployment = ['🚢', '☁️', '🌍', '🔄', '✅', '🎉', '🏆'];
       
-      if (shouldType) {
-        // Recently typed - show cursor effect
-        const recentlyTyped = (particle.index * 2) > (this.typingProgress - 5);
-        
-        if (recentlyTyped && Math.floor(time / 3) % 2 === 0) {
-          // Cursor blink at typing position
-          particle.char = cursors[Math.floor(time / 2) % cursors.length] || particle.originalChar;
-          particle.color = '#ebdbb2'; // Gruvbox cream - bright cursor
-        } else {
-          // Syntax highlighting based on character type
-          const charType = particle.index % 3;
+      // Distance-based intensity for more dramatic effects
+      const intensity = isHovering ? Math.max(0.3, 1 - distance / 80) : 0.1;
+      const chaos = intensity * 2; // Chaos level affects particle behavior
+      
+      switch (phase) {
+        case 0: // SOURCE CODE ANALYSIS
+          particle.char = sourceCode[Math.floor(time / 4 + particle.index * chaos) % sourceCode.length] || particle.originalChar;
+          particle.color = '#fe8019'; // Orange for Rust/source code
           
-          switch (charType) {
-            case 0: // Keywords
-              particle.char = keywords[particle.index % keywords.length] || particle.originalChar;
-              particle.color = '#fe8019'; // Gruvbox orange for keywords
-              break;
-            case 1: // Operators
-              particle.char = operators[particle.index % operators.length] || particle.originalChar;
-              particle.color = '#8ec07c'; // Gruvbox green for operators
-              break;
-            case 2: // Punctuation
-              particle.char = codeChars[particle.index % codeChars.length] || particle.originalChar;
-              particle.color = '#d3869b'; // Gruvbox purple for punctuation
-              break;
+          // Code scanning wave
+          const scanWave = Math.sin(time * 0.3 + particle.index * 0.2) * intensity;
+          particle.offsetX = scanWave * 3;
+          particle.offsetY = Math.cos(time * 0.25 + particle.index * 0.15) * 1.5;
+          break;
+          
+        case 1: // BUILD SYSTEM COMPILATION  
+          particle.char = buildSteps[Math.floor(time / 6 + particle.index + chaos * 3) % buildSteps.length] || particle.originalChar;
+          particle.color = '#b8bb26'; // Bright green for building
+          
+          // Compilation progress bars
+          const buildProgress = (time * 2 + particle.index) % 20;
+          particle.offsetX = (buildProgress - 10) * intensity * 0.5;
+          particle.offsetY = Math.sin(buildProgress * 0.3) * chaos;
+          
+          // Build errors pop up randomly
+          if ((particle.index + Math.floor(time / 8)) % 15 === 0) {
+            particle.char = '❌';
+            particle.color = '#fb4934'; // Red for errors
+            particle.offsetX = Math.sin(time * 0.8 + particle.index) * chaos * 2;
+            particle.offsetY = Math.cos(time * 0.6 + particle.index) * chaos * 1.5;
           }
-        }
-        
-        // No movement for typed characters (they're "settled")
-        particle.offsetX = 0;
-        particle.offsetY = 0;
-      } else {
-        // Not yet typed - invisible
-        particle.char = ' ';
-        particle.color = 'transparent';
-        particle.offsetX = 0;
-        particle.offsetY = 0;
+          break;
+          
+        case 2: // MEMORY DEBUGGING 
+          particle.char = memoryManagement[Math.floor(time / 5 + particle.index * chaos) % memoryManagement.length] || particle.originalChar;
+          particle.color = '#fabd2f'; // Yellow for memory management
+          
+          // Memory leak detection - particles "leak" and get garbage collected
+          const memoryLeak = (particle.index + Math.floor(time / 12)) % 25 < 5;
+          if (memoryLeak) {
+            particle.char = '♻️';
+            particle.color = '#8ec07c'; // Green for GC
+            
+            // Garbage collection sweep
+            const gcSweep = Math.sin(time * 0.4 + particle.index * 0.3);
+            particle.offsetX = gcSweep * intensity * 4;
+            particle.offsetY = Math.abs(gcSweep) * intensity * 2;
+          } else {
+            // Normal memory access patterns
+            particle.offsetX = Math.cos(time * 0.2 + particle.index * 0.4) * intensity * 2;
+            particle.offsetY = Math.sin(time * 0.15 + particle.index * 0.3) * intensity;
+          }
+          break;
+          
+        case 3: // STEP-THROUGH DEBUGGER
+          particle.char = debugSymbols[Math.floor(time / 7 + particle.index * chaos * 1.5) % debugSymbols.length] || particle.originalChar;
+          
+          // Breakpoint system
+          const isBreakpoint = (particle.index % 8) === 0;
+          if (isBreakpoint) {
+            particle.char = '🔴';
+            particle.color = '#fb4934'; // Red breakpoint
+            
+            // Pulsing breakpoint
+            const pulse = (Math.sin(time * 0.5 + particle.index) + 1) * 0.5;
+            particle.offsetX = Math.cos(time * 0.3 + particle.index) * pulse * intensity * 2;
+            particle.offsetY = Math.sin(time * 0.3 + particle.index) * pulse * intensity;
+          } else {
+            // Code execution flow
+            particle.color = '#83a598'; // Blue for debug info
+            
+            // Step-through animation
+            const stepPhase = (time * 0.8 + particle.index * 0.1) % (Math.PI * 4);
+            const stepping = Math.sin(stepPhase) > 0.7;
+            
+            if (stepping) {
+              particle.char = '➜';
+              particle.color = '#d3869b'; // Purple for current line
+              particle.offsetX = Math.sin(stepPhase * 2) * intensity * 3;
+            } else {
+              particle.offsetX *= 0.95;
+              particle.offsetY *= 0.95;
+            }
+          }
+          break;
+          
+        case 4: // OPTIMIZATION PHASE 
+          particle.char = optimization[Math.floor(time / 3 + particle.index * chaos * 2) % optimization.length] || particle.originalChar;
+          particle.color = '#d3869b'; // Purple for optimization
+          
+          // Optimization algorithms - particles reorganize themselves
+          const optimizationTarget = Math.sin(time * 0.1 + particle.index * 0.05) * intensity * 5;
+          const currentPos = particle.offsetX || 0;
+          const diff = optimizationTarget - currentPos;
+          
+          // Smart movement towards optimization target
+          particle.offsetX = currentPos + diff * 0.1 * chaos;
+          particle.offsetY = Math.cos(time * 0.12 + particle.index * 0.08) * intensity * 1.5;
+          
+          // Performance metrics occasionally show up
+          if ((particle.index + Math.floor(time / 10)) % 20 === 0) {
+            particle.char = '💯';
+            particle.color = '#b8bb26'; // Green for performance win
+          }
+          break;
+          
+        case 5: // DEPLOYMENT SUCCESS
+          particle.char = deployment[Math.floor(time / 5 + particle.index * chaos) % deployment.length] || particle.originalChar;
+          particle.color = '#8ec07c'; // Green for successful deployment
+          
+          // Victory celebration - particles dance
+          const celebrationIntensity = intensity * 3;
+          const dancePhase = time * 0.6 + particle.index * 0.2;
+          
+          particle.offsetX = Math.sin(dancePhase) * celebrationIntensity;
+          particle.offsetY = Math.cos(dancePhase * 1.3) * celebrationIntensity * 0.8;
+          
+          // Confetti effect
+          if ((particle.index + Math.floor(time / 6)) % 12 === 0) {
+            particle.char = '🎉';
+            particle.color = '#fabd2f'; // Gold confetti
+            
+            // Confetti falls
+            particle.offsetY += Math.sin(time * 0.4 + particle.index) * 2;
+          }
+          break;
       }
+      
+      // EPIC FINALE - All particles explode with success at the end of each cycle
+      const cycleEnd = this.compilationPhase > (Math.PI * 11.5);
+      if (cycleEnd) {
+        particle.char = '✨';
+        particle.color = '#fe8019'; // Bright orange finale
+        
+        // Epic explosion effect
+        const explosionRadius = (time * 3) % 10;
+        const angle = particle.index * 0.5;
+        particle.offsetX = Math.cos(angle) * explosionRadius * intensity;
+        particle.offsetY = Math.sin(angle) * explosionRadius * intensity * 0.7;
+      }
+      
     } else {
-      particle.char = particle.originalChar;
+      // Idle state - subtle code symbols
+      const idleSymbols = ['▓', '░', '▒', '█', '◆', '◇'];
+      particle.char = idleSymbols[Math.floor(time / 20 + particle.index) % idleSymbols.length] || particle.originalChar;
       particle.color = '#ebdbb2';
-      particle.offsetX = 0;
-      particle.offsetY = 0;
+      particle.offsetX *= 0.95;
+      particle.offsetY *= 0.95;
     }
   }
 }
