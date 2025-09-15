@@ -162,6 +162,14 @@ Centralized spacing, typography, and animation values
   --safe-area-inset-right: env(safe-area-inset-right);
   --safe-area-inset-bottom: env(safe-area-inset-bottom);
   --safe-area-inset-left: env(safe-area-inset-left);
+  
+  /* ============ Common Size Values ============ */
+  --grid-background-size: 40px;  /* Grid pattern background size */
+  --border-width-thin: 1px;      /* Standard thin border */
+  --border-width-thick: 2px;     /* Thicker border for emphasis */
+  --min-column-width: 280px;     /* Minimum responsive column width */
+  --transform-lift: -1px;        /* Standard hover lift distance */
+  --transform-small: -2px;       /* Small transform distance */
 }
 
 /* ============ Responsive Breakpoint Mixins ============ */
@@ -178,18 +186,9 @@ Centralized spacing, typography, and animation values
 
 /* ============ Core Utility Classes ============ */
 
-/* Essential utilities only - unused classes removed for optimization */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}/*
+/* ============ Import Additional Stylesheets ============ */
+@import url('./global.css');
+@import url('./utilities.css');/*
 ========================================
 THEME COLOR SCHEMES
 All color schemes consolidated in one place
@@ -414,7 +413,7 @@ body.print-view .section-title {
 .entry {
   margin-bottom: var(--space-lg);
   padding: var(--space-md) 0;
-  border-bottom: 1px solid var(--border-digital);
+  border-bottom: var(--border-width-thin) solid var(--border-digital);
 }
 
 body.print-view .entry {
@@ -473,7 +472,7 @@ body.print-view .entry-description {
   color: var(--foreground-digital);
   padding: var(--space-2xs) var(--space-sm);
   font-size: var(--font-size-sm);
-  border: 1px solid var(--border-digital);
+  border: var(--border-width-thin) solid var(--border-digital);
   font-family: var(--font-body);
   border-radius: var(--radius-sm);
 }
@@ -489,7 +488,7 @@ body.print-view .tech-tag {
 a {
   color: var(--foreground-digital);
   text-decoration: none;
-  border-bottom: 1px dotted var(--muted-digital);
+  border-bottom: var(--border-width-thin) dotted var(--muted-digital);
 }
 
 body.print-view a {
@@ -504,7 +503,7 @@ a:hover {
 /* Contact Grid - Auto-fitting responsive grid with minimum column width */
 .contact-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(var(--min-column-width), 1fr));
   gap: var(--space-lg);
   margin-top: var(--space-sm);
 }
@@ -513,7 +512,7 @@ a:hover {
   margin-bottom: var(--space-md);
   position: relative;
   padding: var(--space-md) 0;
-  border-bottom: 1px solid var(--border-digital);
+  border-bottom: var(--border-width-thin) solid var(--border-digital);
 }
 
 body.print-view .contact-item {
@@ -562,7 +561,7 @@ body.print-view .contact-description {
 
 .contact-description a {
   text-decoration: none;
-  border-bottom: 1px dotted var(--muted-digital);
+  border-bottom: var(--border-width-thin) dotted var(--muted-digital);
   color: var(--foreground-digital);
 }
 
@@ -593,7 +592,7 @@ body.print-view .contact-description a {
   color: var(--foreground-digital);
   font-weight: var(--font-weight-normal);
   padding: 1px var(--space-xs);
-  border: 1px solid var(--border-digital);
+  border: var(--border-width-thin) solid var(--border-digital);
   border-radius: var(--radius-sm);
   opacity: 0.8;
 }
@@ -682,7 +681,7 @@ Overrides all color schemes for maximum ink efficiency
 /* Action Button Base Styles */
 .action-btn {
   background: transparent;
-  border: 1px solid var(--border-digital);
+  border: var(--border-width-thin) solid var(--border-digital);
   color: var(--foreground-digital);
   padding: var(--space-xs) var(--space-sm);
   font-size: var(--font-size-xs);
@@ -701,7 +700,7 @@ Overrides all color schemes for maximum ink efficiency
 
 .action-btn:not(.disabled):hover {
   background: var(--accent-digital);
-  transform: translateY(-1px);
+  transform: translateY(var(--transform-lift));
   box-shadow: var(--shadow-sm);
 }
 
@@ -730,7 +729,7 @@ Overrides all color schemes for maximum ink efficiency
 
 /* Primary Button Styling */
 .action-btn.primary {
-  border-width: 2px;
+  border-width: var(--border-width-thick);
   font-weight: var(--font-weight-semibold);
 }
 
@@ -775,7 +774,7 @@ Overrides all color schemes for maximum ink efficiency
 
 .github-stats.loaded .stat-item:hover {
   color: var(--foreground-digital);
-  transform: translateY(-1px);
+  transform: translateY(var(--transform-lift));
 }
 
 .github-stats.error .stat-item {

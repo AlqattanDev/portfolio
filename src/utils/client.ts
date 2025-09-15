@@ -129,14 +129,6 @@ export function initActionButtons(
   return () => {
     root.removeEventListener('click', handleClick);
   };
-
-  // Use event delegation for better performance and dynamic content support
-  root.addEventListener('click', handleClick);
-
-  // Return cleanup function
-  return () => {
-    root.removeEventListener('click', handleClick);
-  };
 }
 
 // Export for potential external use

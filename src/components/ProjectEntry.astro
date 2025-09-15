@@ -37,6 +37,22 @@ const meta = `${project.status} | ${metric}`;
     {project.stack.map((tech: string) => <span class="tech-tag">{tech}</span>)}
   </div>
 
+  <!-- Action Buttons -->
+  <ActionButtons
+    demoUrl={project.demoUrl}
+    githubUrl={project.githubUrl}
+    showCaseStudy={true}
+    variant="default"
+  />
+
+  <!-- GitHub Stats -->
+  {project.githubUrl && (
+    <GitHubStats
+      repoUrl={project.githubUrl}
+      enableRealTime={true}
+      showLanguage={true}
+    />
+  )}
 </div>
 
 <style>
