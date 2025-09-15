@@ -70,19 +70,19 @@ export const VIM_KEYBINDINGS = {
     COMMAND_DISPLAY_DURATION: 1500,
     SCROLL_AMOUNT: 50,
   },
-  // Command descriptions for status display
+  // Command descriptions for status display (keep short for fixed width)
   COMMAND_DESCRIPTIONS: {
-    'Escape': 'Esc (normal mode)',
-    'i': 'i (insert mode)',
-    'v': 'v (visual mode)',
-    ':': ': (command mode)',
-    'n': 'n (next scheme)',
-    'N': 'N (prev scheme)',
-    'j': 'j (scroll down)',
-    'k': 'k (scroll up)',
-    'g': 'g (waiting for g)',
-    'gg': 'gg (go to top)',
-    'G': 'G (go to bottom)',
+    'Escape': 'NORMAL',
+    'i': 'INSERT',
+    'v': 'VISUAL', 
+    ':': 'COMMAND',
+    'n': 'NEXT →',
+    'N': '← PREV',
+    'j': 'j ↓',
+    'k': 'k ↑', 
+    'g': 'g...',
+    'gg': 'gg ↑↑',
+    'G': 'G ↓↓',
   },
 } as const;
 
