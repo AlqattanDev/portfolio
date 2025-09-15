@@ -40,6 +40,17 @@ export const profile: UserProfile = profileData as UserProfile;
     <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
     <script>
+      // Import component enhancements
+      import { initializeComponentEnhancements } from '@/utils/componentEnhancements';
+
+      // Initialize component enhancements with performance optimizations
+      initializeComponentEnhancements({
+        enableScrollAnimations: true,
+        enableThemeReactivity: true,
+        enableInteractionEffects: true,
+        staggerDelay: 0.08 // Slightly faster for better performance
+      });
+
       // Core theme management functionality
       const themeToggle = document.getElementById('themeToggle');
       const html = document.documentElement;

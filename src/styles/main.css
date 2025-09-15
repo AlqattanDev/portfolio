@@ -891,3 +891,183 @@ body.print-view {
     display: none !important;
   }
 }
+
+/* 
+========================================
+ENHANCED COMPONENT INTERACTIONS
+Smooth, subtle enhancements for all components
+========================================
+*/
+
+/* Global smooth scrolling and interaction enhancements */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
+}
+
+/* Enhanced section transitions */
+.section {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.section:hover {
+  transform: translateY(-1px);
+}
+
+/* Subtle component focus indicators */
+.entry:focus-within,
+.skill-item:focus-within,
+.project-card:focus-within,
+.education-card:focus-within {
+  outline: 1px solid rgba(0, 255, 65, 0.3);
+  outline-offset: 2px;
+}
+
+/* Enhanced entry styling consistency */
+.entry {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: var(--space-lg) 0;
+  border-bottom: 1px solid var(--border-digital);
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.entry.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.entry:last-child {
+  border-bottom: none;
+}
+
+/* Enhanced hover states for all entries */
+.entry:hover {
+  background: rgba(0, 255, 65, 0.02);
+  padding-left: var(--space-sm);
+  border-left: 2px solid rgba(0, 255, 65, 0.2);
+}
+
+/* Smooth text color transitions */
+.entry-title,
+.entry-meta,
+.entry-description {
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Theme-reactive text highlighting */
+[data-theme="MATRIX"] .entry:hover .entry-title {
+  color: #00ff41;
+}
+
+[data-theme="TRADING"] .entry:hover .entry-title {
+  color: #ffff00;
+}
+
+[data-theme="BLOCKCHAIN"] .entry:hover .entry-title {
+  color: #64ffda;
+}
+
+[data-theme="ENCRYPTION"] .entry:hover .entry-title {
+  color: #ff6b6b;
+}
+
+/* Enhanced tech tag consistency */
+.tech-tag {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-digital);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  color: var(--foreground-digital);
+  margin-right: 6px;
+  margin-bottom: 4px;
+  display: inline-block;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Staggered animation delays for all components */
+.entry:nth-child(1) { animation-delay: 0s; }
+.entry:nth-child(2) { animation-delay: 0.1s; }
+.entry:nth-child(3) { animation-delay: 0.2s; }
+.entry:nth-child(4) { animation-delay: 0.3s; }
+.entry:nth-child(5) { animation-delay: 0.4s; }
+
+/* Enhanced accessibility support */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode enhancements */
+@media (prefers-contrast: high) {
+  .entry:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-left-color: currentColor;
+  }
+  
+  .tech-tag {
+    border-width: 2px;
+    font-weight: bold;
+  }
+}
+
+/* Dark mode specific enhancements */
+@media (prefers-color-scheme: dark) {
+  .entry:hover {
+    background: rgba(0, 255, 65, 0.03);
+  }
+}
+
+/* Mobile touch interaction improvements */
+@media (hover: none) and (pointer: coarse) {
+  .entry:hover {
+    transform: none;
+    padding-left: 0;
+    border-left: none;
+  }
+  
+  .entry:active {
+    transform: scale(0.99);
+    background: rgba(0, 255, 65, 0.05);
+  }
+  
+  .tech-tag:hover {
+    transform: none;
+  }
+  
+  .tech-tag:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Print mode overrides */
+body.print-view .entry {
+  opacity: 1;
+  transform: none;
+  transition: none;
+  animation: none;
+}
+
+body.print-view .entry:hover {
+  background: transparent;
+  padding-left: 0;
+  border-left: none;
+  transform: none;
+}

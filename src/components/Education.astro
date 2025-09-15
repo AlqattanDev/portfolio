@@ -4,10 +4,300 @@ import type { Education, EducationProps } from '@/types';
 const { edu } = Astro.props as EducationProps;
 ---
 
-<div class="entry">
+<div class="entry education-card" data-education-type={edu.degree.toLowerCase().includes('master') ? 'masters' : 'bachelors'}>
   <div class="entry-header">
-    <span class="entry-title">{edu.degree}</span>
+    <span class="entry-title">[EDU] {edu.degree}</span>
     <span class="entry-meta">{edu.university}</span>
   </div>
-  <p class="entry-description">Thesis: {edu.thesis}</p>
+  
+  <!-- Enhanced thesis section -->
+  <div class="thesis-section">
+    <div class="thesis-label">Research Thesis:</div>
+    <p class="entry-description thesis-title">{edu.thesis}</p>
+    
+    <!-- Academic achievements indicators -->
+    <div class="achievements">
+      <div class="achievement-item" data-achievement="research">
+        <span class="achievement-indicator">[R]</span>
+        <span class="achievement-text">Original Research</span>
+      </div>
+      <div class="achievement-item" data-achievement="completion">
+        <span class="achievement-indicator">[✓]</span>
+        <span class="achievement-text">Successfully Defended</span>
+      </div>
+    </div>
+  </div>
 </div>
+
+<style>
+  .education-card {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    border-left: 3px solid transparent;
+  }
+
+  /* Subtle education hover effects */
+  .education-card:hover {
+    transform: translateY(-1px);
+    border-left-color: rgba(0, 255, 65, 0.4);
+    box-shadow: -2px 0 8px rgba(0, 255, 65, 0.1);
+  }
+
+  .education-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 0;
+    background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.6), transparent);
+    transition: height 0.6s ease;
+  }
+
+  .education-card:hover::before {
+    height: 100%;
+  }
+
+  /* Enhanced degree title */
+  .entry-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+  }
+
+
+  .education-card:hover .entry-title {
+    color: #00ff41;
+    text-shadow: 0 0 1px rgba(0, 255, 65, 0.3);
+  }
+
+  /* Thesis section styling */
+  .thesis-section {
+    margin-top: 12px;
+    opacity: 0;
+    transform: translateY(5px);
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: 0.3s;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .thesis-label {
+    font-size: 10px;
+    color: var(--muted-digital);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  .thesis-title {
+    font-style: italic;
+    position: relative;
+    padding-left: 8px;
+  }
+
+  .thesis-title::before {
+    content: '"';
+    position: absolute;
+    left: 0;
+    top: -2px;
+    font-size: 14px;
+    color: rgba(0, 255, 65, 0.5);
+  }
+
+  .thesis-title::after {
+    content: '"';
+    font-size: 14px;
+    color: rgba(0, 255, 65, 0.5);
+  }
+
+  /* Achievement indicators */
+  .achievements {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: 0.6s;
+  }
+
+  .achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    color: var(--muted-digital);
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+
+  .achievement-item:hover {
+    color: #00ff41;
+    transform: translateX(2px);
+  }
+
+  .achievement-indicator {
+    font-size: 11px;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+  }
+
+  .achievement-item:hover .achievement-indicator {
+    opacity: 1;
+    transform: scale(1.05);
+    color: var(--theme-accent, #00ff41);
+  }
+
+  /* Education type specific styling */
+  .education-card[data-education-type="masters"] .entry-title {
+    color: #ffff00;
+  }
+
+  .education-card[data-education-type="masters"]:hover .entry-title {
+    color: #ffff00;
+    text-shadow: 0 0 2px rgba(255, 255, 0, 0.4);
+  }
+
+  .education-card[data-education-type="masters"]::before {
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 0, 0.6), transparent);
+  }
+
+  .education-card[data-education-type="masters"]:hover {
+    border-left-color: rgba(255, 255, 0, 0.4);
+    box-shadow: -2px 0 8px rgba(255, 255, 0, 0.1);
+  }
+
+  /* Scroll-in animation */
+  .education-card {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  .education-card.animate-in {
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Theme-reactive highlighting */
+  .education-card[data-theme="MATRIX"]:hover .thesis-title::before,
+  .education-card[data-theme="MATRIX"]:hover .thesis-title::after {
+    color: #00ff41;
+  }
+
+  .education-card[data-theme="TRADING"]:hover .thesis-title::before,
+  .education-card[data-theme="TRADING"]:hover .thesis-title::after {
+    color: #ffff00;
+  }
+
+  .education-card[data-theme="BLOCKCHAIN"]:hover .thesis-title::before,
+  .education-card[data-theme="BLOCKCHAIN"]:hover .thesis-title::after {
+    color: #64ffda;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .education-card,
+    .thesis-section,
+    .achievements,
+    .achievement-item {
+      transition: none;
+      animation: none;
+    }
+    
+    .education-card:hover {
+      transform: none;
+    }
+    
+    .thesis-section,
+    .achievements {
+      opacity: 1;
+      transform: none;
+    }
+    
+    .education-card::before {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+// Enhanced Education Interactions
+document.addEventListener('DOMContentLoaded', () => {
+  const educationCards = document.querySelectorAll('.education-card');
+  
+  if (!educationCards.length) return;
+
+  // Theme-reactive education highlighting
+  function updateEducationTheme() {
+    const animationSystem = (window as any).asciiAnimationSystem;
+    
+    if (animationSystem) {
+      const currentEffectName = animationSystem.getCurrentEffectName();
+      const theme = currentEffectName.toUpperCase().replace(/\s+/g, '_');
+      
+      educationCards.forEach(card => {
+        card.setAttribute('data-theme', theme);
+      });
+    }
+  }
+
+  // Intersection Observer for smooth scroll animations
+  const observerOptions = {
+    threshold: 0.2,
+    rootMargin: '-10% 0px -10% 0px'
+  };
+
+  const educationObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-in');
+      }
+    });
+  }, observerOptions);
+
+  // Initialize education cards
+  educationCards.forEach((card, index) => {
+    card.style.transitionDelay = `${index * 0.3}s`;
+    educationObserver.observe(card);
+
+    // Add subtle academic achievement interactions
+    const achievements = card.querySelectorAll('.achievement-item');
+    achievements.forEach(achievement => {
+      const type = achievement.getAttribute('data-achievement');
+      
+      achievement.addEventListener('mouseenter', () => {
+        // Subtle academic emphasis
+        achievement.style.fontWeight = '500';
+        
+        if (type === 'research') {
+          achievement.style.color = '#64ffda';
+        } else if (type === 'completion') {
+          achievement.style.color = '#00ff41';
+        }
+      });
+
+      achievement.addEventListener('mouseleave', () => {
+        achievement.style.fontWeight = '';
+        achievement.style.color = '';
+      });
+    });
+  });
+
+  // Listen for theme changes
+  document.addEventListener('theme:changed', updateEducationTheme);
+  
+  // Initialize
+  updateEducationTheme();
+});
+</script>

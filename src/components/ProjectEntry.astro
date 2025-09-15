@@ -24,7 +24,7 @@ const metricLabel = project.metrics?.scale
 const meta = `${project.status} | ${metric}`;
 ---
 
-<div class="entry project-card">
+<div class="entry project-card" data-project-id={project.id}>
   <div class="entry-header">
     <span class="entry-title">[{project.id}] {project.name}</span>
     <span class="entry-meta">{meta}</span>
@@ -34,7 +34,15 @@ const meta = `${project.status} | ${metric}`;
     // Features: {project.features.join(', ')}
   </div>
   <div class="tech-stack">
-    {project.stack.map((tech: string) => <span class="tech-tag">{tech}</span>)}
+    {project.stack.map((tech: string, index: number) => 
+      <span 
+        class="tech-tag" 
+        data-tech={tech.toLowerCase().replace(/\s+/g, '-')}
+        style={`animation-delay: ${index * 0.1}s`}
+      >
+        {tech}
+      </span>
+    )}
   </div>
 
   <!-- Action Buttons -->
@@ -58,5 +66,296 @@ const meta = `${project.status} | ${metric}`;
 <style>
   .project-card {
     position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  /* Subtle project card hover effects */
+  .project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 255, 65, 0.1);
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.3), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .project-card:hover::before {
+    left: 100%;
+  }
+
+  /* Enhanced tech stack animations */
+  .tech-stack {
+    opacity: 0;
+    transform: translateY(5px);
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: 0.3s;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .tech-tag {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tech-tag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 255, 65, 0.1);
+    transition: left 0.4s ease;
+  }
+
+  .tech-tag:hover::before {
+    left: 100%;
+  }
+
+  .tech-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    color: #00ff41;
+    border-color: rgba(0, 255, 65, 0.5);
+  }
+
+  /* Tech stack connection indicators */
+  .tech-tag[data-tech="flutter"] ~ .tech-tag[data-tech="dart"],
+  .tech-tag[data-tech="flutter"] ~ .tech-tag[data-tech="firebase"],
+  .tech-tag[data-tech="firebase"] ~ .tech-tag[data-tech="real-time-analytics"] {
+    position: relative;
+  }
+
+  .tech-tag[data-tech="flutter"]:hover ~ .tech-tag[data-tech="dart"],
+  .tech-tag[data-tech="flutter"]:hover ~ .tech-tag[data-tech="firebase"] {
+    opacity: 0.7;
+    transform: translateX(2px);
+  }
+
+  /* Project status indicators */
+  .project-card[data-project-id] .entry-meta {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .project-card[data-project-id] .entry-meta::after {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #00ff41;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .project-card:hover .entry-meta::after {
+    opacity: 1;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translateY(-50%) scale(1); opacity: 1; }
+    50% { transform: translateY(-50%) scale(1.2); opacity: 0.7; }
+  }
+
+  /* Entry description smooth reveal */
+  .entry-description {
+    transition: all 0.3s ease;
+  }
+
+  .project-card:hover .entry-description {
+    color: var(--foreground-digital);
+    opacity: 0.95;
+  }
+
+  /* Smooth scroll-in animation */
+  .project-card {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .project-card.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Theme-reactive project highlighting */
+  .project-card[data-theme="MATRIX"]:hover .entry-title {
+    color: #00ff41;
+    text-shadow: 0 0 2px #00ff41;
+  }
+
+  .project-card[data-theme="TRADING"]:hover .entry-title {
+    color: #ffff00;
+    text-shadow: 0 0 2px #ffff00;
+  }
+
+  .project-card[data-theme="BLOCKCHAIN"]:hover .entry-title {
+    color: #64ffda;
+    text-shadow: 0 0 2px #64ffda;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .project-card,
+    .tech-tag,
+    .entry-description {
+      transition: none;
+      animation: none;
+    }
+    
+    .project-card:hover {
+      transform: none;
+    }
+    
+    .tech-stack {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+    
+    .project-card::before,
+    .tech-tag::before {
+      display: none;
+    }
   }
 </style>
+
+<script>
+// Enhanced Project Entry Interactions
+document.addEventListener('DOMContentLoaded', () => {
+  const projectCards = document.querySelectorAll('.project-card');
+  
+  if (!projectCards.length) return;
+
+  // Theme-reactive project highlighting
+  function updateProjectTheme() {
+    const animationSystem = (window as any).asciiAnimationSystem;
+    
+    if (animationSystem) {
+      const currentEffectName = animationSystem.getCurrentEffectName();
+      const theme = currentEffectName.toUpperCase().replace(/\s+/g, '_');
+      
+      projectCards.forEach(card => {
+        card.setAttribute('data-theme', theme);
+      });
+    }
+  }
+
+  // Smooth tech stack connections
+  function setupTechConnections() {
+    projectCards.forEach(card => {
+      const techTags = card.querySelectorAll('.tech-tag');
+      
+      techTags.forEach(tag => {
+        tag.addEventListener('mouseenter', () => {
+          const techName = tag.getAttribute('data-tech');
+          const relatedTechs = {
+            'flutter': ['dart', 'firebase'],
+            'firebase': ['flutter', 'real-time-analytics'],
+            'dart': ['flutter'],
+            'rust': ['systems-programming'],
+          };
+          
+          const related = relatedTechs[techName] || [];
+          
+          // Subtle highlight of related technologies
+          techTags.forEach(otherTag => {
+            const otherTech = otherTag.getAttribute('data-tech');
+            if (related.includes(otherTech)) {
+              otherTag.style.opacity = '0.8';
+              otherTag.style.transform = 'translateY(-1px) scale(1.02)';
+              otherTag.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            }
+          });
+        });
+
+        tag.addEventListener('mouseleave', () => {
+          techTags.forEach(otherTag => {
+            otherTag.style.opacity = '';
+            otherTag.style.transform = '';
+          });
+        });
+      });
+    });
+  }
+
+  // Intersection Observer for smooth scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '-5% 0px -5% 0px'
+  };
+
+  const projectObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-in');
+        
+        // Stagger tech tag animations
+        const techTags = entry.target.querySelectorAll('.tech-tag');
+        techTags.forEach((tag, index) => {
+          tag.style.transitionDelay = `${0.5 + index * 0.1}s`;
+          tag.style.transform = 'translateY(0)';
+          tag.style.opacity = '1';
+        });
+      }
+    });
+  }, observerOptions);
+
+  // Initialize projects
+  projectCards.forEach((card, index) => {
+    // Set initial state for animation
+    card.style.transitionDelay = `${index * 0.2}s`;
+    
+    // Initialize tech tags
+    const techTags = card.querySelectorAll('.tech-tag');
+    techTags.forEach(tag => {
+      tag.style.opacity = '0';
+      tag.style.transform = 'translateY(10px)';
+      tag.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    });
+    
+    projectObserver.observe(card);
+  });
+
+  // Listen for theme changes
+  document.addEventListener('theme:changed', updateProjectTheme);
+  
+  // Initialize
+  updateProjectTheme();
+  setupTechConnections();
+  
+  // Subtle project card focus interactions
+  projectCards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      // Add subtle particle effect hint
+      card.style.position = 'relative';
+      card.style.zIndex = '2';
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.zIndex = '';
+    });
+  });
+});
+</script>

@@ -45,7 +45,11 @@ const getSkillBarStyle = (level: string) => {
 
             <div class="skills-list">
               {category.items.map((skill) => (
-                <div class={`skill-item ${interactive ? 'interactive' : ''}`}>
+                <div 
+                  class={`skill-item ${interactive ? 'interactive' : ''}`}
+                  data-skill-name={skill.name.toLowerCase().replace(/\s+/g, '-')}
+                  data-connected={skill.name.toLowerCase().includes('flutter') || skill.name.toLowerCase().includes('firebase') || skill.name.toLowerCase().includes('dart') ? 'true' : undefined}
+                >
                   <div class="skill-info">
                     <div class="skill-name">{skill.name}</div>
                     <div class="skill-details">
@@ -156,8 +160,31 @@ const getSkillBarStyle = (level: string) => {
   }
 
   .skill-item.interactive:hover {
-    background: rgba(0, 255, 65, 0.05);
-    transform: translateX(4px);
+    background: rgba(0, 255, 65, 0.03);
+    transform: translateX(2px);
+    border-left: 2px solid rgba(0, 255, 65, 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .skill-item.interactive {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-item.interactive::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+  }
+
+  .skill-item.interactive:hover::before {
+    left: 100%;
   }
 
   .skill-info {
@@ -225,23 +252,53 @@ const getSkillBarStyle = (level: string) => {
     color: #00ff41;
     text-shadow: 0 0 2px rgba(0, 255, 65, 0.3);
     font-weight: 600;
+    animation: subtle-glow 3s ease-in-out infinite;
   }
 
   .skill-bar .dither-1 {
     color: #ffff00;
     text-shadow: 0 0 2px rgba(255, 255, 0, 0.2);
     font-weight: 500;
+    animation: subtle-glow 3.5s ease-in-out infinite;
+    animation-delay: 0.5s;
   }
 
   .skill-bar .dither-2 {
     color: #ff8c00;
     text-shadow: 0 0 2px rgba(255, 140, 0, 0.2);
     font-weight: 400;
+    animation: subtle-glow 4s ease-in-out infinite;
+    animation-delay: 1s;
   }
 
   .skill-bar .dither-3 {
     color: #666;
     font-weight: 300;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+  }
+
+  @keyframes subtle-glow {
+    0%, 100% { 
+      text-shadow: 0 0 2px currentColor;
+      opacity: 0.9;
+    }
+    50% { 
+      text-shadow: 0 0 4px currentColor, 0 0 8px currentColor;
+      opacity: 1;
+    }
+  }
+
+  .skill-item.interactive:hover .skill-bar .filled {
+    animation-duration: 1.5s;
+  }
+
+  .skill-item.interactive:hover .skill-bar .dither-1 {
+    animation-duration: 1.8s;
+  }
+
+  .skill-item.interactive:hover .skill-bar .dither-2 {
+    animation-duration: 2s;
   }
 
   /* Print Mode Styles - Strict Black and White */
@@ -570,6 +627,43 @@ const getSkillBarStyle = (level: string) => {
     }
   }
 
+  /* Skill connection indicators */
+  .skill-item.interactive[data-connected] {
+    position: relative;
+  }
+
+  .skill-item.interactive[data-connected]::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    width: 3px;
+    height: 0;
+    background: rgba(0, 255, 65, 0.4);
+    transition: height 0.3s ease;
+    transform: translateY(-50%);
+  }
+
+  .skill-item.interactive[data-connected]:hover::after {
+    height: 60%;
+  }
+
+  /* Theme-reactive skill highlighting */
+  .skills-container[data-scheme="MATRIX"] .skill-item.interactive:hover .skill-name {
+    color: #00ff41;
+    text-shadow: 0 0 1px #00ff41;
+  }
+
+  .skills-container[data-scheme="TRADING"] .skill-item.interactive:hover .skill-name {
+    color: #ffff00;
+    text-shadow: 0 0 1px #ffff00;
+  }
+
+  .skills-container[data-scheme="BLOCKCHAIN"] .skill-item.interactive:hover .skill-name {
+    color: #64ffda;
+    text-shadow: 0 0 1px #64ffda;
+  }
+
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .skill-item {
@@ -580,5 +674,104 @@ const getSkillBarStyle = (level: string) => {
     .skill-item.interactive:active {
       transform: none;
     }
+    
+    .skill-bar .filled,
+    .skill-bar .dither-1,
+    .skill-bar .dither-2 {
+      animation: none !important;
+    }
+    
+    .skill-item.interactive::before {
+      display: none;
+    }
   }
 </style>
+
+<script>
+// Theme-reactive Skills Enhancement
+document.addEventListener('DOMContentLoaded', () => {
+  const skillsContainer = document.querySelector('.skills-container');
+  const skillItems = document.querySelectorAll('.skill-item.interactive');
+  
+  if (!skillsContainer || !skillItems.length) return;
+
+  // Update skills container with current theme
+  function updateSkillsTheme() {
+    const currentScheme = document.documentElement.getAttribute('data-theme');
+    const animationSystem = (window as any).asciiAnimationSystem;
+    
+    if (animationSystem) {
+      const currentEffectName = animationSystem.getCurrentEffectName();
+      skillsContainer.setAttribute('data-scheme', currentEffectName.toUpperCase().replace(/\s+/g, '_'));
+    }
+  }
+
+  // Subtle skill connection highlighting
+  function setupSkillConnections() {
+    const connections = {
+      'flutter': ['dart', 'firebase', 'mobile-development'],
+      'firebase': ['flutter', 'real-time-analytics', 'push-notifications'],
+      'dart': ['flutter', 'mobile-development'],
+      'rust': ['systems-programming', 'performance-optimization'],
+      'ai': ['machine-learning', 'innovation', 'research']
+    };
+
+    skillItems.forEach(item => {
+      const skillName = item.getAttribute('data-skill-name');
+      
+      item.addEventListener('mouseenter', () => {
+        const relatedSkills = connections[skillName] || [];
+        
+        // Subtle highlight of related skills
+        skillItems.forEach(otherItem => {
+          const otherSkillName = otherItem.getAttribute('data-skill-name');
+          
+          if (relatedSkills.includes(otherSkillName)) {
+            otherItem.style.opacity = '0.7';
+            otherItem.style.transform = 'translateX(1px)';
+            otherItem.style.transition = 'all 0.3s ease';
+          }
+        });
+      });
+
+      item.addEventListener('mouseleave', () => {
+        skillItems.forEach(otherItem => {
+          otherItem.style.opacity = '';
+          otherItem.style.transform = '';
+        });
+      });
+    });
+  }
+
+  // Listen for theme changes
+  document.addEventListener('theme:changed', updateSkillsTheme);
+  
+  // Initialize
+  updateSkillsTheme();
+  setupSkillConnections();
+  
+  // Intersection Observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '-10% 0px -10% 0px'
+  };
+
+  const skillsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      }
+    });
+  }, observerOptions);
+
+  // Apply subtle entrance animation
+  skillItems.forEach((item, index) => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(10px)';
+    item.style.transitionDelay = `${index * 0.1}s`;
+    skillsObserver.observe(item);
+  });
+});
+</script>
