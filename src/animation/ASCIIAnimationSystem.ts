@@ -213,6 +213,12 @@ export class ASCIIAnimationSystem {
   }
 
   private handleSchemeChange(direction: 'next' | 'prev'): void {
+    // Add visual flash effect during theme change
+    document.body.classList.add('theme-changing');
+    setTimeout(() => {
+      document.body.classList.remove('theme-changing');
+    }, 600);
+
     const currentEffect = this.effectSystem.getCurrentEffect();
     const maxEffects = EFFECT_NAMES.length;
     

@@ -82,7 +82,7 @@ const { profile } = Astro.props as ContactProps;
     opacity: 0;
     transform: translateY(10px);
     animation: contactFadeIn 0.8s ease forwards;
-    animation-delay: 0.2s;
+    animation-delay: 0.1s;
   }
 
   @keyframes contactFadeIn {
@@ -354,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize contact cards
   contactCards.forEach((card, index) => {
     // Set stagger delay for animation
-    (card as HTMLElement).style.transitionDelay = `${index * 0.15}s`;
+    (card as HTMLElement).style.transitionDelay = `${index * 0.075}s`;
     contactObserver.observe(card);
 
     // Add enhanced hover interactions

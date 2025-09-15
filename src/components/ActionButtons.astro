@@ -10,7 +10,6 @@ export interface ActionButtonsProps extends BaseComponentProps {
   githubUrl?: string;
   actions?: ProjectAction[];
   variant?: 'default' | 'compact' | 'minimal';
-  showCaseStudy?: boolean;
 }
 
 const { 
@@ -18,7 +17,6 @@ const {
   githubUrl,
   actions: customActions,
   variant = 'default',
-  showCaseStudy = true,
   className = '',
   ...props 
 } = Astro.props as ActionButtonsProps;
@@ -38,13 +36,6 @@ const defaultActions: ProjectAction[] = [
     url: githubUrl,
     icon: '⟨/⟩',
     primary: false,
-  }] : []),
-  ...(showCaseStudy ? [{
-    type: 'case-study' as const,
-    label: '📋 Case Study',
-    icon: '📋',
-    primary: false,
-    disabled: true, // TODO: Implement case study functionality
   }] : []),
 ];
 

@@ -16,8 +16,8 @@ body {
   font-family: var(--font-body);
   line-height: var(--line-height-base);
   transition: 
-    background-color var(--transition-base) var(--ease-in-out),
-    color var(--transition-base) var(--ease-in-out);
+    background-color var(--transition-slow) var(--ease-in-out),
+    color var(--transition-slow) var(--ease-in-out);
   overflow-x: hidden;
   position: relative;
 }
@@ -34,9 +34,42 @@ body {
 .checksum,
 a {
   transition:
-    color var(--transition-base) var(--ease-in-out),
-    border-color var(--transition-base) var(--ease-in-out),
-    background-color var(--transition-base) var(--ease-in-out);
+    color var(--transition-slow) var(--ease-in-out),
+    border-color var(--transition-slow) var(--ease-in-out),
+    background-color var(--transition-slow) var(--ease-in-out);
+}
+
+/* Theme change flash effect */
+body.theme-changing {
+  position: relative;
+}
+
+body.theme-changing::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  animation: themeFlash 0.6s ease-out;
+}
+
+@keyframes themeFlash {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Enhanced theme transitions with staggered effects */
+.container,
+.entry,
+.contact-card,
+.project-card,
+.skill-item {
+  transition:
+    all var(--transition-slow) var(--ease-in-out),
+    box-shadow var(--transition-slower) var(--ease-in-out);
 }
 
 /* Ambient grid background in digital view */

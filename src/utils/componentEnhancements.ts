@@ -20,7 +20,7 @@ export class ComponentEnhancementManager {
       enableScrollAnimations: true,
       enableThemeReactivity: true,
       enableInteractionEffects: true,
-      staggerDelay: 0.1,
+      staggerDelay: 0.05,
       ...options
     };
   }
@@ -72,7 +72,7 @@ export class ComponentEnhancementManager {
           // Stagger animations for child elements
           const childElements = entry.target.querySelectorAll('.tech-tag, .achievement-item, .skill-bar');
           childElements.forEach((child, index) => {
-            (child as HTMLElement).style.transitionDelay = `${0.3 + index * this.options.staggerDelay!}s`;
+            (child as HTMLElement).style.transitionDelay = `${0.15 + index * this.options.staggerDelay!}s`;
           });
         }
       });

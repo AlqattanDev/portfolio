@@ -79,7 +79,7 @@ const { edu } = Astro.props as EducationProps;
     opacity: 0;
     transform: translateY(5px);
     animation: fadeInUp 0.8s ease forwards;
-    animation-delay: 0.3s;
+    animation-delay: 0.15s;
   }
 
   @keyframes fadeInUp {
@@ -126,7 +126,7 @@ const { edu } = Astro.props as EducationProps;
     margin-top: 12px;
     opacity: 0;
     animation: fadeInUp 0.6s ease forwards;
-    animation-delay: 0.6s;
+    animation-delay: 0.3s;
   }
 
   .achievement-item {
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize education cards
   educationCards.forEach((card, index) => {
-    card.style.transitionDelay = `${index * 0.3}s`;
+    card.style.transitionDelay = `${index * 0.15}s`;
     educationObserver.observe(card);
 
     // Add subtle academic achievement interactions
