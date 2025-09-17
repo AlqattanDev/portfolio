@@ -1,7 +1,7 @@
 ---
 import type { Project } from '@/types';
 import ActionButtons from './ActionButtons.astro';
-import GitHubStats from './GitHubStats.astro';
+
 import MediaPreview from './MediaPreview.astro';
 
 interface Props {
@@ -52,14 +52,7 @@ const meta = `${project.status} | ${metric}`;
     variant="default"
   />
 
-  <!-- GitHub Stats -->
-  {project.githubUrl && (
-    <GitHubStats
-      repoUrl={project.githubUrl}
-      enableRealTime={true}
-      showLanguage={true}
-    />
-  )}
+
 </div>
 
 <style>

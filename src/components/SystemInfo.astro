@@ -92,7 +92,7 @@ const updateCurrentDate = () => {
     const dateElement = document.getElementById('current-date');
     if (!dateElement) return;
     
-    const format = dateElement.dataset.format || 'iso';
+    const format = dateElement.dataset["format"] || 'iso';
     const currentDate = new Date();
     
     let formattedDate: string;

@@ -220,27 +220,6 @@ export interface ProjectWithMeta extends Project {
   hasImages: boolean;
 }
 
-export interface GitHubRepo {
-  name: string;
-  full_name: string;
-  description?: string;
-  stargazers_count: number;
-  forks_count: number;
-  language?: string;
-  updated_at: string;
-  html_url: string;
-  topics: string[];
-  open_issues_count: number;
-  subscribers_count: number;
-}
-
-export interface GitHubStats {
-  stars: number;
-  forks: number;
-  language: string;
-  isLoading: boolean;
-  error?: string;
-}
 
 export interface ProjectEntryProps extends BaseComponentProps {
   project: Project;
@@ -298,7 +277,7 @@ export interface ProjectFilters {
 }
 
 export interface ProjectSortOptions {
-  field: 'name' | 'status' | 'updated' | 'stars';
+  field: 'name' | 'status' | 'updated';
   direction: 'asc' | 'desc';
 }
 
@@ -331,19 +310,7 @@ export const ProjectSchema = z.object({
   metrics: ProjectMetricsSchema.optional(),
 });
 
-export const GitHubRepoSchema = z.object({
-  name: z.string(),
-  full_name: z.string(),
-  description: z.string().nullable().optional(),
-  stargazers_count: z.number(),
-  forks_count: z.number(),
-  language: z.string().nullable().optional(),
-  updated_at: z.string(),
-  html_url: z.string().url(),
-  topics: z.array(z.string()).default([]),
-  open_issues_count: z.number(),
-  subscribers_count: z.number(),
-});
+
 
 // ====================
 // Skill Types
@@ -703,7 +670,7 @@ export interface EnvironmentConfig {
   NODE_ENV: 'development' | 'production' | 'test';
   BUILD_MODE: 'static' | 'ssr' | 'hybrid';
   API_BASE_URL?: string;
-  GITHUB_TOKEN?: string;
+
   ANALYTICS_ID?: string;
 }
 
@@ -715,9 +682,6 @@ export const isProject = (obj: unknown): obj is Project => {
   return ProjectSchema.safeParse(obj).success;
 };
 
-export const isGitHubRepo = (obj: unknown): obj is GitHubRepo => {
-  return GitHubRepoSchema.safeParse(obj).success;
-};
 
 export const isSkillLevel = (level: string): level is SkillLevel => {
   return SkillLevelSchema.safeParse(level).success;

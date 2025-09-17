@@ -17,7 +17,7 @@ export async function getStaticPaths() {
   const profile: UserProfile = profileData as UserProfile;
       
   const allPosts = await getCollection('blog');
-  return allPosts.map(post => ({
+  return allPosts.map((post: { slug: any; }) => ({
     params: { slug: post.slug },
     props: { post, profile },
   }));
@@ -45,7 +45,7 @@ const { Content } = await post.render();
                 <span class="entry-meta">Published: {post.data.publishDate.toISOString().slice(0,10)}</span>
             </div>
             <div class="tech-stack" style="margin-bottom: 20px;">
-                {post.data.tags.map(tag => <span class="tech-tag">{tag}</span>)}
+                {post.data.tags.map((tag: unknown) => <span class="tech-tag">{tag}</span>)}
             </div>
             
             <!-- The actual blog content is rendered here -->
