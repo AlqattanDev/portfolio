@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "astro": "^4.0.0",
+    "hyper-mcp-shell": "^1.1.2",
     "web-vitals": "^5.1.0",
     "zod": "^3.22.4"
   },
