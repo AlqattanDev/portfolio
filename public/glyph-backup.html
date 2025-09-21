@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALI ALQATTAN :: NEURAL ARCHITECT</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+
+    :root {
+      --primary: #00ff41;
+      --secondary: #ff00ff;
+      --accent: #00ffff;
+      --black: #0a0a0a;
+      --white: #eaeaea;
+      --gray: #222222;
+      --led-off: #1a1a1a;
+      --led-on: #f6b800;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none;
+    }
+
+    body {
+      font-family: "Space Grotesk", sans-serif;
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* Custom LED Cursor */
+    .cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      border-radius: 1px;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: all 0.1s ease;
+      z-index: 9999;
+      box-shadow: 0 0 10px var(--primary);
+    }
+
+    .cursor-follower {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 24px;
+      height: 24px;
+      border: 1px solid var(--accent);
+      border-radius: 1px;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: all 0.2s ease;
+      z-index: 9998;
+    }
+
+    .cursor.hovered {
+      transform: translate(-50%, -50%) scale(3);
+      background-color: var(--led-on);
+      box-shadow: 0 0 15px var(--led-on);
+    }
+
+    /* Scanlines */
+    .scanlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9997;
+      background: repeating-linear-gradient(to bottom,
+          rgba(0, 0, 0, 0),
+          rgba(0, 0, 0, 0) 1px,
+          rgba(0, 255, 65, 0.03) 2px);
+      animation: flicker 0.15s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 0.9; }
+    }
+
+    /* LED Grid System */
+    .led-text {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .led-char {
+      display: grid;
+      grid-template-columns: repeat(7, 8px);
+      grid-template-rows: repeat(8, 8px);
+      gap: 1px;
+      margin: 0 4px;
+    }
+
+    .led-char.large {
+      grid-template-columns: repeat(7, 12px);
+      grid-template-rows: repeat(8, 12px);
+      gap: 2px;
+      margin: 0 6px;
+    }
+
+    .led-char.huge {
+      grid-template-columns: repeat(7, 16px);
+      grid-template-rows: repeat(8, 16px);
+      gap: 3px;
+      margin: 0 8px;
+    }
+
+    .led-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 1px;
+      background: var(--led-off);
+      transition: all 0.2s ease;
+    }
+
+    .led-char.large .led-dot {
+      width: 12px;
+      height: 12px;
+    }
+
+    .led-char.huge .led-dot {
+      width: 16px;
+      height: 16px;
+    }
+
+    .led-dot.on {
+      background: var(--led-off);
+    }
+
+    .led-dot.on.lit {
+      background: var(--primary);
+      box-shadow: 0 0 8px var(--primary);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      padding: 0 40px;
+    }
+
+    .hero-badge {
+      background: var(--primary);
+      color: var(--black);
+      padding: 8px 16px;
+      font-family: "VT323", monospace;
+      font-size: 18px;
+      text-transform: uppercase;
+      margin-bottom: 60px;
+      border: 2px solid var(--primary);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 5px var(--primary); }
+      50% { box-shadow: 0 0 20px var(--primary), 0 0 30px var(--primary); }
+    }
+
+    .hero-title {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      max-width: 600px;
+      text-align: center;
+      line-height: 1.6;
+      border: 1px solid var(--gray);
+      padding: 20px;
+      background: rgba(0, 255, 65, 0.05);
+    }
+
+    /* Navigation */
+    .nav-trigger {
+      position: fixed;
+      top: 30px;
+      right: 40px;
+      z-index: 200;
+      width: 60px;
+      height: 60px;
+      background: var(--gray);
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .nav-trigger:hover {
+      background: var(--accent);
+      border-color: var(--black);
+    }
+
+    .nav-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--black);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      clip-path: circle(0% at 100% 0);
+      transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .nav-overlay.open {
+      clip-path: circle(150% at 100% 0);
+    }
+
+    .nav-menu {
+      list-style: none;
+    }
+
+    .nav-menu li {
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    /* Sections */
+    .section {
+      padding: 80px 20px;
+      position: relative;
+      border-top: 1px solid var(--gray);
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 60px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .section-number {
+      font-size: clamp(60px, 8vw, 100px);
+      font-weight: 400;
+      color: var(--gray);
+      font-family: "VT323", monospace;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Skills Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .skill-card {
+      background: #111;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      border: 2px solid var(--gray);
+    }
+
+    .skill-card:hover {
+      transform: translateY(-5px) translateX(-5px);
+      border-color: var(--primary);
+      background: var(--gray);
+      box-shadow: 5px 5px 0 0 var(--primary);
+    }
+
+    /* Projects */
+    .project-item {
+      padding: 60px 40px;
+      border-bottom: 1px solid var(--gray);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .project-item:hover {
+      background: rgba(0, 255, 65, 0.05);
+    }
+
+    .project-year {
+      font-family: "VT323", monospace;
+      font-size: 16px;
+      opacity: 0.6;
+      margin-bottom: 10px;
+    }
+
+    .project-name {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .project-arrow {
+      font-size: 60px;
+      color: var(--primary);
+      font-family: "VT323", monospace;
+      transition: transform 0.3s ease;
+    }
+
+    .project-item:hover .project-arrow {
+      transform: translateX(15px) rotate(-45deg);
+    }
+
+    /* Contact */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 60px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .contact-item {
+      border-top: 2px solid var(--gray);
+      padding-top: 20px;
+    }
+
+    .contact-label {
+      font-family: "VT323", monospace;
+      font-size: 16px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+
+    .contact-value {
+      font-size: 24px;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--white);
+      transition: all 0.3s ease;
+    }
+
+    .contact-value:hover {
+      color: var(--accent);
+      text-shadow: 0 0 10px var(--accent);
+    }
+
+    /* Status Bar */
+    .status-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--primary);
+      color: var(--black);
+      padding: 15px 0;
+      font-family: "VT323", monospace;
+      font-size: 18px;
+      text-transform: uppercase;
+      overflow: hidden;
+      z-index: 100;
+    }
+
+    .status-content {
+      display: flex;
+      animation: scroll 25s linear infinite;
+      white-space: nowrap;
+    }
+
+    .status-content span {
+      padding: 0 40px;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero { padding: 0 20px; }
+      .section { padding: 80px 20px; }
+      .nav-trigger { top: 20px; right: 20px; }
+    }
+
+    /* Inverted LED Section */
+    .inverted-led-section {
+      background: var(--black);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .inverted-led-section:hover {
+      background: var(--primary);
+      transition: background 0.5s ease;
+    }
+
+    .inverted-led-section:hover .section-number {
+      color: var(--black);
+    }
+
+    .inverted-content {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      align-items: center;
+      padding: 60px 0;
+    }
+
+    .led-text.inverted .led-dot {
+      background: var(--led-off);
+    }
+
+    .led-text.inverted .led-dot.on {
+      background: var(--led-off);
+    }
+
+    .inverted-led-section:hover .led-text.inverted .led-dot {
+      background: var(--primary);
+      box-shadow: 0 0 5px var(--primary);
+    }
+
+    .inverted-led-section:hover .led-text.inverted .led-dot.on {
+      background: var(--black) !important;
+      box-shadow: none !important;
+    }
+
+    .inverted-led-section:hover .led-text.inverted .led-dot.on.lit {
+      background: var(--black) !important;
+      box-shadow: none !important;
+    }
+
+    /* Transcription Area */
+    .transcription-area {
+      width: 100%;
+      max-width: 280px;
+      height: 35px;
+      border: 2px solid var(--gray);
+      padding: 6px 12px;
+      background: rgba(0, 0, 0, 0.3);
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .inverted-led-section:hover .transcription-area {
+      border-color: var(--black);
+      background: rgba(0, 255, 65, 0.1);
+    }
+
+    #transcriptionText {
+      font-family: "VT323", monospace;
+      font-size: 12px;
+      color: var(--primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      text-transform: uppercase;
+    }
+
+    .inverted-led-section:hover #transcriptionText {
+      color: var(--black);
+    }
+
+    .transcription-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 12px;
+      background: var(--primary);
+      animation: blink 1s infinite;
+      margin-left: 4px;
+      flex-shrink: 0;
+    }
+
+    .inverted-led-section:hover .transcription-cursor {
+      background: var(--black);
+    }
+
+    /* Neural Grid Layout */
+    .neural-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .neural-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      min-width: 0;
+    }
+
+    .neural-title {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .profile-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    .ai-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+    }
+
+    #aiAgentCanvas {
+      border: 2px solid var(--gray);
+      border-radius: 4px;
+      background: var(--black);
+      transition: all 0.3s ease;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .inverted-led-section:hover #aiAgentCanvas {
+      border-color: var(--black);
+      background: var(--primary);
+    }
+
+    /* Skills Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Projects */
+    .projects {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .project-item {
+      padding: 40px 0;
+      border-bottom: 1px solid var(--gray);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    /* Contact Grid */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero { padding: 0 20px; }
+      .section { padding: 60px 20px; }
+      .nav-trigger { top: 20px; right: 20px; }
+      
+      .neural-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      
+      #aiAgentCanvas {
+        width: 250px;
+        height: 250px;
+      }
+      
+      .section-header {
+        gap: 15px;
+        margin-bottom: 40px;
+      }
+      
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
+  <div class="scanlines"></div>
+
+  <button class="nav-trigger" id="navTrigger">
+    <div class="led-text">
+      <div class="led-char" data-char="M"></div>
+    </div>
+  </button>
+
+  <div class="nav-overlay" id="navOverlay">
+    <ul class="nav-menu">
+      <li><a href="#hero" class="led-text" data-text="HOME"></a></li>
+      <li><a href="#skills" class="led-text" data-text="SKILLS"></a></li>
+      <li><a href="#projects" class="led-text" data-text="PROJECTS"></a></li>
+      <li><a href="#contact" class="led-text" data-text="CONTACT"></a></li>
+    </ul>
+  </div>
+
+  <section class="hero" id="hero">
+    <div class="hero-badge">[NEURAL LINK ESTABLISHED]</div>
+    
+    <div class="hero-title">
+      <div class="led-text" id="heroName" data-text="ALI ALQATTAN"></div>
+    </div>
+    
+    <div class="hero-subtitle">
+      <p>Full-Stack Developer & Digital Architect<br>
+      Crafting the future through code, one algorithm at a time.</p>
+    </div>
+  </section>
+
+  <section class="section" id="skills">
+    <div class="section-header">
+      <div class="section-number">01</div>
+      <div class="section-title">
+        <div class="led-text large" data-text="CORE SYSTEMS"></div>
+      </div>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="led-text" data-text="REACT"></div>
+        <div class="skill-level">95%</div>
+      </div>
+      <div class="skill-card">
+        <div class="led-text" data-text="NODE.JS"></div>
+        <div class="skill-level">90%</div>
+      </div>
+      <div class="skill-card">
+        <div class="led-text" data-text="PYTHON"></div>
+        <div class="skill-level">88%</div>
+      </div>
+      <div class="skill-card">
+        <div class="led-text" data-text="AWS"></div>
+        <div class="skill-level">85%</div>
+      </div>
+      <div class="skill-card">
+        <div class="led-text" data-text="DOCKER"></div>
+        <div class="skill-level">92%</div>
+      </div>
+      <div class="skill-card">
+        <div class="led-text" data-text="MONGODB"></div>
+        <div class="skill-level">87%</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <div class="section-header">
+      <div class="section-number">02</div>
+      <div class="section-title">
+        <div class="led-text large" data-text="PROJECT ARCHIVE"></div>
+      </div>
+    </div>
+
+    <div class="projects">
+      <div class="project-item">
+        <div class="project-left">
+          <div class="project-year">[2024]</div>
+          <div class="project-name">
+            <div class="led-text" data-text="NEURAL NETWORK"></div>
+          </div>
+          <div class="project-tags">
+            <span class="tag">AI/ML</span>
+            <span class="tag">TENSORFLOW</span>
+            <span class="tag">PYTHON</span>
+          </div>
+        </div>
+        <div class="project-arrow">/></div>
+      </div>
+
+      <div class="project-item">
+        <div class="project-left">
+          <div class="project-year">[2024]</div>
+          <div class="project-name">
+            <div class="led-text" data-text="BLOCKCHAIN DApp"></div>
+          </div>
+          <div class="project-tags">
+            <span class="tag">SOLIDITY</span>
+            <span class="tag">WEB3</span>
+            <span class="tag">REACT</span>
+          </div>
+        </div>
+        <div class="project-arrow">/></div>
+      </div>
+
+      <div class="project-item">
+        <div class="project-left">
+          <div class="project-year">[2023]</div>
+          <div class="project-name">
+            <div class="led-text" data-text="CLOUD PLATFORM"></div>
+          </div>
+          <div class="project-tags">
+            <span class="tag">AWS</span>
+            <span class="tag">KUBERNETES</span>
+            <span class="tag">MICROSERVICES</span>
+          </div>
+        </div>
+        <div class="project-arrow">/></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <div class="section-header">
+      <div class="section-number">03</div>
+      <div class="section-title">
+        <div class="led-text large" data-text="ESTABLISH CONNECTION"></div>
+      </div>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="contact-label">// EMAIL_PROTOCOL</div>
+        <a href="mailto:ali@alqattan.dev" class="contact-value">ali@alqattan.dev</a>
+      </div>
+      <div class="contact-item">
+        <div class="contact-label">// GITHUB_REPO</div>
+        <a href="#" class="contact-value">github.com/alialqattan</a>
+      </div>
+      <div class="contact-item">
+        <div class="contact-label">// LINKEDIN_NET</div>
+        <a href="#" class="contact-value">linkedin.com/in/alialqattan</a>
+      </div>
+      <div class="contact-item">
+        <div class="contact-label">// LOCATION_DATA</div>
+        <span class="contact-value">Kuwait City, KW</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section inverted-led-section" id="neural-interface">
+    <div class="section-header">
+      <div class="section-number">04</div>
+      <div class="section-title">
+        <div class="led-text large inverted" data-text="NEURAL INTERFACE"></div>
+      </div>
+    </div>
+
+    <div class="neural-grid">
+      <div class="neural-column">
+        <div class="neural-title">
+          <div class="led-text inverted" data-text="PROFILE"></div>
+        </div>
+        <div class="profile-content">
+          <div class="led-text inverted" data-text="FULL STACK DEVELOPER"></div>
+          <div class="led-text inverted" data-text="DIGITAL ARCHITECT"></div>
+          <div class="led-text inverted" data-text="CODE ARTISAN"></div>
+        </div>
+      </div>
+
+      <div class="neural-column">
+        <div class="neural-title">
+          <div class="led-text inverted" data-text="AI CONSCIOUSNESS"></div>
+        </div>
+        <div class="ai-content">
+          <canvas id="aiAgentCanvas" width="300" height="300"></canvas>
+          <div class="transcription-area">
+            <span id="transcriptionText">TAP VISUAL TO ACTIVATE</span>
+            <span class="transcription-cursor"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="status-bar">
+    <div class="status-content">
+      <span>SYSTEM STATUS: ONLINE</span>
+      <span>NEURAL LINK: ACTIVE</span>
+      <span>PORTFOLIO: LOADED</span>
+      <span>AWAITING COMMANDS...</span>
+      <span>SYSTEM STATUS: ONLINE</span>
+      <span>NEURAL LINK: ACTIVE</span>
+      <span>PORTFOLIO: LOADED</span>
+      <span>AWAITING COMMANDS...</span>
+    </div>
+  </div>
+
+  <script>
+    // LED Character Patterns (7x8 grid)
+    const LED_PATTERNS = {
+      'A': [
+        [0,1,1,1,1,1,0],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,1,1,1,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1]
+      ],
+      'L': [
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1]
+      ],
+      'I': [
+        [1,1,1,1,1,1,1],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [1,1,1,1,1,1,1]
+      ],
+      'Q': [
+        [0,1,1,1,1,1,0],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,1,0,1,1],
+        [1,1,0,0,1,1,1],
+        [1,1,0,0,0,1,1],
+        [0,1,1,1,1,1,0],
+        [0,0,0,0,0,1,1]
+      ],
+      'T': [
+        [1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0]
+      ],
+      'N': [
+        [1,1,0,0,0,1,1],
+        [1,1,1,0,0,1,1],
+        [1,1,1,1,0,1,1],
+        [1,1,0,1,1,1,1],
+        [1,1,0,0,1,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1]
+      ],
+      'R': [
+        [1,1,1,1,1,1,0],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,1,1,1,1,0],
+        [1,1,1,1,0,0,0],
+        [1,1,0,1,1,0,0],
+        [1,1,0,0,1,1,0],
+        [1,1,0,0,0,1,1]
+      ],
+      'E': [
+        [1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1],
+        [1,1,0,0,0,0,0],
+        [1,1,1,1,1,0,0],
+        [1,1,1,1,1,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1]
+      ],
+      'C': [
+        [0,1,1,1,1,1,0],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,1,1],
+        [0,1,1,1,1,1,0]
+      ],
+      'O': [
+        [0,1,1,1,1,1,0],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [0,1,1,1,1,1,0]
+      ],
+      'S': [
+        [0,1,1,1,1,1,1],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [0,1,1,1,1,1,0],
+        [0,0,0,0,0,1,1],
+        [0,0,0,0,0,1,1],
+        [0,0,0,0,0,1,1],
+        [1,1,1,1,1,1,0]
+      ],
+      'Y': [
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [0,1,1,0,1,1,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0]
+      ],
+      'M': [
+        [1,1,0,0,0,1,1],
+        [1,1,1,0,1,1,1],
+        [1,1,1,1,1,1,1],
+        [1,1,0,1,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1]
+      ],
+      'H': [
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1]
+      ],
+      'P': [
+        [1,1,1,1,1,1,0],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,1,1,1,1,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0]
+      ],
+      'J': [
+        [0,0,0,0,1,1,1],
+        [0,0,0,0,1,1,1],
+        [0,0,0,0,1,1,1],
+        [0,0,0,0,1,1,1],
+        [0,0,0,0,1,1,1],
+        [1,1,0,0,1,1,1],
+        [1,1,0,0,1,1,1],
+        [0,1,1,1,1,1,0]
+      ],
+      'D': [
+        [1,1,1,1,1,0,0],
+        [1,1,0,0,1,1,0],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,1,1,0],
+        [1,1,1,1,1,0,0]
+      ],
+      'K': [
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,1,1,0],
+        [1,1,0,1,1,0,0],
+        [1,1,1,1,0,0,0],
+        [1,1,1,1,0,0,0],
+        [1,1,0,1,1,0,0],
+        [1,1,0,0,1,1,0],
+        [1,1,0,0,0,1,1]
+      ],
+      'G': [
+        [0,1,1,1,1,1,0],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,0,0],
+        [1,1,0,1,1,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [0,1,1,1,1,1,0]
+      ],
+      'B': [
+        [1,1,1,1,1,1,0],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,1,1,1,1,0],
+        [1,1,1,1,1,1,0],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,1,1,1,1,0]
+      ],
+      'U': [
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [0,1,1,1,1,1,0]
+      ],
+      'F': [
+        [1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1],
+        [1,1,0,0,0,0,0],
+        [1,1,1,1,1,0,0],
+        [1,1,1,1,1,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,0,0,0,0,0]
+      ],
+      'V': [
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [0,1,1,0,1,1,0],
+        [0,1,1,0,1,1,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0]
+      ],
+      'W': [
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,0,0,1,1],
+        [1,1,0,1,0,1,1],
+        [1,1,0,1,0,1,1],
+        [1,1,1,1,1,1,1],
+        [1,1,1,0,1,1,1],
+        [1,1,0,0,0,1,1]
+      ],
+      'X': [
+        [1,1,0,0,0,1,1],
+        [0,1,1,0,1,1,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,0,1,1,1,0,0],
+        [0,1,1,0,1,1,0],
+        [1,1,0,0,0,1,1]
+      ],
+      'Z': [
+        [1,1,1,1,1,1,1],
+        [0,0,0,0,0,1,1],
+        [0,0,0,0,1,1,0],
+        [0,0,0,1,1,0,0],
+        [0,0,1,1,0,0,0],
+        [0,1,1,0,0,0,0],
+        [1,1,0,0,0,0,0],
+        [1,1,1,1,1,1,1]
+      ],
+      ' ': [
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0]
+      ]
+    };
+
+    class LEDText {
+      constructor() {
+        this.initializeLEDElements();
+        this.setupEventListeners();
+        this.animateHeroText();
+        this.initializeAIAgent();
+      }
+
+      initializeAIAgent() {
+        this.canvas = document.getElementById('aiAgentCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.audioContext = null;
+        this.analyser = null;
+        this.dataArray = null;
+        this.isListening = false;
+        
+        // Speech recognition
+        this.recognition = null;
+        this.transcriptionText = '';
+        
+        this.setupCanvasClick();
+        this.setupSpeechRecognition();
+        this.startAIAnimation();
+      }
+
+      setupCanvasClick() {
+        this.canvas.addEventListener('click', () => {
+          if (!this.isListening) {
+            this.startAudioCapture();
+          } else {
+            this.stopAudioCapture();
+          }
+        });
+        
+        // Add cursor pointer style
+        this.canvas.style.cursor = 'pointer';
+      }
+
+      setupSpeechRecognition() {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+          this.recognition = new SpeechRecognition();
+          
+          this.recognition.continuous = true;
+          this.recognition.interimResults = true;
+          this.recognition.lang = 'en-US';
+          
+          this.recognition.onresult = (event) => {
+            let finalTranscript = '';
+            let interimTranscript = '';
+            
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+              const transcript = event.results[i][0].transcript;
+              if (event.results[i].isFinal) {
+                finalTranscript += transcript;
+              } else {
+                interimTranscript += transcript;
+              }
+            }
+            
+            // Update display in real-time
+            const displayText = (this.transcriptionText + finalTranscript + interimTranscript).trim();
+            document.getElementById('transcriptionText').textContent = displayText.toUpperCase();
+            
+            if (finalTranscript) {
+              this.transcriptionText += finalTranscript + ' ';
+            }
+          };
+          
+          this.recognition.onerror = (event) => {
+            console.log('Speech recognition error:', event.error);
+          };
+        }
+      }
+
+      async startAudioCapture() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          this.analyser = this.audioContext.createAnalyser();
+          const source = this.audioContext.createMediaStreamSource(stream);
+          
+          source.connect(this.analyser);
+          this.analyser.fftSize = 256;
+          this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+          
+          this.isListening = true;
+          this.transcriptionText = '';
+          
+          // Start speech recognition
+          if (this.recognition) {
+            this.recognition.start();
+          }
+          
+          // Update initial text
+          document.getElementById('transcriptionText').textContent = 'LISTENING...';
+          
+        } catch (err) {
+          console.log('Audio access denied:', err);
+          document.getElementById('transcriptionText').textContent = 'AUDIO ACCESS DENIED';
+        }
+      }
+
+      stopAudioCapture() {
+        if (this.audioContext) {
+          this.audioContext.close();
+        }
+        
+        if (this.recognition) {
+          this.recognition.stop();
+        }
+        
+        this.isListening = false;
+        this.transcriptionText = '';
+        document.getElementById('transcriptionText').textContent = 'TAP VISUAL TO ACTIVATE';
+      }
+
+      startAIAnimation() {
+        const animate = () => {
+          this.drawAIAgent();
+          requestAnimationFrame(animate);
+        };
+        animate();
+      }
+
+      drawAIAgent() {
+        const canvas = this.canvas;
+        const ctx = this.ctx;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Get audio data
+        let audioLevel = 0;
+        let frequencyData = [];
+        if (this.isListening && this.analyser) {
+          this.analyser.getByteFrequencyData(this.dataArray);
+          audioLevel = this.dataArray.reduce((a, b) => a + b) / this.dataArray.length / 255;
+          
+          // Process frequency data for Nothing-style visualization
+          const bands = 8;
+          const bandSize = Math.floor(this.dataArray.length / bands);
+          for (let i = 0; i < bands; i++) {
+            let sum = 0;
+            for (let j = 0; j < bandSize; j++) {
+              sum += this.dataArray[i * bandSize + j];
+            }
+            frequencyData.push(sum / bandSize / 255);
+          }
+        } else {
+          frequencyData = new Array(8).fill(0);
+        }
+        
+        const time = Date.now() * 0.001;
+        
+        // Draw Nothing-inspired audio interface
+        this.drawNothingInterface(ctx, centerX, centerY, audioLevel, frequencyData, time);
+      }
+
+      drawNothingInterface(ctx, centerX, centerY, audioLevel, frequencyData, time) {
+        const section = document.querySelector('.inverted-led-section:hover');
+        const isInverted = section !== null;
+        
+        // Central audio level indicator - Nothing style
+        this.drawCentralIndicator(ctx, centerX, centerY, audioLevel, isInverted, time);
+        
+        // Frequency bands - minimalist bars
+        this.drawFrequencyBands(ctx, centerX, centerY, frequencyData, isInverted);
+        
+        // Audio waveform ring
+        this.drawWaveformRing(ctx, centerX, centerY, frequencyData, isInverted, time);
+        
+        // Status indicators
+        this.drawStatusIndicators(ctx, centerX, centerY, audioLevel, isInverted);
+        
+        // Geometric accent elements
+        this.drawGeometricAccents(ctx, centerX, centerY, audioLevel, isInverted, time);
+      }
+
+      drawCentralIndicator(ctx, centerX, centerY, audioLevel, isInverted, time) {
+        // Large central circle - Nothing style
+        const baseRadius = 60;
+        const activeRadius = baseRadius + audioLevel * 30;
+        
+        // Outer ring
+        this.drawNothingCircle(ctx, centerX, centerY, activeRadius + 10, 3, audioLevel * 0.8, isInverted);
+        
+        // Inner filled circle
+        if (audioLevel > 0.1) {
+          this.drawNothingFill(ctx, centerX, centerY, activeRadius, audioLevel, isInverted);
+        }
+        
+        // Center dot
+        this.drawLEDDot(ctx, centerX, centerY, 4 + audioLevel * 6, 1, isInverted);
+        
+        // Pulsing accent ring
+        const pulseRadius = baseRadius + Math.sin(time * 4) * 5 + audioLevel * 20;
+        this.drawNothingCircle(ctx, centerX, centerY, pulseRadius, 1, 0.6 + audioLevel * 0.4, isInverted);
+      }
+
+      drawFrequencyBands(ctx, centerX, centerY, frequencyData, isInverted) {
+        const bandWidth = 8;
+        const bandSpacing = 12;
+        const maxHeight = 80;
+        const startX = centerX - (frequencyData.length * bandSpacing) / 2;
+        const baseY = centerY + 120;
+        
+        frequencyData.forEach((freq, index) => {
+          const x = startX + index * bandSpacing;
+          const height = freq * maxHeight;
+          
+          // Main frequency bar
+          this.drawNothingBar(ctx, x, baseY, bandWidth, height, freq, isInverted);
+          
+          // Peak indicator dot
+          if (freq > 0.7) {
+            this.drawLEDDot(ctx, x + bandWidth/2, baseY - height - 8, 3, freq, isInverted);
+          }
+          
+          // Base indicator
+          this.drawLEDDot(ctx, x + bandWidth/2, baseY + 5, 2, 0.3, isInverted);
+        });
+        
+        // Frequency labels (glyph style)
+        this.drawFrequencyLabels(ctx, startX, baseY + 20, frequencyData.length, bandSpacing, isInverted);
+      }
+
+      drawWaveformRing(ctx, centerX, centerY, frequencyData, isInverted, time) {
+        const radius = 140;
+        const segments = 32;
+        
+        for (let i = 0; i < segments; i++) {
+          const angle = (i / segments) * Math.PI * 2 + time * 0.5;
+          const freqIndex = Math.floor((i / segments) * frequencyData.length);
+          const amplitude = frequencyData[freqIndex] || 0;
+          
+          const innerRadius = radius - amplitude * 20;
+          const outerRadius = radius + amplitude * 15;
+          
+          const x1 = centerX + Math.cos(angle) * innerRadius;
+          const y1 = centerY + Math.sin(angle) * innerRadius;
+          const x2 = centerX + Math.cos(angle) * outerRadius;
+          const y2 = centerY + Math.sin(angle) * outerRadius;
+          
+          // Draw waveform segment as dots
+          const steps = Math.floor(amplitude * 8) + 1;
+          for (let j = 0; j < steps; j++) {
+            const progress = j / steps;
+            const x = x1 + (x2 - x1) * progress;
+            const y = y1 + (y2 - y1) * progress;
+            
+            this.drawLEDDot(ctx, x, y, 2 + amplitude * 2, amplitude, isInverted);
+          }
+        }
+      }
+
+      drawStatusIndicators(ctx, centerX, centerY, audioLevel, isInverted) {
+        // Top status indicators
+        const indicators = [
+          { x: centerX - 60, y: centerY - 100, active: audioLevel > 0.1 },
+          { x: centerX - 20, y: centerY - 100, active: audioLevel > 0.3 },
+          { x: centerX + 20, y: centerY - 100, active: audioLevel > 0.6 },
+          { x: centerX + 60, y: centerY - 100, active: audioLevel > 0.8 }
+        ];
+        
+        indicators.forEach((indicator, index) => {
+          const intensity = indicator.active ? 0.8 : 0.2;
+          this.drawLEDDot(ctx, indicator.x, indicator.y, 3, intensity, isInverted);
+          
+          // Connection lines
+          if (index < indicators.length - 1) {
+            this.drawNothingLine(ctx, indicator.x + 3, indicator.y, indicators[index + 1].x - 3, indicators[index + 1].y, intensity * 0.5, isInverted);
+          }
+        });
+      }
+
+      drawGeometricAccents(ctx, centerX, centerY, audioLevel, isInverted, time) {
+        // Corner accent elements - Nothing style
+        const corners = [
+          { x: centerX - 150, y: centerY - 150 },
+          { x: centerX + 150, y: centerY - 150 },
+          { x: centerX - 150, y: centerY + 150 },
+          { x: centerX + 150, y: centerY + 150 }
+        ];
+        
+        corners.forEach((corner, index) => {
+          const activity = Math.sin(time + index) * 0.5 + 0.5;
+          const size = 15 + audioLevel * 10;
+          
+          // L-shaped corner accent
+          this.drawNothingLine(ctx, corner.x, corner.y, corner.x + size, corner.y, activity * 0.6, isInverted);
+          this.drawNothingLine(ctx, corner.x, corner.y, corner.x, corner.y + size, activity * 0.6, isInverted);
+          
+          // Corner dot
+          this.drawLEDDot(ctx, corner.x, corner.y, 2, activity, isInverted);
+        });
+      }
+
+      drawNothingCircle(ctx, x, y, radius, thickness, intensity, isInverted) {
+        const segments = Math.floor(radius * 0.3);
+        const segmentAngle = (Math.PI * 2) / segments;
+        
+        for (let i = 0; i < segments; i++) {
+          const angle = i * segmentAngle;
+          const dotX = x + Math.cos(angle) * radius;
+          const dotY = y + Math.sin(angle) * radius;
+          
+          this.drawLEDDot(ctx, dotX, dotY, thickness, intensity, isInverted);
+        }
+      }
+
+      drawNothingFill(ctx, x, y, radius, intensity, isInverted) {
+        const density = 6;
+        for (let dx = -radius; dx <= radius; dx += density) {
+          for (let dy = -radius; dy <= radius; dy += density) {
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance <= radius) {
+              const dotIntensity = intensity * (1 - distance / radius) * 0.3;
+              this.drawLEDDot(ctx, x + dx, y + dy, 2, dotIntensity, isInverted);
+            }
+          }
+        }
+      }
+
+      drawNothingBar(ctx, x, y, width, height, intensity, isInverted) {
+        const dotSpacing = 4;
+        const dotsHigh = Math.floor(height / dotSpacing);
+        
+        for (let i = 0; i < dotsHigh; i++) {
+          const dotY = y - i * dotSpacing;
+          const dotIntensity = intensity * (1 - i / dotsHigh * 0.3);
+          
+          for (let j = 0; j < Math.floor(width / dotSpacing); j++) {
+            const dotX = x + j * dotSpacing;
+            this.drawLEDDot(ctx, dotX, dotY, 2.5, dotIntensity, isInverted);
+          }
+        }
+      }
+
+      drawNothingLine(ctx, x1, y1, x2, y2, intensity, isInverted) {
+        const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        const steps = Math.floor(distance / 4);
+        
+        for (let i = 0; i <= steps; i++) {
+          const progress = i / steps;
+          const x = x1 + (x2 - x1) * progress;
+          const y = y1 + (y2 - y1) * progress;
+          
+          this.drawLEDDot(ctx, x, y, 1.5, intensity, isInverted);
+        }
+      }
+
+      drawFrequencyLabels(ctx, startX, y, count, spacing, isInverted) {
+        // Minimalist frequency indicators
+        for (let i = 0; i < count; i++) {
+          const x = startX + i * spacing + 4;
+          
+          // Simple line indicators
+          this.drawLEDDot(ctx, x, y, 1, 0.4, isInverted);
+          this.drawLEDDot(ctx, x, y + 3, 1, 0.2, isInverted);
+        }
+      }
+
+      drawLEDDot(ctx, x, y, size, intensity, isInverted) {
+        ctx.beginPath();
+        ctx.roundRect(x - size/2, y - size/2, size, size, 1);
+        
+        if (isInverted) {
+          ctx.fillStyle = '#0a0a0a';
+          ctx.fill();
+        } else {
+          const alpha = Math.max(0.3, intensity);
+          const brightness = Math.random() < 0.15 ? 0.3 + Math.random() * 0.4 : 0.9 + Math.random() * 0.1;
+          ctx.fillStyle = `rgba(0, 255, 65, ${alpha * brightness})`;
+          ctx.fill();
+          
+          // Add glow effect
+          if (intensity > 0.5) {
+            ctx.shadowColor = `rgba(0, 255, 65, ${intensity})`;
+            ctx.shadowBlur = size * 2;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+        }
+      }
+
+      initializeLEDElements() {
+        document.querySelectorAll('.led-text').forEach(element => {
+          const text = element.dataset.text || element.textContent;
+          this.createLEDCharacters(element, text);
+        });
+      }
+
+      createLEDCharacters(container, text) {
+        container.innerHTML = '';
+        const chars = text.toUpperCase().split('');
+        
+        chars.forEach(char => {
+          const charElement = document.createElement('div');
+          charElement.className = 'led-char';
+          
+          if (container.classList.contains('large')) {
+            charElement.classList.add('large');
+          }
+          if (container.classList.contains('huge')) {
+            charElement.classList.add('huge');
+          }
+          
+          const pattern = LED_PATTERNS[char] || LED_PATTERNS[' '];
+          
+          pattern.forEach(row => {
+            row.forEach(dot => {
+              const dotElement = document.createElement('div');
+              dotElement.className = dot ? 'led-dot on' : 'led-dot';
+              charElement.appendChild(dotElement);
+            });
+          });
+          
+          container.appendChild(charElement);
+        });
+      }
+
+      animateLEDCharacter(charElement, delay = 0) {
+        const dots = charElement.querySelectorAll('.led-dot.on');
+        const randomOrder = Array.from(dots).sort(() => Math.random() - 0.5);
+        
+        randomOrder.forEach((dot, index) => {
+          setTimeout(() => {
+            const brightness = Math.random() < 0.15 ? 0.3 + Math.random() * 0.4 : 0.9 + Math.random() * 0.1;
+            const glowIntensity = brightness < 0.8 ? 2 + Math.random() * 4 : 6 + Math.random() * 6;
+            
+            if (Math.random() < 0.3) {
+              dot.style.animation = 'blink 0.08s ease-in-out';
+              setTimeout(() => {
+                dot.style.animation = '';
+                dot.classList.add('lit');
+                dot.style.background = `rgba(0, 255, 65, ${brightness})`;
+                dot.style.boxShadow = `0 0 ${glowIntensity}px rgba(0, 255, 65, ${brightness})`;
+              }, 80);
+            } else {
+              dot.classList.add('lit');
+              dot.style.background = `rgba(0, 255, 65, ${brightness})`;
+              dot.style.boxShadow = `0 0 ${glowIntensity}px rgba(0, 255, 65, ${brightness})`;
+            }
+          }, delay + index * 10);
+        });
+      }
+
+      resetLEDCharacter(charElement) {
+        const dots = charElement.querySelectorAll('.led-dot.on');
+        dots.forEach(dot => {
+          dot.classList.remove('lit');
+          dot.style.background = '';
+          dot.style.boxShadow = '';
+          dot.style.animation = '';
+        });
+      }
+
+      setupEventListeners() {
+        // Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+
+        document.addEventListener('mousemove', (e) => {
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+          cursorFollower.style.left = e.clientX + 'px';
+          cursorFollower.style.top = e.clientY + 'px';
+        });
+
+        // Hover effects
+        document.querySelectorAll('.led-text, .skill-card, .project-item, .contact-value').forEach(el => {
+          el.addEventListener('mouseenter', () => {
+            cursor.classList.add('hovered');
+            if (el.classList.contains('led-text') && !el.classList.contains('inverted')) {
+              const chars = el.querySelectorAll('.led-char');
+              chars.forEach((char, index) => {
+                setTimeout(() => this.animateLEDCharacter(char), index * 100);
+              });
+            }
+          });
+          
+          el.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hovered');
+            if (el.classList.contains('led-text') && !el.classList.contains('inverted')) {
+              const chars = el.querySelectorAll('.led-char');
+              chars.forEach(char => this.resetLEDCharacter(char));
+            }
+          });
+        });
+
+        // Inverted section hover
+        document.querySelectorAll('.inverted-led-section').forEach(section => {
+          section.addEventListener('mouseenter', () => {
+            cursor.classList.add('hovered');
+          });
+          
+          section.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hovered');
+          });
+        });
+
+        // Navigation
+        const navTrigger = document.getElementById('navTrigger');
+        const navOverlay = document.getElementById('navOverlay');
+        
+        navTrigger.addEventListener('click', () => {
+          navOverlay.classList.toggle('open');
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth' });
+              navOverlay.classList.remove('open');
+            }
+          });
+        });
+      }
+
+      animateHeroText() {
+        setTimeout(() => {
+          const heroName = document.getElementById('heroName');
+          if (heroName) {
+            const chars = heroName.querySelectorAll('.led-char');
+            chars.forEach((char, index) => {
+              setTimeout(() => this.animateLEDCharacter(char), index * 200);
+            });
+          }
+        }, 1000);
+      }
+    }
+
+    // Blink animation keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes blink {
+        0%, 50%, 100% { background: var(--led-off); }
+        25%, 75% { background: var(--primary); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      new LEDText();
+    });
+  </script>
+</body>
+</html>

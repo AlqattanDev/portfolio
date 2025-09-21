@@ -1,3 +1,5 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable no-console */
 /**
  * ASCII Animation System (Refactored)
  * Main animation system that coordinates all components

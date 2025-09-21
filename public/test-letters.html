@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LED Board</title>
+  <style>
+    body {
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .char {
+      display: grid;
+      grid-template-columns: repeat(7, 12px);
+      grid-template-rows: repeat(8, 12px);
+      gap: 2px;
+      margin: 8px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      background: #1a1a1a;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .dot.on {
+      background: #1a1a1a;
+    }
+
+    .dot.on.lit {
+      background: #f6b800;
+      box-shadow: 0 0 8px #f6b800;
+    }
+
+    @keyframes lightUp {
+      0% { background: #333; }
+      100% { background: #f6b800; }
+    }
+
+    @keyframes blink {
+      0%, 50%, 100% { background: #333; }
+      25%, 75% { background: #f6b800; }
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create audio context for sound effects
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Authentic Nothing phone glyph sound - "R2-D2 colliding with a synthesizer"
+      function createNothingGlyphSound(dotIndex, totalDots) {
+        const duration = 0.25; // Shorter, punchier like real Nothing sounds
+        const now = audioCtx.currentTime;
+        
+        // Create the main electronic tone oscillator
+        const mainOsc = audioCtx.createOscillator();
+        const highOsc = audioCtx.createOscillator(); // High freq emphasis
+        const modOsc = audioCtx.createOscillator(); // FM modulation
+        
+        // Gain nodes for each oscillator
+        const mainGain = audioCtx.createGain();
+        const highGain = audioCtx.createGain();
+        const modGain = audioCtx.createGain();
+        const masterGain = audioCtx.createGain();
+        
+        // High-pass filter to emphasize treble (Nothing's weak bass characteristic)
+        const highPass = audioCtx.createBiquadFilter();
+        highPass.type = 'highpass';
+        highPass.frequency.setValueAtTime(800, now); // Cut below 800Hz
+        highPass.Q.setValueAtTime(0.7, now);
+        
+        // Bandpass for that electronic "synthetic" quality
+        const bandPass = audioCtx.createBiquadFilter();
+        bandPass.type = 'bandpass';
+        bandPass.frequency.setValueAtTime(2500, now);
+        bandPass.Q.setValueAtTime(3, now); // Sharp, electronic character
+        
+        // Connect audio graph
+        mainOsc.connect(mainGain);
+        highOsc.connect(highGain);
+        modOsc.connect(modGain);
+        
+        mainGain.connect(highPass);
+        highGain.connect(bandPass);
+        highPass.connect(masterGain);
+        bandPass.connect(masterGain);
+        masterGain.connect(audioCtx.destination);
+        
+        // Nothing-style frequency mapping - higher frequencies, more "electronic"
+        const baseFreq = 440 + (dotIndex / totalDots) * 880; // 440-1320Hz range (higher than before)
+        const freqJitter = (Math.random() - 0.5) * 60; // Electronic randomness
+        
+        // Square/sawtooth for digital, electronic character
+        mainOsc.type = 'square';
+        highOsc.type = 'sawtooth';
+        modOsc.type = 'sine';
+        
+        // Main frequency with slight electronic "drift"
+        const finalFreq = baseFreq + freqJitter;
+        mainOsc.frequency.setValueAtTime(finalFreq, now);
+        mainOsc.frequency.exponentialRampToValueAtTime(finalFreq * 0.85, now + duration);
+        
+        // High harmonic for brightness
+        highOsc.frequency.setValueAtTime(finalFreq * 2.1, now);
+        highOsc.frequency.exponentialRampToValueAtTime(finalFreq * 1.8, now + duration);
+        
+        // Modulation oscillator for electronic "warble"
+        modOsc.frequency.setValueAtTime(8 + Math.random() * 4, now); // 8-12Hz mod
+        modGain.gain.setValueAtTime(20, now); // Subtle FM amount
+        modOsc.connect(modGain);
+        modGain.connect(mainOsc.frequency); // FM synthesis
+        
+        // Quick attack, sharp decay - typical electronic sound
+        const peakVolume = 0.04 + (Math.random() * 0.02);
+        
+        mainGain.gain.setValueAtTime(0, now);
+        mainGain.gain.exponentialRampToValueAtTime(peakVolume, now + 0.005); // Very fast attack
+        mainGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        
+        highGain.gain.setValueAtTime(0, now);
+        highGain.gain.exponentialRampToValueAtTime(peakVolume * 0.4, now + 0.01);
+        highGain.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.7);
+        
+        // Master dynamics
+        masterGain.gain.setValueAtTime(1, now);
+        masterGain.gain.exponentialRampToValueAtTime(0.3, now + duration);
+        
+        // Filter sweeps for electronic character
+        bandPass.frequency.exponentialRampToValueAtTime(1800, now + duration);
+        highPass.frequency.exponentialRampToValueAtTime(600, now + duration);
+        
+        // Start all oscillators
+        mainOsc.start(now);
+        highOsc.start(now);
+        modOsc.start(now);
+        
+        // Stop all oscillators
+        mainOsc.stop(now + duration);
+        highOsc.stop(now + duration);
+        modOsc.stop(now + duration);
+      }
+      
+      
+      function playLightSound(dotIndex = 0, totalDots = 1) {
+        createNothingGlyphSound(dotIndex, totalDots);
+      }
+      
+      const chars = document.querySelectorAll('.char');
+      
+      chars.forEach(char => {
+        const dots = char.querySelectorAll('.dot.on');
+        let timeouts = [];
+        let animationComplete = false;
+        let completedDots = 0;
+        
+        char.addEventListener('mouseenter', function() {
+          // Skip if already fully lit
+          if (animationComplete) return;
+          
+          animationComplete = false;
+          completedDots = 0;
+          
+          // Nothing-style glyph lighting pattern - more rhythmic, less random
+          const randomOrder = Array.from(dots).map((dot, index) => ({ dot, index }))
+            .sort(() => Math.random() - 0.5);
+          
+          randomOrder.forEach(({ dot }, orderIndex) => {
+            // Random brightness for realism - most perfect, few dim
+            const brightness = Math.random() < 0.15 ? 0.3 + Math.random() * 0.4 : 0.9 + Math.random() * 0.1;
+            const glowIntensity = brightness < 0.8 ? 2 + Math.random() * 4 : 6 + Math.random() * 6;
+            
+            // Nothing-style timing - quicker, more electronic rhythm
+            const baseDelay = Math.floor(orderIndex / 3) * 45; // Groups of 3 with longer pauses
+            const microDelay = (orderIndex % 3) * 8; // Quick succession within groups
+            const totalDelay = baseDelay + microDelay;
+            
+            // Reduced blink probability for cleaner electronic feel
+            if (Math.random() < 0.15) {
+              timeouts.push(setTimeout(() => {
+                dot.style.animation = 'blink 0.06s ease-in-out'; // Faster blink
+                setTimeout(() => {
+                  dot.style.animation = '';
+                  dot.classList.add('lit');
+                  dot.style.background = `rgba(246, 184, 0, ${brightness})`;
+                  dot.style.boxShadow = `0 0 ${glowIntensity}px rgba(246, 184, 0, ${brightness})`;
+                  playLightSound(orderIndex, dots.length);
+                  completedDots++;
+                  if (completedDots === dots.length) {
+                    animationComplete = true;
+                  }
+                }, 60);
+              }, totalDelay));
+            } else {
+              timeouts.push(setTimeout(() => {
+                dot.classList.add('lit');
+                dot.style.background = `rgba(246, 184, 0, ${brightness})`;
+                dot.style.boxShadow = `0 0 ${glowIntensity}px rgba(246, 184, 0, ${brightness})`;
+                playLightSound(orderIndex, dots.length);
+                completedDots++;
+                if (completedDots === dots.length) {
+                  animationComplete = true;
+                }
+              }, totalDelay));
+            }
+          });
+        });
+        
+        char.addEventListener('mouseleave', function() {
+          if (!animationComplete) {
+            timeouts.forEach(timeout => clearTimeout(timeout));
+            timeouts = [];
+            completedDots = 0;
+            // Force remove all lit states immediately
+            dots.forEach(dot => {
+              dot.classList.remove('lit');
+              dot.style.animation = '';
+              dot.style.background = '';
+              dot.style.boxShadow = '';
+            });
+          }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+
+  <div class="row">
+    <!-- A - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+    </div>
+
+    <!-- L - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+    </div>
+
+    <!-- I - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- A - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+    </div>
+
+    <!-- L - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+    </div>
+
+    <!-- Q - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot on"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+    </div>
+
+    <!-- A - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+    </div>
+
+    <!-- T - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+
+    <!-- T - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+
+    <!-- A - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+    </div>
+
+    <!-- N - NBA style 7x8 -->
+    <div class="char">
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+      <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot on"></div><div class="dot on"></div>
+    </div>
+  </div>
+
+</body>
+</html>

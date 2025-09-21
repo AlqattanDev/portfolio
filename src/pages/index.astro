@@ -3,535 +3,604 @@
 ---
 
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ALI ALQATTAN | PORTFOLIO</title>
-    
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Roboto+Mono:wght@400;700&display=swap');
-        
-        /* CSS Variables for a new "Codex" color scheme */
-        :root {
-            --background-color: #0a0a0a; /* Dark background */
-            --text-color: #ffffff; /* White text */
-            --accent-color: #3498db; /* Blue accent */
-            --border-color: rgba(255, 255, 255, 0.1);
-            --highlight-color: rgba(52, 152, 219, 0.1);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            font-family: 'Roboto Mono', monospace;
-            line-height: 1.8;
-            overflow-x: hidden;
-            /* Add a subtle blueprint grid pattern */
-            background-image:
-                linear-gradient(var(--border-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
-            background-size: 50px 50px;
-        }
-        
-        /* Interactive spotlight effect that follows the mouse */
-        #spotlight {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), transparent 100px, rgba(0,0,0,0.85) 300px);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        /* HEADER / MANIFEST */
-        .manifest-header {
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            margin-bottom: 80px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .manifest-title {
-            font-family: 'Lora', serif;
-            font-size: 1.5rem;
-            letter-spacing: 1px;
-        }
-        
-        .manifest-meta {
-            text-align: right;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        /* DECONSTRUCTED HERO SECTION */
+      @import url('https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Roboto+Mono:wght@400;700&display=swap');
+
+      /* CSS Variables for a new "Codex" color scheme */
+      :root {
+        --background-color: #0a0a0a; /* Dark background */
+        --text-color: #ffffff; /* White text */
+        --accent-color: #3498db; /* Blue accent */
+        --border-color: rgba(255, 255, 255, 0.1);
+        --highlight-color: rgba(52, 152, 219, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: 'Roboto Mono', monospace;
+        line-height: 1.8;
+        overflow-x: hidden;
+        /* Add a subtle blueprint grid pattern */
+        background-image:
+          linear-gradient(var(--border-color) 1px, transparent 1px),
+          linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+        background-size: 50px 50px;
+      }
+
+      /* Interactive spotlight effect that follows the mouse */
+      #spotlight {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10;
+        background: radial-gradient(
+          circle at var(--x, 50%) var(--y, 50%),
+          transparent 100px,
+          rgba(0, 0, 0, 0.85) 300px
+        );
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        position: relative;
+        z-index: 2;
+      }
+
+      /* HEADER / MANIFEST */
+      .manifest-header {
+        border: 1px solid var(--border-color);
+        padding: 20px;
+        margin-bottom: 80px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .manifest-title {
+        font-family: 'Lora', serif;
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+      }
+
+      .manifest-meta {
+        text-align: right;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      /* DECONSTRUCTED HERO SECTION */
+      .hero-deconstructed {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        align-items: flex-start;
+        margin: 100px 0;
+        position: relative;
+      }
+
+      .hero-title-box {
+        position: sticky;
+        top: 40px;
+      }
+
+      .hero-title {
+        font-family: 'Lora', serif;
+        font-size: 8rem;
+        line-height: 0.8;
+        font-weight: 700;
+        color: var(--text-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      .hero-title::after {
+        content: '';
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 100%;
+        height: 15px;
+        background-color: var(--highlight-color);
+        z-index: -1;
+        transition: height 0.3s;
+      }
+
+      .hero-title:hover::after {
+        height: 100%;
+      }
+
+      .hero-content-box {
+        padding: 40px 0 40px 40px;
+        border-left: 1px solid var(--border-color);
+      }
+
+      .hero-subtitle {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .hero-subtitle::before {
+        content: '>';
+        color: var(--accent-color);
+        margin-right: 10px;
+      }
+
+      .hero-text {
+        font-size: 1rem;
+        max-width: 500px;
+      }
+
+      /* SCRAMBLE EFFECT TITLE */
+      .section-title {
+        font-family: 'Lora', serif;
+        font-size: 3rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 120px 0 60px;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        cursor: default;
+      }
+
+      /* SCHEMATIC CARDS SECTION */
+      .schematic-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background-color: var(--border-color);
+        border: 1px solid var(--border-color);
+      }
+
+      .schematic-card {
+        background-color: var(--background-color);
+        padding: 30px;
+        transition: background-color 0.3s ease;
+      }
+
+      .schematic-card:hover {
+        background-color: #111111;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .card-title {
+        font-family: 'Lora', serif;
+        font-size: 1.3rem;
+      }
+
+      .card-id {
+        font-size: 0.8rem;
+        color: var(--accent-color);
+      }
+
+      /* CONTACT LINKS SECTION */
+      .contact-list {
+        margin: 60px 0;
+        list-style: none;
+        text-align: center;
+      }
+
+      .contact-item {
+        display: inline-block;
+        margin: 0 20px;
+      }
+
+      .contact-link {
+        font-family: 'Lora', serif;
+        font-size: 1.5rem;
+        color: var(--text-color);
+        text-decoration: none;
+        position: relative;
+        padding: 5px 0;
+      }
+
+      .contact-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: var(--accent-color);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+      }
+
+      .contact-link:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+
+      /* NAVIGATION BUTTON STYLES */
+      .nav-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 30px;
+        background-color: transparent;
+        border: 2px solid var(--accent-color);
+        color: var(--text-color);
+        text-decoration: none;
+        font-family: 'Lora', serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        position: relative;
+        transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+        overflow: hidden;
+        text-transform: uppercase;
+      }
+
+      .nav-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background-color: var(--accent-color);
+        transition: left 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+        z-index: -1;
+      }
+
+      .nav-button:hover::before {
+        left: 0;
+      }
+
+      .nav-button:hover {
+        color: var(--background-color);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
+      }
+
+      .nav-button-text {
+        position: relative;
+        z-index: 1;
+      }
+
+      .nav-button-icon {
+        position: relative;
+        z-index: 1;
+        transition: transform 0.3s ease;
+      }
+
+      .nav-button:hover .nav-button-icon {
+        transform: translateX(5px);
+      }
+
+      /* FOOTER */
+      footer {
+        margin-top: 100px;
+        padding: 30px;
+        border-top: 1px solid var(--border-color);
+        text-align: center;
+        font-size: 0.9rem;
+      }
+
+      /* RESPONSIVE DESIGN */
+      @media (max-width: 900px) {
         .hero-deconstructed {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            align-items: flex-start;
-            margin: 100px 0;
-            position: relative;
+          grid-template-columns: 1fr;
         }
-        
+
         .hero-title-box {
-            position: sticky;
-            top: 40px;
+          position: static;
+          text-align: center;
+          margin-bottom: 40px;
         }
-        
+
         .hero-title {
-            font-family: 'Lora', serif;
-            font-size: 8rem;
-            line-height: 0.8;
-            font-weight: 700;
-            color: var(--text-color);
-            position: relative;
-            display: inline-block;
+          font-size: 5rem;
         }
-        
-        .hero-title::after {
-            content: '';
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            width: 100%;
-            height: 15px;
-            background-color: var(--highlight-color);
-            z-index: -1;
-            transition: height 0.3s;
-        }
-        
-        .hero-title:hover::after {
-            height: 100%;
-        }
-        
+
         .hero-content-box {
-            padding: 40px 0 40px 40px;
-            border-left: 1px solid var(--border-color);
+          border-left: none;
+          padding-left: 0;
+          text-align: center;
         }
-        
-        .hero-subtitle {
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .hero-subtitle::before {
-            content: '>';
-            color: var(--accent-color);
-            margin-right: 10px;
-        }
-        
-        .hero-text {
-            font-size: 1rem;
-            max-width: 500px;
-        }
-        
-        /* SCRAMBLE EFFECT TITLE */
-        .section-title {
-            font-family: 'Lora', serif;
-            font-size: 3rem;
-            font-weight: 700;
-            text-align: center;
-            margin: 120px 0 60px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            cursor: default;
-        }
-        
-        /* SCHEMATIC CARDS SECTION */
+
         .schematic-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            background-color: var(--border-color);
-            border: 1px solid var(--border-color);
+          grid-template-columns: 1fr;
         }
-        
-        .schematic-card {
-            background-color: var(--background-color);
-            padding: 30px;
-            transition: background-color 0.3s ease;
+      }
+
+      @media (max-width: 768px) {
+        .manifest-header {
+          flex-direction: column;
+          gap: 15px;
+          text-align: center;
         }
-        
-        .schematic-card:hover {
-            background-color: #111111;
+
+        .manifest-meta {
+          text-align: center;
         }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
+
+        .hero-title {
+          font-size: 3.5rem;
         }
-        
-        .card-title {
-            font-family: 'Lora', serif;
-            font-size: 1.3rem;
+
+        .section-title {
+          font-size: 2rem;
         }
-        
-        .card-id {
-            font-size: 0.8rem;
-            color: var(--accent-color);
-        }
-        
-        /* CONTACT LINKS SECTION */
-        .contact-list {
-            margin: 60px 0;
-            list-style: none;
-            text-align: center;
-        }
-        
+
         .contact-item {
-            display: inline-block;
-            margin: 0 20px;
+          display: block;
+          margin: 15px 0;
         }
-        
-        .contact-link {
-            font-family: 'Lora', serif;
-            font-size: 1.5rem;
-            color: var(--text-color);
-            text-decoration: none;
-            position: relative;
-            padding: 5px 0;
-        }
-        
-        .contact-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: var(--accent-color);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        
-        .contact-link:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-        
-        /* NAVIGATION BUTTON STYLES */
-        .nav-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px 30px;
-            background-color: transparent;
-            border: 2px solid var(--accent-color);
-            color: var(--text-color);
-            text-decoration: none;
-            font-family: 'Lora', serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-            overflow: hidden;
-            text-transform: uppercase;
-        }
-        
-        .nav-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background-color: var(--accent-color);
-            transition: left 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: -1;
-        }
-        
-        .nav-button:hover::before {
-            left: 0;
-        }
-        
-        .nav-button:hover {
-            color: var(--background-color);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
-        }
-        
-        .nav-button-text {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .nav-button-icon {
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s ease;
-        }
-        
-        .nav-button:hover .nav-button-icon {
-            transform: translateX(5px);
-        }
-        
-        /* FOOTER */
-        footer {
-            margin-top: 100px;
-            padding: 30px;
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-            font-size: 0.9rem;
-        }
-        
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 900px) {
-            .hero-deconstructed {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero-title-box {
-                position: static;
-                text-align: center;
-                margin-bottom: 40px;
-            }
-            
-            .hero-title {
-                font-size: 5rem;
-            }
-            
-            .hero-content-box {
-                border-left: none;
-                padding-left: 0;
-                text-align: center;
-            }
-            
-            .schematic-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .manifest-header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            
-            .manifest-meta {
-                text-align: center;
-            }
-            
-            .hero-title {
-                font-size: 3.5rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .contact-item {
-                display: block;
-                margin: 15px 0;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="spotlight"></div>
     <div class="container">
-        <!-- MANIFEST HEADER -->
-        <header class="manifest-header">
-            <div class="manifest-title">ALI ALQATTAN // PORTFOLIO</div>
-            <div class="manifest-meta">
-                <span>CLASSIFICATION: Full-Stack Developer</span><br>
-                <span id="last-updated">LAST UPDATED: 2023.12.01</span>
-            </div>
-        </header>
-        
-        <!-- DECONSTRUCTED HERO -->
-        <section class="hero-deconstructed">
-            <div class="hero-title-box">
-                <h1 class="hero-title">CODE<br>&<br>CRAFT</h1>
-            </div>
-            <div class="hero-content-box">
-                <h2 class="hero-subtitle">From Systems Hacker to AI Engineer</h2>
-                <p class="hero-text">
-                    Bridging low-level systems programming with innovative AI applications. With roots in security exploration and a passion for building robust, scalable solutions.
-                </p>
-            </div>
-        </section>
-        
-        <!-- TECHNICAL SKILLS SECTION -->
-        <h2 class="section-title" data-scramble-text="Technical Architecture">Technical Architecture</h2>
-        <div class="schematic-grid">
-            <div class="schematic-card">
-                <div class="card-header">
-                    <h3 class="card-title">Mobile Development</h3>
-                    <span class="card-id">DOC.01</span>
-                </div>
-                <p>Flutter/Dart expert with production-level experience. Specialized in state management (Provider, Riverpod, Stacked) and cross-platform application development.</p>
-            </div>
-            <div class="schematic-card">
-                <div class="card-header">
-                    <h3 class="card-title">Systems & AI</h3>
-                    <span class="card-id">DOC.02</span>
-                </div>
-                <p>Rust programming growing proficiency. Experienced with TUI frameworks (Ratatui, Cursive). Python for AI/ML applications and cloud infrastructure.</p>
-            </div>
-            <div class="schematic-card">
-                <div class="card-header">
-                    <h3 class="card-title">Development Practices</h3>
-                    <span class="card-id">DOC.03</span>
-                </div>
-                <p>Version control (Git), Linux environment (NixOS), CLI tool development, terminal-based workflows, and process automation.</p>
-            </div>
+      <!-- MANIFEST HEADER -->
+      <header class="manifest-header">
+        <div class="manifest-title">ALI ALQATTAN // PORTFOLIO</div>
+        <div class="manifest-meta">
+          <span>CLASSIFICATION: Full-Stack Developer</span><br />
+          <span id="last-updated">LAST UPDATED: 2023.12.01</span>
         </div>
-        
-        <!-- PROJECT SHOWCASE SECTION -->
-        <h2 class="section-title" data-scramble-text="Project Showcase">Project Showcase</h2>
-        <div class="schematic-grid">
-            <div class="schematic-card">
-                <div class="card-header">
-                    <h3 class="card-title">University Events App</h3>
-                    <span class="card-id">PROJECT.01</span>
-                </div>
-                <p>Firebase-integrated mobile app for university event management with user registration and analytics. Streamlined campus activities organization.</p>
-            </div>
-            <div class="schematic-card">
-                <div class="card-header">
-                    <h3 class="card-title">NFT Album App</h3>
-                    <span class="card-id">PROJECT.02</span>
-                </div>
-                <p>Social media platform for NFT collections with Instagram-like features. Secure wallet connectivity and social sharing capabilities.</p>
-            </div>
-            <div class="schematic-card">
-                <div class="card-header">
-                    <h3 class="card-title">UTB Codebase</h3>
-                    <span class="card-id">PROJECT.03</span>
-                </div>
-                <p>Student code repository and app distribution platform for University of Technology Bahrain. Features include profile creation, repository management, and collaborative publishing.</p>
-            </div>
+      </header>
+
+      <!-- DECONSTRUCTED HERO -->
+      <section class="hero-deconstructed">
+        <div class="hero-title-box">
+          <h1 class="hero-title">CODE<br />&<br />CRAFT</h1>
         </div>
-        
-        <!-- CONTACT SECTION -->
-        <h2 class="section-title" data-scramble-text="Contact Channels">Contact Channels</h2>
-        <ul class="contact-list">
-            <li class="contact-item"><a href="mailto:alqattandev@gmail.com" class="contact-link">Email</a></li>
-            <li class="contact-item"><a href="https://github.com/alqattan" target="_blank" class="contact-link">GitHub</a></li>
-            <li class="contact-item"><a href="https://linkedin.com/in/alqattan" target="_blank" class="contact-link">LinkedIn</a></li>
-        </ul>
-        
-        <!-- NAVIGATION TO ASTRO PORTFOLIO -->
-        <div style="text-align: center; margin: 80px 0;">
-            <a href="/portfolio" class="nav-button">
-                <span class="nav-button-text">ENTER PORTFOLIO</span>
-                <span class="nav-button-icon">→</span>
-            </a>
+        <div class="hero-content-box">
+          <h2 class="hero-subtitle">From Systems Hacker to AI Engineer</h2>
+          <p class="hero-text">
+            Bridging low-level systems programming with innovative AI
+            applications. With roots in security exploration and a passion for
+            building robust, scalable solutions.
+          </p>
         </div>
-        
-        <!-- FOOTER -->
-        <footer>
-            <p>© 2023 // All rights reserved. Continuous learning and adaptation.</p>
-        </footer>
+      </section>
+
+      <!-- TECHNICAL SKILLS SECTION -->
+      <h2 class="section-title" data-scramble-text="Technical Architecture">
+        Technical Architecture
+      </h2>
+      <div class="schematic-grid">
+        <div class="schematic-card">
+          <div class="card-header">
+            <h3 class="card-title">Mobile Development</h3>
+            <span class="card-id">DOC.01</span>
+          </div>
+          <p>
+            Flutter/Dart expert with production-level experience. Specialized in
+            state management (Provider, Riverpod, Stacked) and cross-platform
+            application development.
+          </p>
+        </div>
+        <div class="schematic-card">
+          <div class="card-header">
+            <h3 class="card-title">Systems & AI</h3>
+            <span class="card-id">DOC.02</span>
+          </div>
+          <p>
+            Rust programming growing proficiency. Experienced with TUI
+            frameworks (Ratatui, Cursive). Python for AI/ML applications and
+            cloud infrastructure.
+          </p>
+        </div>
+        <div class="schematic-card">
+          <div class="card-header">
+            <h3 class="card-title">Development Practices</h3>
+            <span class="card-id">DOC.03</span>
+          </div>
+          <p>
+            Version control (Git), Linux environment (NixOS), CLI tool
+            development, terminal-based workflows, and process automation.
+          </p>
+        </div>
+      </div>
+
+      <!-- PROJECT SHOWCASE SECTION -->
+      <h2 class="section-title" data-scramble-text="Project Showcase">
+        Project Showcase
+      </h2>
+      <div class="schematic-grid">
+        <div class="schematic-card">
+          <div class="card-header">
+            <h3 class="card-title">University Events App</h3>
+            <span class="card-id">PROJECT.01</span>
+          </div>
+          <p>
+            Firebase-integrated mobile app for university event management with
+            user registration and analytics. Streamlined campus activities
+            organization.
+          </p>
+        </div>
+        <div class="schematic-card">
+          <div class="card-header">
+            <h3 class="card-title">NFT Album App</h3>
+            <span class="card-id">PROJECT.02</span>
+          </div>
+          <p>
+            Social media platform for NFT collections with Instagram-like
+            features. Secure wallet connectivity and social sharing
+            capabilities.
+          </p>
+        </div>
+        <div class="schematic-card">
+          <div class="card-header">
+            <h3 class="card-title">UTB Codebase</h3>
+            <span class="card-id">PROJECT.03</span>
+          </div>
+          <p>
+            Student code repository and app distribution platform for University
+            of Technology Bahrain. Features include profile creation, repository
+            management, and collaborative publishing.
+          </p>
+        </div>
+      </div>
+
+      <!-- CONTACT SECTION -->
+      <h2 class="section-title" data-scramble-text="Contact Channels">
+        Contact Channels
+      </h2>
+      <ul class="contact-list">
+        <li class="contact-item">
+          <a href="mailto:alqattandev@gmail.com" class="contact-link">Email</a>
+        </li>
+        <li class="contact-item">
+          <a
+            href="https://github.com/alqattan"
+            target="_blank"
+            class="contact-link">GitHub</a
+          >
+        </li>
+        <li class="contact-item">
+          <a
+            href="https://linkedin.com/in/alqattan"
+            target="_blank"
+            class="contact-link">LinkedIn</a
+          >
+        </li>
+      </ul>
+
+      <!-- NAVIGATION TO PORTFOLIOS -->
+      <div style="text-align: center; margin: 80px 0;">
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center;">
+          <a href="/portfolio" class="nav-button">
+            <span class="nav-button-text">ENTER PORTFOLIO</span>
+            <span class="nav-button-icon">→</span>
+          </a>
+          <a href="/glyph-backup.html" class="nav-button" target="_blank">
+            <span class="nav-button-text">GLYPH BACKUP</span>
+            <span class="nav-button-icon">→</span>
+          </a>
+          <a href="/test-letters.html" class="nav-button" target="_blank">
+            <span class="nav-button-text">TEST LETTERS</span>
+            <span class="nav-button-icon">→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer>
+        <p>
+          © 2023 // All rights reserved. Continuous learning and adaptation.
+        </p>
+      </footer>
     </div>
-    
+
     <script>
-        // --- INTERACTIVE MOUSE SPOTLIGHT ---
-        const spotlight = document.getElementById('spotlight');
+      // --- INTERACTIVE MOUSE SPOTLIGHT ---
+      const spotlight = document.getElementById('spotlight');
+      if (spotlight) {
         document.addEventListener('mousemove', (e) => {
-            spotlight.style.setProperty('--x', e.clientX + 'px');
-            spotlight.style.setProperty('--y', e.clientY + 'px');
+          spotlight.style.setProperty('--x', e.clientX + 'px');
+          spotlight.style.setProperty('--y', e.clientY + 'px');
         });
-        
-        // --- TEXT SCRAMBLE EFFECT ---
-        class TextScrambler {
-            constructor(el) {
-                this.el = el;
-                this.originalText = this.el.dataset.scrambleText || this.el.innerText;
-                this.chars = '!<>-_\\/[]{}—=+*^?#________';
-                this.frame = 0;
-                this.frameRequest = null;
-                this.queue = [];
-                this.resolve = null;
-                this.el.addEventListener('mouseenter', () => this.setText(this.originalText));
-            }
-            
-            setText(newText) {
-                const oldText = this.el.innerText;
-                const length = Math.max(oldText.length, newText.length);
-                if (this.frameRequest) cancelAnimationFrame(this.frameRequest);
-                
-                this.queue = [];
-                for (let i = 0; i < length; i++) {
-                    const from = oldText[i] || '';
-                    const to = newText[i] || '';
-                    const start = Math.floor(Math.random() * 40);
-                    const end = start + Math.floor(Math.random() * 40);
-                    this.queue.push({ from, to, start, end });
-                }
-                
-                this.frame = 0;
-                this.update();
-                
-                return new Promise((resolve) => this.resolve = resolve);
-            }
-            
-            update() {
-                let output = '';
-                let complete = 0;
-                for (let i = 0, n = this.queue.length; i < n; i++) {
-                    let { from, to, start, end, char } = this.queue[i];
-                    if (this.frame >= end) {
-                        complete++;
-                        output += to;
-                    } else if (this.frame >= start) {
-                        if (!char || Math.random() < 0.28) {
-                            char = this.randomChar();
-                            this.queue[i].char = char;
-                        }
-                        output += `<span class="scramble-char">${char}</span>`;
-                    } else {
-                        output += from;
-                    }
-                }
-                
-                this.el.innerHTML = output;
-                
-                if (complete === this.queue.length) {
-                    this.resolve();
-                } else {
-                    this.frameRequest = requestAnimationFrame(this.update.bind(this));
-                    this.frame++;
-                }
-            }
-            
-            randomChar() {
-                return this.chars[Math.floor(Math.random() * this.chars.length)];
-            }
+      }
+
+      // --- TEXT SCRAMBLE EFFECT ---
+      class TextScrambler {
+        /**
+         * @param {HTMLElement} el
+         */
+        constructor(el) {
+          this.el = el;
+          this.originalText = this.el.dataset.scrambleText || this.el.innerText;
+          this.chars = '!<>-_\\/[]{}—=+*^?#________';
+          this.frame = 0;
+          this.frameRequest = null;
+          this.queue = [];
+          this.resolve = null;
+          this.el.addEventListener('mouseenter', () =>
+            this.setText(this.originalText)
+          );
         }
-        
-        document.querySelectorAll('[data-scramble-text]').forEach(el => {
-            new TextScrambler(el);
-        });
+
+        setText(newText) {
+          const oldText = this.el.innerText;
+          const length = Math.max(oldText.length, newText.length);
+          if (this.frameRequest) cancelAnimationFrame(this.frameRequest);
+
+          this.queue = [];
+          for (let i = 0; i < length; i++) {
+            const from = oldText[i] || '';
+            const to = newText[i] || '';
+            const start = Math.floor(Math.random() * 40);
+            const end = start + Math.floor(Math.random() * 40);
+            this.queue.push({ from, to, start, end });
+          }
+
+          this.frame = 0;
+          this.update();
+
+          return new Promise((resolve) => (this.resolve = resolve));
+        }
+
+        update() {
+          let output = '';
+          let complete = 0;
+          for (let i = 0, n = this.queue.length; i < n; i++) {
+            const { from, to, start, end } = this.queue[i];
+            let { char } = this.queue[i];
+            if (this.frame >= end) {
+              complete++;
+              output += to;
+            } else if (this.frame >= start) {
+              if (!char || Math.random() < 0.28) {
+                char = this.randomChar();
+                this.queue[i].char = char;
+              }
+              output += `<span class="scramble-char">${char}</span>`;
+            } else {
+              output += from;
+            }
+          }
+
+          this.el.innerHTML = output;
+
+          if (complete === this.queue.length) {
+            this.resolve();
+          } else {
+            this.frameRequest = requestAnimationFrame(this.update.bind(this));
+            this.frame++;
+          }
+        }
+
+        randomChar() {
+          return this.chars[Math.floor(Math.random() * this.chars.length)];
+        }
+      }
+
+      document.querySelectorAll('[data-scramble-text]').forEach((el) => {
+        new TextScrambler(el);
+      });
     </script>
-</body>
+  </body>
 </html>
