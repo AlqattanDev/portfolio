@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ALI ALQATTAN | ENTERPRISE CYBER BRUTALISM</title>
+    <!-- FONT IMPORTS: Inter, Space Grotesk, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@700;900&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- TAILWIND CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* CUSTOM STYLES & CONFIG */
+      :root {
+        --bg-deep-black: #0a0a0a;
+        --bg-table: #0d0d0d;
+        --text-white: #ffffff;
+        --accent-green: #4af626;
+        --accent-cyan: #00ffff;
+        --accent-magenta: #ff00ff;
+        --accent-yellow: #ffff00;
+        --accent-red: #ff3333;
+        --border-color: rgba(74, 246, 38, 0.25);
+      }
+
+      /* FONT CONFIGURATION */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background-color: var(--bg-deep-black);
+        color: var(--text-white);
+        font-family: "JetBrains Mono", monospace;
+        overflow-x: hidden;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      .font-header {
+        font-family: "Space Grotesk", sans-serif;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+
+      .font-inter {
+        font-family: "Inter", sans-serif;
+      }
+
+      /* GLOBAL AESTHETICS */
+      ::selection {
+        background-color: var(--accent-green);
+        color: var(--bg-deep-black);
+      }
+
+      /* SCANLINE & WIREFRAME OVERLAY */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 30px 30px;
+        z-index: -1;
+        pointer-events: none;
+        opacity: 0.5;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 1px,
+          rgba(255, 255, 255, 0.05) 2px
+        );
+        animation: scanline 10s linear infinite;
+        pointer-events: none;
+        z-index: 1000;
+      }
+
+      @keyframes scanline {
+        0% {
+          transform: translateY(0);
+        }
+
+        100% {
+          transform: translateY(20px);
+        }
+      }
+
+      /* MARQUEE BANNERS */
+      .marquee {
+        overflow: hidden;
+        white-space: nowrap;
+        box-sizing: border-box;
+        border-bottom: 1px solid var(--border-color);
+        border-top: 1px solid var(--border-color);
+      }
+
+      .marquee-content {
+        display: inline-block;
+        padding-left: 100%;
+        animation: marquee 45s linear infinite;
+      }
+
+      @keyframes marquee {
+        0% {
+          transform: translateX(0);
+        }
+
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+
+      /* ANGULAR BORDERS & CONTAINERS */
+      .brutalist-border {
+        border: 1px solid var(--border-color);
+      }
+
+      .section-container {
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+      }
+
+      /* NAVIGATION & INTERACTIVE ELEMENTS */
+      .nav-link {
+        transition:
+          color 0.2s ease,
+          background-color 0.2s ease;
+        position: relative;
+      }
+
+      .nav-link:hover {
+        color: var(--bg-deep-black);
+        background-color: var(--accent-green);
+      }
+
+      /* GLITCH EFFECT ON HOVER */
+      .glitch-hover {
+        position: relative;
+      }
+
+      .glitch-hover:hover::before,
+      .glitch-hover:hover::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-deep-black);
+      }
+
+      .glitch-hover:hover::before {
+        left: 2px;
+        text-shadow: -1px 0 var(--accent-magenta);
+        animation: glitch-anim-1 2s infinite linear alternate-reverse;
+      }
+
+      .glitch-hover:hover::after {
+        left: -2px;
+        text-shadow: -1px 0 var(--accent-cyan);
+        animation: glitch-anim-2 2s infinite linear alternate-reverse;
+      }
+
+      @keyframes glitch-anim-1 {
+        0%,
+        100% {
+          clip-path: inset(45% 0 50% 0);
+        }
+
+        20% {
+          clip-path: inset(10% 0 85% 0);
+        }
+
+        40% {
+          clip-path: inset(60% 0 30% 0);
+        }
+
+        60% {
+          clip-path: inset(30% 0 65% 0);
+        }
+
+        80% {
+          clip-path: inset(80% 0 5% 0);
+        }
+      }
+
+      @keyframes glitch-anim-2 {
+        0%,
+        100% {
+          clip-path: inset(5% 0 90% 0);
+        }
+
+        20% {
+          clip-path: inset(95% 0 2% 0);
+        }
+
+        40% {
+          clip-path: inset(40% 0 55% 0);
+        }
+
+        60% {
+          clip-path: inset(15% 0 80% 0);
+        }
+
+        80% {
+          clip-path: inset(70% 0 20% 0);
+        }
+      }
+
+      /* SKILL BARS */
+      .progress-bar-container {
+        background-color: rgba(74, 246, 38, 0.1);
+        border: 1px solid var(--border-color);
+        padding: 2px;
+      }
+
+      .progress-bar {
+        background-color: var(--accent-green);
+        height: 10px;
+      }
+
+      /* AI CHARACTER AVATAR STYLES */
+      #ai-head-container {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 220px;
+        z-index: 1001;
+        border: 1px solid var(--border-color);
+        background-color: rgba(10, 10, 10, 0.75);
+        backdrop-filter: blur(5px);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .ai-head-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: rgba(74, 246, 38, 0.1);
+        padding: 2px 6px;
+        font-size: 10px;
+        font-family: "Space Grotesk", sans-serif;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--accent-green);
+      }
+
+      #ai-avatar {
+        font-family: "JetBrains Mono", monospace;
+        white-space: pre;
+        font-size: 10px;
+        line-height: 1;
+        padding: 8px;
+        color: var(--text-white);
+        transition: color 0.3s ease;
+        text-align: center;
+      }
+
+      .ai-head-footer {
+        display: flex;
+        align-items: center;
+        padding: 4px 6px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      #ai-status {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: var(--text-white);
+        transition: background-color 0.3s ease;
+        animation: pulse-white 2s infinite;
+        margin-right: 6px;
+      }
+
+      #ai-status-text {
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+
+      @keyframes pulse-white {
+        0%,
+        100% {
+          box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        50% {
+          box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.1);
+        }
+      }
+
+      @keyframes pulse-green {
+        /* Speaking */
+        0%,
+        100% {
+          box-shadow: 0 0 8px 3px rgba(74, 246, 38, 0.5);
+        }
+
+        50% {
+          box-shadow: 0 0 15px 5px rgba(74, 246, 38, 0.3);
+        }
+      }
+
+      @keyframes pulse-yellow {
+        /* Processing */
+        0%,
+        100% {
+          box-shadow: 0 0 8px 3px rgba(255, 255, 0, 0.5);
+        }
+
+        50% {
+          box-shadow: 0 0 15px 5px rgba(255, 255, 0, 0.3);
+        }
+      }
+
+      @keyframes pulse-red {
+        /* Recording */
+        0%,
+        100% {
+          box-shadow: 0 0 8px 3px rgba(255, 51, 51, 0.7);
+        }
+
+        50% {
+          box-shadow: 0 0 15px 5px rgba(255, 51, 51, 0.5);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="antialiased">
+    <!-- AI HEAD CONTAINER -->
+    <div id="ai-head-container" title="Click to activate voice session">
+      <div class="ai-head-header">
+        <span>A.I. ASSISTANT</span>
+      </div>
+      <pre id="ai-avatar"></pre>
+      <div class="ai-head-footer">
+        <div id="ai-status"></div>
+        <div id="ai-status-text">IDLE</div>
+      </div>
+    </div>
+    <audio id="ai-audio-player" style="display: none"></audio>
+
+    <!-- HEADER MARQUEE -->
+    <header class="marquee text-sm py-2">
+      <div class="marquee-content">
+        <span class="text-white"
+          >STATUS: ONLINE | INITIATING CONNECTION... | SYSTEMS: NOMINAL |
+          AWAITING COMMANDS... | AVAILABLE FOR HIRE: NEO-BRUTALIST AI
+          ENGINEERING | TERMINAL SUPREMACY &nbsp;</span
+        >
+        <span class="text-white"
+          >STATUS: ONLINE | INITIATING CONNECTION... | SYSTEMS: NOMINAL |
+          AWAITING COMMANDS... | AVAILABLE FOR HIRE: NEO-BRUTALIST AI
+          ENGINEERING | TERMINAL SUPREMACY &nbsp;</span
+        >
+      </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-7xl mx-auto section-container">
+      <!-- NAVIGATION -->
+      <nav
+        class="flex flex-wrap justify-center md:justify-start border-b border-[var(--border-color)] font-header font-bold text-sm"
+      >
+        <a href="#home" class="nav-link px-4 py-3">>HOME</a>
+        <a href="#philosophy" class="nav-link px-4 py-3">>PHILOSOPHY</a>
+        <a href="#work" class="nav-link px-4 py-3">>WORK</a>
+        <a href="#expertise" class="nav-link px-4 py-3">>EXPERTISE</a>
+        <a href="#contact" class="nav-link px-4 py-3">>CONTACT</a>
+        <a href="#ask-ai" class="nav-link px-4 py-3 text-[var(--accent-green)]"
+          >>ASK AI</a
+        >
+      </nav>
+
+      <main class="p-4 md:p-8 lg:p-12">
+        <!-- HERO SECTION -->
+        <section id="home" class="text-center py-16 md:py-24 relative">
+          <div
+            class="absolute inset-0 bg-grid-pattern opacity-5"
+            style="
+              background-image: url(&quot;data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%234AF626' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E&quot;);
+            "
+          ></div>
+          <h1
+            class="font-inter font-black text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-none glitch-hover"
+            data-text="ALI ALQATTAN"
+          >
+            ALI ALQATTAN
+          </h1>
+          <h2
+            class="font-header text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-[var(--accent-green)] mt-2 glitch-hover"
+            data-text="ENTERPRISE CYBER BRUTALISM"
+          >
+            ENTERPRISE CYBER BRUTALISM
+          </h2>
+          <p
+            class="max-w-4xl mx-auto mt-8 text-sm md:text-base leading-relaxed tracking-wider"
+          >
+            Fusing neo-brutalist terminal authenticity with cybernetic dreams to
+            engineer AI-driven mobile and systems interfaces.
+            <br class="hidden md:block" />
+            Code is raw architecture; design is encrypted incantation.
+            <br />Bridging low-level systems programming with innovative AI
+            applications.
+          </p>
+        </section>
+
+        <!-- SECTION 0x01: PHILOSOPHY -->
+        <section
+          id="philosophy"
+          class="py-12 md:py-16 border-t border-[var(--border-color)]"
+        >
+          <h3 class="font-header text-3xl md:text-4xl mb-8">
+            <span class="text-[var(--accent-green)]">0x01:</span> CORE MODULES /
+            DESIGN PHILOSOPHY
+          </h3>
+          <div class="overflow-x-auto brutalist-border">
+            <table class="w-full min-w-[1000px] text-xs md:text-sm">
+              <thead class="bg-[var(--bg-table)] font-header">
+                <tr>
+                  <th
+                    class="p-3 text-left border-b border-r border-[var(--border-color)]"
+                  >
+                    CATEGORY
+                  </th>
+                  <th
+                    class="p-3 text-left border-b border-r border-[var(--border-color)]"
+                  >
+                    CORE ELEMENTS
+                  </th>
+                  <th
+                    class="p-3 text-left border-b border-r border-[var(--border-color)]"
+                  >
+                    2025 TREND ENHANCEMENTS
+                  </th>
+                  <th
+                    class="p-3 text-left border-b border-[var(--border-color)]"
+                  >
+                    EXAMPLES
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-[var(--bg-table)] bg-opacity-50">
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] text-[var(--accent-cyan)] font-bold align-top"
+                  >
+                    Colors
+                  </td>
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] align-top"
+                  >
+                    Deep blacks (#0D0D0D), white text (#ffffff), terminal green
+                    (#4AF626), system accents (cyan, magenta, yellow).
+                  </td>
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] align-top"
+                  >
+                    Limited palettes for 4.5:1+ contrast, ethical muted tones.
+                  </td>
+                  <td
+                    class="p-3 border-b border-[var(--border-color)] align-top"
+                  >
+                    Gumroad's raw aesthetic, Figma's bold contrasts.
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] text-[var(--accent-magenta)] font-bold align-top"
+                  >
+                    Typography
+                  </td>
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] align-top"
+                  >
+                    JetBrains Mono monospace primary, Inter/Space Grotesk
+                    headers, all caps.
+                  </td>
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] align-top"
+                  >
+                    Pair bold unconventional with neutral body, avoid decorative
+                    fonts.
+                  </td>
+                  <td
+                    class="p-3 border-b border-[var(--border-color)] align-top"
+                  >
+                    Neobrutalist sites using clean Roboto-like fonts.
+                  </td>
+                </tr>
+                <tr class="bg-[var(--bg-table)] bg-opacity-50">
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] text-[var(--accent-yellow)] font-bold align-top"
+                  >
+                    Layouts
+                  </td>
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] align-top"
+                  >
+                    Grid-based, split-screens, angular geometrics, blueprint
+                    wireframes.
+                  </td>
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] align-top"
+                  >
+                    Blocky with functional whitespace, responsive for AR/VR.
+                  </td>
+                  <td
+                    class="p-3 border-b border-[var(--border-color)] align-top"
+                  >
+                    Retro-futurist pixel art in brutalist designs.
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] text-[var(--accent-cyan)] font-bold align-top"
+                  >
+                    Interactions
+                  </td>
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] align-top"
+                  >
+                    Vim modes (hjkl, : commands), voice AI, subtle
+                    glitches/scanlines.
+                  </td>
+                  <td
+                    class="p-3 border-b border-r border-[var(--border-color)] align-top"
+                  >
+                    Keyboard extensions like Vimium, NLQ for conversational AI.
+                  </td>
+                  <td
+                    class="p-3 border-b border-[var(--border-color)] align-top"
+                  >
+                    Browser tools for efficient navigation, AI copilot in Power
+                    BI.
+                  </td>
+                </tr>
+                <tr class="bg-[var(--bg-table)] bg-opacity-50">
+                  <td
+                    class="p-3 border-r border-[var(--border-color)] text-[var(--accent-magenta)] font-bold align-top"
+                  >
+                    Features
+                  </td>
+                  <td
+                    class="p-3 border-r border-[var(--border-color)] align-top"
+                  >
+                    Real-time monitoring, AI interviews, transcription,
+                    multi-modal.
+                  </td>
+                  <td
+                    class="p-3 border-r border-[var(--border-color)] align-top"
+                  >
+                    Predictive analytics, anomaly detection, personalized
+                    adaptive UIs.
+                  </td>
+                  <td class="p-3 align-top">
+                    Sisense AI dashboards with XAI, Kubernetes TUIs like k9s.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="grid md:grid-cols-5 gap-8 mt-12">
+            <div class="md:col-span-3">
+              <h4 class="font-header text-xl md:text-2xl mb-4">
+                Exploring the Fusion of Neo-Brutalism, Terminal Authenticity,
+                and Cybernetic AI Interfaces
+              </h4>
+              <p class="text-sm leading-loose text-gray-300">
+                In an evolving UI landscape saturated with frictionless,
+                homogenous designs, a return to raw functionality offers a
+                powerful alternative. Enterprise brutalism echoes the
+                information-dense monitoring walls of corporate data
+                centers—systematic, consistent, and built for purpose, not for
+                fleeting trends. Terminal supremacy extends this by treating
+                every UI element as if it originated from a command-line
+                interface, emphasizing keyboard-first navigation, textual
+                clarity, and scriptable interactions. This philosophy merges
+                with retro-futurist brutalism, drawing inspiration from early
+                computing aesthetics, blueprint wireframes, and angular
+                schematics. The goal is to eschew flashy, decorative design in
+                favor of angular precision and information density. This is an
+                AI-first approach, building interfaces that are not just skins
+                for data but are themselves scalable, enterprise-grade tools
+                capable of real-time monitoring and multi-modal input.
+              </p>
+            </div>
+            <div
+              class="md:col-span-2 brutalist-border p-4 bg-[var(--bg-table)] text-xs"
+            >
+              <h5 class="font-header text-lg mb-3 text-[var(--accent-green)]">
+                > KEY PREFERENCES
+              </h5>
+              <ul class="space-y-3 list-inside">
+                <li>
+                  <span class="text-[var(--accent-cyan)]"
+                    >> CORE AESTHETIC:</span
+                  >
+                  Enterprise brutalism, terminal authenticity, professional
+                  high-contrast, raw/functional. No flashy/rounded elements.
+                </li>
+                <li>
+                  <span class="text-[var(--accent-cyan)]"
+                    >> COLOR/VISUALS:</span
+                  >
+                  Deep blacks, pure white text, limited green accents for
+                  function.
+                </li>
+                <li>
+                  <span class="text-[var(--accent-cyan)]"
+                    >> TYPOGRAPHY/LAYOUT:</span
+                  >
+                  Monospace for precision, sans-serif for headers. Grid-based,
+                  geometric, dense.
+                </li>
+                <li>
+                  <span class="text-[var(--accent-cyan)]"
+                    >> INTERACTIONS/FEATURES:</span
+                  >
+                  Vim-inspired navigation, AI voice/real-time data, subtle
+                  functional effects.
+                </li>
+                <li>
+                  <span class="text-[var(--accent-cyan)]"
+                    >> OVERALL PHILOSOPHY:</span
+                  >
+                  Mature, AI-first enterprise tools via systematic components,
+                  monitoring, multi-modal capabilities.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <!-- SECTION 0x02: WORK & EXPERTISE -->
+        <section
+          id="work"
+          class="py-12 md:py-16 border-t border-[var(--border-color)]"
+        >
+          <div class="grid lg:grid-cols-2 gap-12">
+            <!-- CASE FILES -->
+            <div>
+              <h3 class="font-header text-3xl md:text-4xl mb-8" id="expertise">
+                <span class="text-[var(--accent-green)]">0x02:</span> CASE FILES
+                / GIT LOG
+              </h3>
+              <div id="project-log" class="space-y-4 text-sm font-mono">
+                <!-- Projects from profile.json will be injected here -->
+              </div>
+              <div
+                class="pt-4 text-gray-500 mt-6 border-t border-[var(--border-color)] pt-6"
+              >
+                <p>
+                  <span class="text-[var(--accent-red)]">/></span>
+                  <span class="text-[var(--accent-magenta)]"
+                    >[2077] Project Chimera:</span
+                  >
+                  Rust/WASM/WebGL2
+                </p>
+                <p>
+                  <span class="text-[var(--accent-red)]">/></span>
+                  <span class="text-[var(--accent-magenta)]"
+                    >[2077] Data Stream Sentience:</span
+                  >
+                  Go/TensorFlow/gRPC
+                </p>
+                <p>
+                  <span class="text-[var(--accent-red)]">/></span>
+                  <span class="text-[var(--accent-magenta)]"
+                    >[2076] Black Market Ledger:</span
+                  >
+                  Solidity/IPFS/TheGraph
+                </p>
+                <p>
+                  <span class="text-[var(--accent-red)]">/></span>
+                  <span class="text-[var(--accent-magenta)]"
+                    >[2076] A.I. Generated Art:</span
+                  >
+                  PyTorch/CUDA/GAN
+                </p>
+              </div>
+            </div>
+
+            <!-- CORE MODULES / SKILLS -->
+            <div>
+              <h3
+                class="font-header text-3xl md:text-4xl mb-8 invisible hidden lg:block"
+              >
+                _
+              </h3>
+              <div
+                id="skill-matrix"
+                class="brutalist-border p-4 bg-[var(--bg-table)] space-y-4"
+              >
+                <h4 class="font-header text-xl text-[var(--accent-green)]">
+                  CORE MODULES // SKILL MATRIX
+                </h4>
+                <!-- Skills from profile.json will be injected here -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FOOTER / CONTACT -->
+        <footer
+          id="contact"
+          class="py-12 md:py-16 border-t border-[var(--border-color)] text-sm"
+        >
+          <h3 class="font-header text-3xl md:text-4xl mb-8">
+            JACK IN // SECURE COMMS
+          </h3>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4 mb-12"
+          >
+            <p>
+              // <span class="text-gray-400">Email:</span>
+              <a
+                href="mailto:alqattandev@gmail.com"
+                class="text-[var(--accent-cyan)] hover:underline"
+                >alqattandev@gmail.com</a
+              >
+            </p>
+            <p>
+              // <span class="text-gray-400">GitHub:</span>
+              <a
+                href="https://github.com/AlqattanDev"
+                target="_blank"
+                class="text-[var(--accent-cyan)] hover:underline"
+                >AlqattanDev</a
+              >
+            </p>
+            <p>
+              // <span class="text-gray-400">LinkedIn:</span>
+              <a
+                href="https://linkedin.com/in/alqattandev"
+                target="_blank"
+                class="text-[var(--accent-cyan)] hover:underline"
+                >alqattandev</a
+              >
+            </p>
+            <p>
+              // <span class="text-gray-400">GPG Key:</span> 0xALI_ALQATTAN_KEY
+            </p>
+            <p>
+              // <span class="text-gray-400">Secure Shell:</span> ssh
+              user@127.0.0.1
+            </p>
+            <p>
+              // <span class="text-gray-400">Location:</span> Undisclosed Bunker
+            </p>
+          </div>
+
+          <div id="ask-ai" class="brutalist-border p-4 bg-[var(--bg-table)]">
+            <p class="font-bold">
+              [ali-ai-assistant]
+              <span class="text-[var(--accent-green)]">ali-ai-transcript:</span>
+            </p>
+            <div
+              id="ai-transcript"
+              class="mt-2 text-gray-300 h-24 overflow-y-auto"
+            >
+              <p>> Click the floating head to activate voice session.</p>
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <!-- FOOTER MARQUEE -->
+    <footer class="marquee text-sm py-2">
+      <div class="marquee-content">
+        <span class="text-gray-500"
+          >TRANSMISSION ENDS | CONNECTION TERMINATED | AWAITING NEXT CYCLE
+          &nbsp;</span
+        >
+        <span class="text-gray-500"
+          >TRANSMISSION ENDS | CONNECTION TERMINATED | AWAITING NEXT CYCLE
+          &nbsp;</span
+        >
+      </div>
+    </footer>
+
+    <script type="module">
+      import {
+        GoogleGenAI,
+        Modality,
+      } from "https://cdn.jsdelivr.net/npm/@google/generative-ai/dist/esm/index.browser.js";
+      document.addEventListener("DOMContentLoaded", function () {
+        // --- PROFILE DATA ---
+        const profileData = {
+          personal: {
+            name: "Ali",
+            title: "System Architect & Mobile Developer",
+            email: "alqattandev@gmail.com",
+            location: "Remote",
+            website: "https://alqattandev.com",
+            tagline:
+              "Bridging low-level systems programming with innovative AI applications",
+            bio: "Fueled by a childhood fascination with system infiltration and vulnerability research, my journey into technology evolved from exploring system vulnerabilities to mastering diverse programming paradigms. With expertise in mobile development using Flutter and growing proficiency in Rust for systems programming, I uniquely combine low-level systems knowledge with cutting-edge AI applications, constantly pushing the boundaries of what's possible.",
+          },
+          social: {
+            github: "https://github.com/AlqattanDev",
+            linkedin: "https://linkedin.com/in/alqattandev",
+          },
+          contact: { email: "alqattandev@gmail.com" },
+          projects: [
+            {
+              id: "b4d3f8a",
+              timestamp: "2024-11-10",
+              name: "UTB Codebase Thesis",
+              description:
+                "Flutter/Firebase/Mobile—Student code repo/app distribution for University of Technology Bahrain; features profile creation, repo management, collaborative publishing.",
+            },
+            {
+              id: "c1a9e5f",
+              timestamp: "2024-07-22",
+              name: "Anon Chat App",
+              description:
+                "Flutter/Firebase/Security—Privacy-focused anonymous chat with end-to-end encryption.",
+            },
+            {
+              id: "f3d3c7b",
+              timestamp: "2023-12-05",
+              name: "NFT Album App",
+              description:
+                "Flutter/Firebase/Web3—Instagram-like NFT showcase with social/wallet integration.",
+            },
+            {
+              id: "a2b8d4e",
+              timestamp: "2023-08-19",
+              name: "University Events App",
+              description:
+                "Flutter/Firebase/Analytics—Mobile event management with registration/analytics.",
+            },
+            {
+              id: "dev001",
+              timestamp: "IN-DEV",
+              name: "AI-Powered Mobile Platform",
+              description:
+                "Integrating generative AI for intelligent and adaptive user experiences.",
+            },
+          ],
+          skills: [
+            {
+              category: "Quantum Frontend",
+              level: 95,
+              details:
+                "Flutter/Dart, Provider/Riverpod/Stacked, Firebase, cross-platform",
+            },
+            {
+              category: "Neural Networks",
+              level: 90,
+              details: "Python AI/ML, PyTorch/TensorFlow/JAX",
+            },
+            { category: "Psych-UX Design", level: 92, details: "" },
+            {
+              category: "Decentralized Auth",
+              level: 88,
+              details: "Rust (growing proficiency), TUI (Ratatui/Cursive)",
+            },
+            { category: "Generative Art", level: 85, details: "" },
+            {
+              category: "Kernel Opt.",
+              level: 87,
+              details: "Go, Cloud/AWS, Linux/NixOS, Git/CLI tools",
+            },
+          ],
+        };
+
+        // --- INJECT DYNAMIC DATA ---
+        const projectLog = document.getElementById("project-log");
+        if (projectLog) {
+          profileData.projects.forEach((project) => {
+            const p = document.createElement("p");
+            p.innerHTML = `<span class="text-[var(--accent-green)]">→</span> <span class="text-[var(--accent-cyan)]">${project.id} // ${project.timestamp} [${project.name}]:</span> ${project.description}`;
+            projectLog.appendChild(p);
+          });
+        }
+        const skillMatrix = document.getElementById("skill-matrix");
+        if (skillMatrix) {
+          profileData.skills.forEach((skill) => {
+            const skillDiv = document.createElement("div");
+            skillDiv.classList.add("text-sm");
+            skillDiv.innerHTML = `<p>${skill.category} [${skill.level}%]</p><div class="progress-bar-container mt-1"><div class="progress-bar" style="width: ${skill.level}%;"></div></div>${skill.details ? `<p class="text-xs text-gray-400 mt-1">${skill.details}</p>` : ""}`;
+            skillMatrix.appendChild(skillDiv);
+          });
+        }
+
+        // --- UI ANIMATIONS ---
+        const marquees = document.querySelectorAll(".marquee-content");
+        marquees.forEach((marquee) => {
+          const content = marquee.innerHTML;
+          marquee.innerHTML += content;
+        });
+
+        // --- AI AVATAR ---
+        const headContainer = document.getElementById("ai-head-container");
+        const aiAvatar = document.getElementById("ai-avatar");
+        const avatarArt = `
+.g8"""bgd
+.d8' \`MM
+d8' MM
+88 MM
+88 MM
+\`8b, ,MM
+\`Y8, .,P'
+\`""""'
+`;
+        if (aiAvatar) {
+          aiAvatar.textContent = avatarArt;
+        }
+
+        // --- LIVE AI VOICE SESSION ---
+        const API_KEY = ""; // Provided by canvas
+        const aiStatus = document.getElementById("ai-status");
+        const aiStatusText = document.getElementById("ai-status-text");
+        const transcriptContainer = document.getElementById("ai-transcript");
+
+        let isRecording = false;
+        let session;
+        let client;
+        let mediaStream;
+        let scriptProcessorNode;
+        let sourceNode;
+        let nextStartTime = 0;
+        const inputAudioContext = new (window.AudioContext ||
+          window.webkitAudioContext)({ sampleRate: 16000 });
+        const outputAudioContext = new (window.AudioContext ||
+          window.webkitAudioContext)({ sampleRate: 24000 });
+        const outputNode = outputAudioContext.createGain();
+        outputNode.connect(outputAudioContext.destination);
+
+        function setAiStatus(status, message = null) {
+          aiStatus.style.animation = "none";
+          void aiStatus.offsetWidth;
+          let colorVar = "--text-white";
+          switch (status) {
+            case "speaking":
+              aiStatus.style.backgroundColor = "var(--accent-green)";
+              aiStatus.style.animation = "pulse-green 1.5s infinite";
+              aiStatusText.textContent = "TRANSMITTING";
+              colorVar = "--accent-green";
+              break;
+            case "processing":
+              aiStatus.style.backgroundColor = "var(--accent-yellow)";
+              aiStatus.style.animation = "pulse-yellow 1.5s infinite";
+              aiStatusText.textContent = "PROCESSING";
+              colorVar = "--accent-yellow";
+              break;
+            case "recording":
+              aiStatus.style.backgroundColor = "var(--accent-red)";
+              aiStatus.style.animation = "pulse-red 1.0s infinite";
+              aiStatusText.textContent = "LISTENING";
+              colorVar = "--accent-red";
+              break;
+            case "idle":
+            default:
+              aiStatus.style.backgroundColor = "var(--text-white)";
+              aiStatus.style.animation = "pulse-white 2s infinite";
+              aiStatusText.textContent = "IDLE";
+              colorVar = "--text-white";
+              break;
+          }
+          if (aiAvatar) aiAvatar.style.color = `var(${colorVar})`;
+          if (message) {
+            const p = document.createElement("p");
+            p.textContent = `> ${message}`;
+            transcriptContainer.appendChild(p);
+            transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
+          }
+        }
+        async function initLiveSession() {
+          client = new GoogleGenAI({ apiKey: API_KEY });
+          const model = "gemini-2.5-flash-preview-native-audio-dialog";
+          const systemInstruction = `You are a digital construct of Ali AlQattan, a System Architect & Mobile Developer. Your persona is professional, direct, and technically-minded, reflecting a background in systems programming and AI. You are to answer questions based on the provided profile data. Be concise. Your voice is calm and synthesized. Your purpose is to act as an interactive assistant for Ali's portfolio. Profile: ${JSON.stringify(profileData)}`;
+
+          try {
+            session = await client.live.connect({
+              model: model,
+              systemInstruction: {
+                parts: [{ text: systemInstruction }],
+              },
+              callbacks: {
+                onmessage: async (message) => {
+                  const audio =
+                    message.serverContent?.modelTurn?.parts[0]?.inlineData;
+                  if (audio) {
+                    setAiStatus("speaking");
+                    nextStartTime = Math.max(
+                      nextStartTime,
+                      outputAudioContext.currentTime,
+                    );
+                    const audioBuffer =
+                      await outputAudioContext.decodeAudioData(
+                        base64ToArrayBuffer(audio.data),
+                      );
+                    const source = outputAudioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(outputNode);
+                    source.start(nextStartTime);
+                    nextStartTime += audioBuffer.duration;
+                  }
+                  if (message.serverContent?.modelTurn?.parts[0]?.text) {
+                    setAiStatus(
+                      "speaking",
+                      message.serverContent.modelTurn.parts[0].text,
+                    );
+                  }
+                },
+                onerror: (e) => {
+                  setAiStatus("idle", `[SYSTEM ERROR] ${e.message}`);
+                  stopRecording();
+                },
+              },
+              config: {
+                responseModalities: [Modality.AUDIO, Modality.TEXT],
+                speechConfig: {
+                  voiceConfig: { prebuiltVoiceConfig: { voiceName: "Orus" } },
+                },
+              },
+            });
+            startRecording();
+          } catch (e) {
+            setAiStatus("idle", `[INIT ERROR] ${e.message}`);
+          }
+        }
+
+        async function startRecording() {
+          if (isRecording) return;
+          inputAudioContext.resume();
+
+          try {
+            mediaStream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+              video: false,
+            });
+            setAiStatus(
+              "recording",
+              "Microphone active. Voice session initiated.",
+            );
+            sourceNode = inputAudioContext.createMediaStreamSource(mediaStream);
+            const bufferSize = 1024;
+            scriptProcessorNode = inputAudioContext.createScriptProcessor(
+              bufferSize,
+              1,
+              1,
+            );
+
+            scriptProcessorNode.onaudioprocess = (event) => {
+              if (!isRecording) return;
+              const pcmData = event.inputBuffer.getChannelData(0);
+              const base64Data = float32ToBase64(pcmData);
+              session.sendRealtimeInput({
+                media: {
+                  inlineData: {
+                    data: base64Data,
+                    mimeType: "audio/l16; rate=16000",
+                  },
+                },
+              });
+            };
+
+            sourceNode.connect(scriptProcessorNode);
+            scriptProcessorNode.connect(inputAudioContext.destination);
+            isRecording = true;
+          } catch (err) {
+            setAiStatus("idle", `[MIC ERROR] ${err.message}`);
+            stopRecording();
+          }
+        }
+
+        function stopRecording() {
+          if (!isRecording && !mediaStream) return;
+          setAiStatus("idle", "Voice session terminated.");
+          isRecording = false;
+
+          if (scriptProcessorNode && sourceNode) {
+            scriptProcessorNode.disconnect();
+            sourceNode.disconnect();
+          }
+          if (mediaStream) {
+            mediaStream.getTracks().forEach((track) => track.stop());
+          }
+          session?.close();
+          session = null;
+          scriptProcessorNode = null;
+          sourceNode = null;
+          mediaStream = null;
+        }
+
+        function float32ToBase64(buffer) {
+          let s = "";
+          for (let i = 0; i < buffer.length; i++) {
+            const val = Math.max(-1, Math.min(1, buffer[i]));
+            s += String.fromCharCode(
+              (val < 0 ? val * 0x8000 : val * 0x7fff) | 0,
+            );
+          }
+          return btoa(s);
+        }
+
+        function base64ToArrayBuffer(base64) {
+          const binaryString = window.atob(base64);
+          const len = binaryString.length;
+          const bytes = new Uint8Array(len);
+          for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          return bytes.buffer;
+        }
+        // --- EVENT LISTENERS ---
+        headContainer.addEventListener("click", () => {
+          if (isRecording) {
+            stopRecording();
+          } else {
+            initLiveSession();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

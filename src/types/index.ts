@@ -4,6 +4,7 @@
  */
 
 import { z } from 'zod';
+import type { ASCIIAnimationSystem } from '@/animation/ASCIIAnimationSystem';
 
 // ====================
 // UI & Component Types
@@ -15,7 +16,7 @@ export interface BaseComponentProps {
 }
 
 export interface WithChildren {
-  children?: any;
+  children?: unknown;
 }
 
 export interface ViewMode {
@@ -64,7 +65,7 @@ export interface BreakpointConfig {
   xxl?: number;
 }
 
-export interface ValidationResult<T = any> {
+export interface ValidationResult<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -130,7 +131,7 @@ export interface EffectSystem {
 export interface ErrorBoundaryState {
   hasError: boolean;
   error?: Error;
-  errorInfo?: any;
+  errorInfo?: { componentStack: string };
 }
 
 export interface ErrorContext {
@@ -164,6 +165,26 @@ export interface WebVitalsMetric {
   delta: number;
   id: string;
   navigationType: 'navigate' | 'reload' | 'back-forward' | 'back-forward-cache';
+}
+
+export interface MemoryInfo {
+  totalJSHeapSize: number;
+  usedJSHeapSize: number;
+  jsHeapSizeLimit: number;
+}
+
+export interface BatteryManager extends EventTarget {
+  charging: boolean;
+  chargingTime: number;
+  dischargingTime: number;
+  level: number;
+}
+
+export interface NetworkInformation {
+  effectiveType: 'slow-2g' | '2g' | '3g' | '4g';
+  saveData: boolean;
+  downlink: number;
+  rtt: number;
 }
 
 // ====================
@@ -219,7 +240,6 @@ export interface ProjectWithMeta extends Project {
   hasVideo: boolean;
   hasImages: boolean;
 }
-
 
 export interface ProjectEntryProps extends BaseComponentProps {
   project: Project;
@@ -309,8 +329,6 @@ export const ProjectSchema = z.object({
   images: z.array(z.string().url()).optional(),
   metrics: ProjectMetricsSchema.optional(),
 });
-
-
 
 // ====================
 // Skill Types
@@ -589,7 +607,7 @@ export interface AppState {
 // API Types
 // ====================
 
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -601,7 +619,7 @@ export interface APIError {
   message: string;
   status: number;
   code?: string;
-  details?: any;
+  details?: unknown;
 }
 
 // ====================
@@ -647,7 +665,7 @@ export type DeepPartial<T> = {
 // Event Types
 // ====================
 
-export interface CustomEvent<T = any> {
+export interface CustomEvent<T = unknown> {
   type: string;
   detail: T;
   timestamp: number;
@@ -658,7 +676,7 @@ export interface InteractionEvent extends CustomEvent {
     element: string;
     action: 'click' | 'hover' | 'focus' | 'scroll';
     position?: { x: number; y: number };
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   };
 }
 
@@ -682,7 +700,6 @@ export const isProject = (obj: unknown): obj is Project => {
   return ProjectSchema.safeParse(obj).success;
 };
 
-
 export const isSkillLevel = (level: string): level is SkillLevel => {
   return SkillLevelSchema.safeParse(level).success;
 };
@@ -704,7 +721,7 @@ export const isEducation = (obj: unknown): obj is Education => {
 // ====================
 
 declare module '*.json' {
-  const value: any;
+  const value: unknown;
   export default value;
 }
 
@@ -713,8 +730,9 @@ declare module '*.css' {
   export default content;
 }
 
+import type { AstroComponent } from 'astro';
 declare module '*.astro' {
-  const component: any;
+  const component: AstroComponent;
   export default component;
 }
 
@@ -724,14 +742,30 @@ declare module '*.astro' {
 
 declare global {
   interface Window {
-    gtag?: (...args: any[]) => void;
-    plausible?: (...args: any[]) => void;
+    gtag?: (...args: unknown[]) => void;
+    plausible?: (...args: unknown[]) => void;
     webVitals?: {
-      getCLS: (callback: (metric: any) => void) => void;
-      getFID: (callback: (metric: any) => void) => void;
-      getFCP: (callback: (metric: any) => void) => void;
-      getLCP: (callback: (metric: any) => void) => void;
-      getTTFB: (callback: (metric: any) => void) => void;
+      getCLS: (callback: (metric: WebVitalsMetric) => void) => void;
+      getFID: (callback: (metric: WebVitalsMetric) => void) => void;
+      getFCP: (callback: (metric: WebVitalsMetric) => void) => void;
+      getLCP: (callback: (metric: WebVitalsMetric) => void) => void;
+      getTTFB: (callback: (metric: WebVitalsMetric) => void) => void;
     };
+    __statusBarNavCleanup?: () => void;
+    __viewSwitcherCleanup?: () => void;
+    __scrollToTopCleanup?: () => void;
+    __progressRingCleanup?: () => void;
+    asciiAnimationSystem?: ASCIIAnimationSystem;
+  }
+
+  interface Performance {
+    memory?: MemoryInfo;
+  }
+
+  interface Navigator {
+    getBattery?(): Promise<BatteryManager>;
+    connection?: NetworkInformation;
+    mozConnection?: NetworkInformation;
+    deviceMemory?: number;
   }
 }

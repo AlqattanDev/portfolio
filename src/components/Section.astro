@@ -6,10 +6,19 @@ export interface SectionProps extends BaseComponentProps {
   id?: string;
 }
 
-const { title, id: idProp, className = '', ...props } = Astro.props as SectionProps;
+const {
+  title,
+  id: idProp,
+  className = '',
+  ...props
+} = Astro.props as SectionProps;
 
 // simple slugify fallback when id not provided
-const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 const sectionId = idProp ?? slugify(title);
 ---
 

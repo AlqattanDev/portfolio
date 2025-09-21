@@ -3,6 +3,8 @@
  * Centralized device capability detection and mobile optimization
  */
 
+import type { NetworkInformation, BatteryManager, MemoryInfo } from '@/types';
+
 /**
  * Device detection utilities
  */
@@ -48,7 +50,7 @@ export const device = {
       availWidth: window.screen.availWidth,
       availHeight: window.screen.availHeight,
       pixelRatio: window.devicePixelRatio || 1,
-      orientation: screen.orientation?.angle || 0
+      orientation: screen.orientation?.angle || 0,
     };
   },
 
@@ -60,7 +62,7 @@ export const device = {
       width: window.innerWidth,
       height: window.innerHeight,
       scrollX: window.scrollX,
-      scrollY: window.scrollY
+      scrollY: window.scrollY,
     };
   },
 
@@ -68,7 +70,11 @@ export const device = {
    * Network information (if available)
    */
   getNetworkInfo(): NetworkInformation | null {
-    return (navigator as any).connection || (navigator as any).mozConnection || null;
+    const nav = navigator as Navigator & {
+      connection?: NetworkInformation;
+      mozConnection?: NetworkInformation;
+    };
+    return nav.connection || nav.mozConnection || null;
   },
 
   /**
@@ -77,11 +83,13 @@ export const device = {
   isSlowConnection(): boolean {
     const connection = this.getNetworkInfo();
     if (!connection) return false;
-    
-    return connection.effectiveType === 'slow-2g' || 
-           connection.effectiveType === '2g' || 
-           connection.saveData === true;
-  }
+
+    return (
+      connection.effectiveType === 'slow-2g' ||
+      connection.effectiveType === '2g' ||
+      connection.saveData === true
+    );
+  },
 };
 
 /**
@@ -94,10 +102,10 @@ export const battery = {
   async getBatteryInfo(): Promise<BatteryManager | null> {
     try {
       if ('getBattery' in navigator) {
-        return await (navigator as any).getBattery();
+        return await navigator.getBattery();
       }
     } catch (error) {
-      console.warn('Battery API not available:', error);
+      // Fail silently
     }
     return null;
   },
@@ -107,9 +115,9 @@ export const battery = {
    */
   async isLowPower(): Promise<boolean> {
     const batteryInfo = await this.getBatteryInfo();
-    return batteryInfo ? 
-      (batteryInfo.level < 0.2 && !batteryInfo.charging) : 
-      false;
+    return batteryInfo
+      ? batteryInfo.level < 0.2 && !batteryInfo.charging
+      : false;
   },
 
   /**
@@ -126,7 +134,7 @@ export const battery = {
     const handleLevelChange = () => {
       const level = batteryInfo.level;
       callbacks.onLevelChange?.(level);
-      
+
       if (level < 0.15 && !batteryInfo.charging) {
         callbacks.onLowBattery?.();
       }
@@ -144,7 +152,7 @@ export const battery = {
       batteryInfo.removeEventListener('levelchange', handleLevelChange);
       batteryInfo.removeEventListener('chargingchange', handleChargingChange);
     };
-  }
+  },
 };
 
 /**
@@ -176,7 +184,7 @@ export const capabilities = {
    * Check device memory (if available)
    */
   getDeviceMemory(): number {
-    return (navigator as any).deviceMemory || 4; // Default to 4GB
+    return navigator.deviceMemory || 4; // Default to 4GB
   },
 
   /**
@@ -210,7 +218,9 @@ export const capabilities = {
   hasWebGL(): boolean {
     try {
       const canvas = document.createElement('canvas');
-      return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+      return !!(
+        canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+      );
     } catch {
       return false;
     }
@@ -228,7 +238,7 @@ export const capabilities = {
    */
   hasServiceWorkers(): boolean {
     return 'serviceWorker' in navigator;
-  }
+  },
 };
 
 /**
@@ -243,7 +253,7 @@ export const mobileOptimizations = {
 
     // Add momentum scrolling for iOS
     document.body.style.webkitOverflowScrolling = 'touch';
-    
+
     // Prevent zoom on double tap
     document.addEventListener('gesturestart', (e) => {
       e.preventDefault();
@@ -258,9 +268,6 @@ export const mobileOptimizations = {
     complexity: 'low' | 'medium' | 'high';
     enableEffects: boolean;
   } {
-    const tier = capabilities.getPerformanceTier();
-    const reducedMotion = capabilities.prefersReducedMotion();
-    
     // Always enable effects regardless of reduced motion preference
     // User wants animations to work in all scenarios
 
@@ -268,7 +275,7 @@ export const mobileOptimizations = {
     return {
       frameRate: 60,
       complexity: 'high',
-      enableEffects: true
+      enableEffects: true,
     };
   },
 
@@ -277,17 +284,20 @@ export const mobileOptimizations = {
    */
   setupMemoryMonitoring(onMemoryPressure: () => void): () => void {
     let memoryCheckInterval: number | undefined;
-    
-    if (device.isMobile() && (performance as any).memory) {
+
+    if (
+      device.isMobile() &&
+      (performance as Performance & { memory: MemoryInfo }).memory
+    ) {
       memoryCheckInterval = window.setInterval(() => {
-        const memoryInfo = (performance as any).memory;
+        const memoryInfo = (performance as Performance & { memory: MemoryInfo })
+          .memory;
         if (memoryInfo.usedJSHeapSize > memoryInfo.jsHeapSizeLimit * 0.8) {
-          console.warn('High memory usage detected');
           onMemoryPressure();
         }
       }, 10000); // Check every 10 seconds
     }
-    
+
     // Return cleanup function
     return () => {
       if (memoryCheckInterval) {
@@ -300,10 +310,12 @@ export const mobileOptimizations = {
    * Disable complex features on low-end devices
    */
   shouldDisableComplexFeatures(): boolean {
-    return capabilities.getPerformanceTier() === 'low' || 
-           capabilities.prefersReducedMotion() ||
-           device.isSlowConnection();
-  }
+    return (
+      capabilities.getPerformanceTier() === 'low' ||
+      capabilities.prefersReducedMotion() ||
+      device.isSlowConnection()
+    );
+  },
 };
 
 /**
@@ -315,7 +327,7 @@ export const responsive = {
    */
   getCurrentBreakpoint(): 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' {
     const width = window.innerWidth;
-    
+
     if (width < 576) return 'xs';
     if (width < 768) return 'sm';
     if (width < 992) return 'md';
@@ -344,9 +356,11 @@ export const responsive = {
   /**
    * Setup responsive breakpoint monitoring
    */
-  setupBreakpointMonitoring(callback: (breakpoint: string) => void): () => void {
+  setupBreakpointMonitoring(
+    callback: (breakpoint: string) => void
+  ): () => void {
     let currentBreakpoint = this.getCurrentBreakpoint();
-    
+
     const handleResize = () => {
       const newBreakpoint = this.getCurrentBreakpoint();
       if (newBreakpoint !== currentBreakpoint) {
@@ -356,27 +370,12 @@ export const responsive = {
     };
 
     window.addEventListener('resize', handleResize);
-    
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }
+  },
 };
-
-// Type definitions for better TypeScript support
-interface BatteryManager extends EventTarget {
-  charging: boolean;
-  chargingTime: number;
-  dischargingTime: number;
-  level: number;
-}
-
-interface NetworkInformation {
-  effectiveType: 'slow-2g' | '2g' | '3g' | '4g';
-  saveData: boolean;
-  downlink: number;
-  rtt: number;
-}
 
 // Export all utilities as a single object for convenience
 export const deviceUtils = {
@@ -384,5 +383,5 @@ export const deviceUtils = {
   battery,
   capabilities,
   mobileOptimizations,
-  responsive
+  responsive,
 };

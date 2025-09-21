@@ -10,50 +10,129 @@ export interface StatusBarProps {
 const { className = '' } = Astro.props as StatusBarProps;
 ---
 
-<nav class={`status-bar ${className}`} role="navigation" aria-label="Section Navigation">
+<nav
+  class={`status-bar ${className}`}
+  role="navigation"
+  aria-label="Section Navigation"
+>
   <div class="status-left">
     <div class="status-mode" id="statusMode">NORMAL</div>
     <div class="status-file">portfolio.md</div>
   </div>
   <div class="status-center">
-    <a href="#contact-info" class="status-item" aria-label="Navigate to Contact section" tabindex="0">
+    <a
+      href="#contact-info"
+      class="status-item"
+      aria-label="Navigate to Contact section"
+      tabindex="0"
+    >
       <span class="status-text">Contact</span>
     </a>
     <div class="status-separator">|</div>
-    <a href="#project-manifest" class="status-item" aria-label="Navigate to Projects section" tabindex="0">
+    <a
+      href="#project-manifest"
+      class="status-item"
+      aria-label="Navigate to Projects section"
+      tabindex="0"
+    >
       <span class="status-text">Projects</span>
     </a>
     <div class="status-separator">|</div>
-    <a href="#skill-matrix" class="status-item" aria-label="Navigate to Skills section" tabindex="0">
+    <a
+      href="#skill-matrix"
+      class="status-item"
+      aria-label="Navigate to Skills section"
+      tabindex="0"
+    >
       <span class="status-text">Skills</span>
     </a>
     <div class="status-separator">|</div>
-    <a href="#education-log" class="status-item" aria-label="Navigate to Education section" tabindex="0">
+    <a
+      href="#education-log"
+      class="status-item"
+      aria-label="Navigate to Education section"
+      tabindex="0"
+    >
       <span class="status-text">Education</span>
     </a>
   </div>
   <div class="status-right">
-    <div class="status-progress-container" role="progressbar" aria-label="Page scroll progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div
+      class="status-progress-container"
+      role="progressbar"
+      aria-label="Page scroll progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+    >
       <svg width="20" height="20" viewBox="0 0 60 60" aria-hidden="true">
-        <circle cx="30" cy="30" r="25" fill="none" stroke="var(--muted-digital)" stroke-width="2"></circle>
-        <circle class="progress-ring" cx="30" cy="30" r="25" fill="none" stroke="var(--foreground-digital)" stroke-width="2" stroke-linecap="round" transform="rotate(-90 30 30)"></circle>
+        <circle
+          cx="30"
+          cy="30"
+          r="25"
+          fill="none"
+          stroke="var(--muted-digital)"
+          stroke-width="2"></circle>
+        <circle
+          class="progress-ring"
+          cx="30"
+          cy="30"
+          r="25"
+          fill="none"
+          stroke="var(--foreground-digital)"
+          stroke-width="2"
+          stroke-linecap="round"
+          transform="rotate(-90 30 30)"></circle>
       </svg>
       <span class="progress-percentage" aria-live="polite">100%</span>
     </div>
-    <button class="scroll-to-top-btn status-button" id="scrollToTopBtn" aria-label="Scroll to top" data-show-after="300">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="m18 15-6-6-6 6"/>
+    <button
+      class="scroll-to-top-btn status-button"
+      id="scrollToTopBtn"
+      aria-label="Scroll to top"
+      data-show-after="300"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
+        <path d="m18 15-6-6-6 6"></path>
       </svg>
     </button>
-    <button class="view-switcher status-button" aria-label="Toggle between digital and print view">
-      <svg class="icon-digital" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <button
+      class="view-switcher status-button"
+      aria-label="Toggle between digital and print view"
+    >
+      <svg
+        class="icon-digital"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
         <line x1="8" y1="21" x2="16" y2="21"></line>
         <line x1="12" y1="17" x2="12" y2="21"></line>
       </svg>
-      <svg class="icon-print" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <svg
+        class="icon-print"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
         <polyline points="6,9 6,2 18,2 18,9"></polyline>
-        <path d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2,2H20a2,2,0,0,1,2-2v5a2,2,0,0,1-2,2H18"></path>
+        <path
+          d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2,2H20a2,2,0,0,1,2-2v5a2,2,0,0,1-2,2H18"
+        ></path>
         <rect x="6" y="14" width="12" height="8"></rect>
       </svg>
     </button>
@@ -61,418 +140,437 @@ const { className = '' } = Astro.props as StatusBarProps;
 </nav>
 
 <style>
-/* Styles already imported in Layout.astro */
+  /* Styles already imported in Layout.astro */
 
-/* Status Bar Styles */
-.status-bar { 
-  position: fixed; 
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 32px;
-  display: flex; 
-  align-items: center;
-  justify-content: space-between;
-  z-index: var(--z-sticky); 
-  backdrop-filter: blur(8px); 
-  background: var(--background-digital); 
-  border-top: 1px solid var(--border-digital); 
-  box-shadow: var(--shadow-lg);
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  padding: 0 var(--space-md);
-}
-
-/* Print Mode Status Bar */
-body.print-view .status-bar {
-  background: var(--background-print);
-  border-top: 1px solid var(--border-print);
-  color: var(--foreground-print);
-  box-shadow: var(--shadow-sm);
-}
-
-/* Hide digital-only elements in print mode */
-body.print-view .status-mode,
-body.print-view .status-help,
-body.print-view .status-position,
-body.print-view .status-progress-container {
-  display: none;
-}
-
-/* Show only navigation and mode switcher in print mode */
-body.print-view .status-left {
-  display: none;
-}
-
-body.print-view .status-center {
-  flex: 1;
-  justify-content: center;
-}
-
-body.print-view .status-right {
-  display: flex;
-}
-
-/* Print mode navigation styling */
-body.print-view .status-item {
-  color: var(--muted-print);
-}
-
-body.print-view .status-item:hover {
-  color: var(--foreground-print);
-  background: var(--accent-print);
-}
-
-body.print-view .status-item.active {
-  color: var(--background-print);
-  background: var(--foreground-print);
-  box-shadow: var(--shadow-sm);
-}
-
-body.print-view .status-separator {
-  color: var(--muted-print);
-  opacity: 0.8;
-}
-
-.status-left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  color: var(--foreground-digital);
-}
-
-.status-mode {
-  background: var(--foreground-digital);
-  color: var(--background-digital);
-  padding: var(--space-2xs) var(--space-sm);
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-sm);
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wide);
-  transition: all var(--transition-base) var(--ease-in-out);
-  /* Fixed width to prevent layout shift */
-  min-width: 85px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  /* Use monospace for consistent character width */
-  font-family: 'Courier New', Consolas, 'Lucida Console', monospace;
-}
-
-.status-mode.insert {
-  background: var(--color-success);
-  color: var(--background-digital);
-}
-
-.status-mode.visual {
-  background: var(--color-info);
-  color: var(--background-digital);
-}
-
-.status-mode.command {
-  background: var(--color-error);
-  color: var(--background-print);
-}
-
-.status-file {
-  color: var(--muted-digital);
-  font-weight: var(--font-weight-medium);
-}
-
-
-
-.status-center {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  flex: 1;
-  justify-content: center;
-}
-
-.status-item { 
-  color: var(--muted-digital); 
-  text-decoration: none; 
-  font-size: var(--font-size-sm); 
-  padding: var(--space-xs) var(--space-sm); 
-  border-radius: var(--radius-base); 
-  transition: all var(--transition-fast) var(--ease-in-out);
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  font-weight: var(--font-weight-medium);
-}
-
-.status-text {
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wide);
-}
-
-.status-separator {
-  color: var(--muted-digital);
-  font-weight: var(--font-weight-normal);
-  opacity: 0.6;
-}
-
-.status-item:hover { 
-  color: var(--foreground-digital); 
-  background: var(--accent-digital);
-}
-
-.status-item.active { 
-  color: var(--background-digital); 
-  background: var(--foreground-digital); 
-  box-shadow: 0 2px 8px var(--color-focus-ring);
-}
-
-.status-right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  color: var(--muted-digital);
-  font-size: var(--font-size-sm);
-}
-
-.status-position {
-  color: var(--foreground-digital);
-  font-weight: var(--font-weight-semibold);
-}
-
-.status-progress-container {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  color: var(--muted-digital);
-  font-weight: var(--font-weight-medium);
-}
-
-.status-progress-container svg {
-  width: 16px;
-  height: 16px;
-}
-
-.status-progress-container .progress-percentage {
-  font-size: var(--font-size-sm);
-  color: var(--muted-digital);
-}
-
-/* Progress Ring Animation */
-.progress-ring {
-  stroke-dasharray: 157; /* 2 * π * 25 */
-  stroke-dashoffset: 157;
-  transition: stroke-dashoffset var(--transition-base) var(--ease-out);
-}
-
-/* Status Button (View Switcher) */
-.status-button { 
-  background: transparent; 
-  border: none; 
-  color: var(--muted-digital); 
-  height: 24px; 
-  width: 24px; 
-  border-radius: var(--radius-sm); 
-  cursor: pointer; 
-  display: inline-flex; 
-  align-items: center; 
-  justify-content: center; 
-  transition: all var(--transition-fast) var(--ease-in-out); 
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  padding: 0;
-}
-
-.status-button svg { 
-  width: 16px; 
-  height: 16px; 
-  transition: all var(--transition-fast) var(--ease-in-out); 
-}
-
-body.digital-view .icon-print { display: none; }
-body.print-view .icon-digital { display: none; }
-
-body.digital-view .icon-digital { 
-  stroke: var(--muted-digital); 
-  stroke-width: 1.5; 
-  fill: none; 
-}
-
-body.digital-view .status-button:hover { 
-  color: var(--foreground-digital); 
-  background: var(--accent-digital); 
-}
-
-body.digital-view .status-button:hover .icon-digital { 
-  stroke: var(--foreground-digital); 
-  stroke-width: 2; 
-}
-
-body.digital-view .status-button:active { 
-  color: var(--background-digital); 
-  background: var(--foreground-digital); 
-  box-shadow: 0 2px 8px var(--color-focus-ring);
-}
-
-body.print-view .status-button { 
-  color: var(--muted-print); 
-}
-
-body.print-view .icon-print { 
-  stroke: var(--muted-print); 
-  stroke-width: 1.5; 
-  fill: none; 
-}
-
-body.print-view .status-button:hover { 
-  color: var(--foreground-print); 
-  background: var(--accent-print); 
-}
-
-body.print-view .status-button:hover .icon-print { 
-  stroke: var(--foreground-print); 
-  stroke-width: 2; 
-}
-
-/* Scroll to Top Button */
-.scroll-to-top-btn {
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(0.8);
-  transition: all var(--transition-base) var(--ease-in-out);
-}
-
-.scroll-to-top-btn.visible {
-  opacity: 1;
-  visibility: visible;
-  transform: scale(1);
-}
-
-.scroll-to-top-btn:hover {
-  transform: scale(1.1);
-}
-
-/* Enhanced mobile-first responsive adjustments with fluid sizing */
-@media (max-width: 768px) {
-  .status-bar { 
-    height: clamp(32px, 6vw, 40px);
-    padding: 0 var(--space-sm);
+  /* Status Bar Styles */
+  .status-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: var(--z-sticky);
+    backdrop-filter: blur(8px);
+    background: var(--background-digital);
+    border-top: 1px solid var(--border-digital);
+    box-shadow: var(--shadow-lg);
+    font-family: var(--font-body);
     font-size: var(--font-size-sm);
-    /* Enhanced touch targets */
-    min-height: var(--touch-target-min);
+    padding: 0 var(--space-md);
   }
-  
-  .status-left { gap: var(--space-sm); }
-  .status-mode { 
-    padding: var(--space-2xs) var(--space-xs); 
-    font-size: var(--font-size-xs); 
-    min-height: var(--touch-target-min);
-    /* Maintain fixed width on mobile */
-    min-width: 70px;
-  }
-  .status-center { gap: var(--space-xs); }
-  .status-item { 
-    font-size: var(--font-size-xs); 
-    padding: var(--space-2xs) var(--space-xs);
-    min-height: var(--touch-target-min);
-    min-width: var(--touch-target-min);
-  }
-  .status-right { gap: var(--space-sm); font-size: var(--font-size-xs); }
-  
-  .status-button { 
-    height: clamp(20px, 4vw, 24px); 
-    width: clamp(20px, 4vw, 24px); 
-    min-height: var(--touch-target-min);
-    min-width: var(--touch-target-min);
-  }
-  
-  .status-button svg {
-    width: clamp(12px, 3vw, 16px);
-    height: clamp(12px, 3vw, 16px);
-  }
-}
 
-@media (max-width: 414px) {
-  .status-bar {
-    height: clamp(28px, 5vw, 36px);
-    padding: 0 var(--space-xs);
-    font-size: var(--font-size-xs);
+  /* Print Mode Status Bar */
+  body.print-view .status-bar {
+    background: var(--background-print);
+    border-top: 1px solid var(--border-print);
+    color: var(--foreground-print);
+    box-shadow: var(--shadow-sm);
   }
-  
-  .status-left { gap: var(--space-xs); }
-  .status-mode { 
-    padding: var(--space-2xs) var(--space-2xs); 
-    font-size: var(--font-size-2xs); 
-    /* Maintain fixed width on smaller mobile */
-    min-width: 55px;
-  }
-  .status-center { gap: var(--space-2xs); }
-  .status-item { 
-    font-size: var(--font-size-2xs); 
-    padding: var(--space-2xs) var(--space-xs);
-  }
-  .status-right { gap: var(--space-xs); font-size: var(--font-size-2xs); }
-}
 
-@media (max-width: 375px) {
-  .status-file { display: none; }
-  .status-text { display: none; }
-  .status-help { display: none; } /* Hide help on very small screens */
-  
-  /* Print mode mobile adjustments */
-  body.print-view .status-text {
-    display: inline;
+  /* Hide digital-only elements in print mode */
+  body.print-view .status-mode,
+  body.print-view .status-help,
+  body.print-view .status-position,
+  body.print-view .status-progress-container {
+    display: none;
   }
-  
-  .status-button {
-    height: clamp(18px, 4vw, 22px);
-    width: clamp(18px, 4vw, 22px);
-  }
-  
-  .status-button svg {
-    width: clamp(10px, 2.5vw, 14px);
-    height: clamp(10px, 2.5vw, 14px);
-  }
-}
 
-@media (max-width: 320px) {
-  .status-bar {
-    height: clamp(24px, 4vw, 32px);
-    padding: 0 var(--space-2xs);
+  /* Show only navigation and mode switcher in print mode */
+  body.print-view .status-left {
+    display: none;
   }
-  
-  .status-left { 
-    gap: var(--space-2xs); 
-    flex: 0 1 auto;
-    overflow: hidden;
-  }
-  .status-center { 
-    gap: var(--space-2xs);
-    flex: 1 1 0;
+
+  body.print-view .status-center {
+    flex: 1;
     justify-content: center;
   }
-  .status-right { 
-    gap: var(--space-2xs);
-    flex: 0 1 auto;
+
+  body.print-view .status-right {
+    display: flex;
   }
-  
+
+  /* Print mode navigation styling */
+  body.print-view .status-item {
+    color: var(--muted-print);
+  }
+
+  body.print-view .status-item:hover {
+    color: var(--foreground-print);
+    background: var(--accent-print);
+  }
+
+  body.print-view .status-item.active {
+    color: var(--background-print);
+    background: var(--foreground-print);
+    box-shadow: var(--shadow-sm);
+  }
+
+  body.print-view .status-separator {
+    color: var(--muted-print);
+    opacity: 0.8;
+  }
+
+  .status-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--foreground-digital);
+  }
+
   .status-mode {
-    font-size: var(--font-size-2xs);
-    padding: 1px var(--space-2xs);
+    background: var(--foreground-digital);
+    color: var(--background-digital);
+    padding: var(--space-2xs) var(--space-sm);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    transition: all var(--transition-base) var(--ease-in-out);
+    /* Fixed width to prevent layout shift */
+    min-width: 85px;
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* Fixed width even on smallest screens */
-    min-width: 45px;
-    max-width: 45px;
-    width: 45px;
+    /* Use monospace for consistent character width */
+    font-family: 'Courier New', Consolas, 'Lucida Console', monospace;
   }
-}
+
+  .status-mode.insert {
+    background: var(--color-success);
+    color: var(--background-digital);
+  }
+
+  .status-mode.visual {
+    background: var(--color-info);
+    color: var(--background-digital);
+  }
+
+  .status-mode.command {
+    background: var(--color-error);
+    color: var(--background-print);
+  }
+
+  .status-file {
+    color: var(--muted-digital);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .status-center {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex: 1;
+    justify-content: center;
+  }
+
+  .status-item {
+    color: var(--muted-digital);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-base);
+    transition: all var(--transition-fast) var(--ease-in-out);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .status-text {
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  .status-separator {
+    color: var(--muted-digital);
+    font-weight: var(--font-weight-normal);
+    opacity: 0.6;
+  }
+
+  .status-item:hover {
+    color: var(--foreground-digital);
+    background: var(--accent-digital);
+  }
+
+  .status-item.active {
+    color: var(--background-digital);
+    background: var(--foreground-digital);
+    box-shadow: 0 2px 8px var(--color-focus-ring);
+  }
+
+  .status-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--muted-digital);
+    font-size: var(--font-size-sm);
+  }
+
+  .status-position {
+    color: var(--foreground-digital);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .status-progress-container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--muted-digital);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .status-progress-container svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .status-progress-container .progress-percentage {
+    font-size: var(--font-size-sm);
+    color: var(--muted-digital);
+  }
+
+  /* Progress Ring Animation */
+  .progress-ring {
+    stroke-dasharray: 157; /* 2 * π * 25 */
+    stroke-dashoffset: 157;
+    transition: stroke-dashoffset var(--transition-base) var(--ease-out);
+  }
+
+  /* Status Button (View Switcher) */
+  .status-button {
+    background: transparent;
+    border: none;
+    color: var(--muted-digital);
+    height: 24px;
+    width: 24px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast) var(--ease-in-out);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    padding: 0;
+  }
+
+  .status-button svg {
+    width: 16px;
+    height: 16px;
+    transition: all var(--transition-fast) var(--ease-in-out);
+  }
+
+  body.digital-view .icon-print {
+    display: none;
+  }
+  body.print-view .icon-digital {
+    display: none;
+  }
+
+  body.digital-view .icon-digital {
+    stroke: var(--muted-digital);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  body.digital-view .status-button:hover {
+    color: var(--foreground-digital);
+    background: var(--accent-digital);
+  }
+
+  body.digital-view .status-button:hover .icon-digital {
+    stroke: var(--foreground-digital);
+    stroke-width: 2;
+  }
+
+  body.digital-view .status-button:active {
+    color: var(--background-digital);
+    background: var(--foreground-digital);
+    box-shadow: 0 2px 8px var(--color-focus-ring);
+  }
+
+  body.print-view .status-button {
+    color: var(--muted-print);
+  }
+
+  body.print-view .icon-print {
+    stroke: var(--muted-print);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  body.print-view .status-button:hover {
+    color: var(--foreground-print);
+    background: var(--accent-print);
+  }
+
+  body.print-view .status-button:hover .icon-print {
+    stroke: var(--foreground-print);
+    stroke-width: 2;
+  }
+
+  /* Scroll to Top Button */
+  .scroll-to-top-btn {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    transition: all var(--transition-base) var(--ease-in-out);
+  }
+
+  .scroll-to-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
+
+  .scroll-to-top-btn:hover {
+    transform: scale(1.1);
+  }
+
+  /* Enhanced mobile-first responsive adjustments with fluid sizing */
+  @media (max-width: 768px) {
+    .status-bar {
+      height: clamp(32px, 6vw, 40px);
+      padding: 0 var(--space-sm);
+      font-size: var(--font-size-sm);
+      /* Enhanced touch targets */
+      min-height: var(--touch-target-min);
+    }
+
+    .status-left {
+      gap: var(--space-sm);
+    }
+    .status-mode {
+      padding: var(--space-2xs) var(--space-xs);
+      font-size: var(--font-size-xs);
+      min-height: var(--touch-target-min);
+      /* Maintain fixed width on mobile */
+      min-width: 70px;
+    }
+    .status-center {
+      gap: var(--space-xs);
+    }
+    .status-item {
+      font-size: var(--font-size-xs);
+      padding: var(--space-2xs) var(--space-xs);
+      min-height: var(--touch-target-min);
+      min-width: var(--touch-target-min);
+    }
+    .status-right {
+      gap: var(--space-sm);
+      font-size: var(--font-size-xs);
+    }
+
+    .status-button {
+      height: clamp(20px, 4vw, 24px);
+      width: clamp(20px, 4vw, 24px);
+      min-height: var(--touch-target-min);
+      min-width: var(--touch-target-min);
+    }
+
+    .status-button svg {
+      width: clamp(12px, 3vw, 16px);
+      height: clamp(12px, 3vw, 16px);
+    }
+  }
+
+  @media (max-width: 414px) {
+    .status-bar {
+      height: clamp(28px, 5vw, 36px);
+      padding: 0 var(--space-xs);
+      font-size: var(--font-size-xs);
+    }
+
+    .status-left {
+      gap: var(--space-xs);
+    }
+    .status-mode {
+      padding: var(--space-2xs) var(--space-2xs);
+      font-size: var(--font-size-2xs);
+      /* Maintain fixed width on smaller mobile */
+      min-width: 55px;
+    }
+    .status-center {
+      gap: var(--space-2xs);
+    }
+    .status-item {
+      font-size: var(--font-size-2xs);
+      padding: var(--space-2xs) var(--space-xs);
+    }
+    .status-right {
+      gap: var(--space-xs);
+      font-size: var(--font-size-2xs);
+    }
+  }
+
+  @media (max-width: 375px) {
+    .status-file {
+      display: none;
+    }
+    .status-text {
+      display: none;
+    }
+    .status-help {
+      display: none;
+    } /* Hide help on very small screens */
+
+    /* Print mode mobile adjustments */
+    body.print-view .status-text {
+      display: inline;
+    }
+
+    .status-button {
+      height: clamp(18px, 4vw, 22px);
+      width: clamp(18px, 4vw, 22px);
+    }
+
+    .status-button svg {
+      width: clamp(10px, 2.5vw, 14px);
+      height: clamp(10px, 2.5vw, 14px);
+    }
+  }
+
+  @media (max-width: 320px) {
+    .status-bar {
+      height: clamp(24px, 4vw, 32px);
+      padding: 0 var(--space-2xs);
+    }
+
+    .status-left {
+      gap: var(--space-2xs);
+      flex: 0 1 auto;
+      overflow: hidden;
+    }
+    .status-center {
+      gap: var(--space-2xs);
+      flex: 1 1 0;
+      justify-content: center;
+    }
+    .status-right {
+      gap: var(--space-2xs);
+      flex: 0 1 auto;
+    }
+
+    .status-mode {
+      font-size: var(--font-size-2xs);
+      padding: 1px var(--space-2xs);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      /* Fixed width even on smallest screens */
+      min-width: 45px;
+      max-width: 45px;
+      width: 45px;
+    }
+  }
 </style>
 
 <script>
-// Import the extracted status bar functionality
-import { initStatusBar } from '@/scripts/statusBar';
-
-// The statusBar script handles all initialization automatically
-// No need for additional code here - keeping for any future customizations
+  // The statusBar script handles all initialization automatically
+  // No need for additional code here - keeping for any future customizations
 </script>

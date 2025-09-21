@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ALI ALQATTAN :: NEURAL ARCHITECT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"></noscript>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
 
     :root {
       --primary: #00ff41;
@@ -43,10 +46,11 @@
       background: var(--primary);
       border-radius: 1px;
       pointer-events: none;
-      transform: translate(-50%, -50%);
+      transform: translate3d(-50%, -50%, 0);
       transition: all 0.1s ease;
       z-index: 9999;
       box-shadow: 0 0 10px var(--primary);
+      will-change: transform;
     }
 
     .cursor-follower {
@@ -58,13 +62,14 @@
       border: 1px solid var(--accent);
       border-radius: 1px;
       pointer-events: none;
-      transform: translate(-50%, -50%);
+      transform: translate3d(-50%, -50%, 0);
       transition: all 0.2s ease;
       z-index: 9998;
+      will-change: transform;
     }
 
     .cursor.hovered {
-      transform: translate(-50%, -50%) scale(3);
+      transform: translate3d(-50%, -50%, 0) scale(3);
       background-color: var(--led-on);
       box-shadow: 0 0 15px var(--led-on);
     }
@@ -83,6 +88,8 @@
           rgba(0, 0, 0, 0) 1px,
           rgba(0, 255, 65, 0.03) 2px);
       animation: flicker 0.15s infinite;
+      will-change: opacity;
+      transform: translateZ(0);
     }
 
     @keyframes flicker {
@@ -125,6 +132,7 @@
       border-radius: 1px;
       background: var(--led-off);
       transition: all 0.2s ease;
+      will-change: background, box-shadow;
     }
 
     .led-char.large .led-dot {
@@ -391,6 +399,8 @@
       display: flex;
       animation: scroll 25s linear infinite;
       white-space: nowrap;
+      will-change: transform;
+      transform: translateZ(0);
     }
 
     .status-content span {
@@ -1232,23 +1242,30 @@
         // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Get audio data
+        // Get audio data with throttling
         let audioLevel = 0;
         let frequencyData = [];
         if (this.isListening && this.analyser) {
-          this.analyser.getByteFrequencyData(this.dataArray);
-          audioLevel = this.dataArray.reduce((a, b) => a + b) / this.dataArray.length / 255;
-          
-          // Process frequency data for Nothing-style visualization
-          const bands = 8;
-          const bandSize = Math.floor(this.dataArray.length / bands);
-          for (let i = 0; i < bands; i++) {
-            let sum = 0;
-            for (let j = 0; j < bandSize; j++) {
-              sum += this.dataArray[i * bandSize + j];
+          // Throttle audio processing to 30fps instead of 60fps
+          if (!this.lastAudioUpdate || Date.now() - this.lastAudioUpdate > 33) {
+            this.analyser.getByteFrequencyData(this.dataArray);
+            this.cachedAudioLevel = this.dataArray.reduce((a, b) => a + b) / this.dataArray.length / 255;
+            
+            // Process frequency data for Nothing-style visualization
+            const bands = 8;
+            const bandSize = Math.floor(this.dataArray.length / bands);
+            this.cachedFrequencyData = [];
+            for (let i = 0; i < bands; i++) {
+              let sum = 0;
+              for (let j = 0; j < bandSize; j++) {
+                sum += this.dataArray[i * bandSize + j];
+              }
+              this.cachedFrequencyData.push(sum / bandSize / 255);
             }
-            frequencyData.push(sum / bandSize / 255);
+            this.lastAudioUpdate = Date.now();
           }
+          audioLevel = this.cachedAudioLevel || 0;
+          frequencyData = this.cachedFrequencyData || new Array(8).fill(0);
         } else {
           frequencyData = new Array(8).fill(0);
         }
@@ -1464,23 +1481,24 @@
       }
 
       drawLEDDot(ctx, x, y, size, intensity, isInverted) {
-        ctx.beginPath();
-        ctx.roundRect(x - size/2, y - size/2, size, size, 1);
+        // Use rect instead of roundRect for better performance
+        const halfSize = size / 2;
         
         if (isInverted) {
           ctx.fillStyle = '#0a0a0a';
-          ctx.fill();
+          ctx.fillRect(x - halfSize, y - halfSize, size, size);
         } else {
           const alpha = Math.max(0.3, intensity);
-          const brightness = Math.random() < 0.15 ? 0.3 + Math.random() * 0.4 : 0.9 + Math.random() * 0.1;
+          // Reduce random calculations for better performance
+          const brightness = this.brightnessCache || (this.brightnessCache = Math.random() < 0.15 ? 0.3 + Math.random() * 0.4 : 0.9 + Math.random() * 0.1);
           ctx.fillStyle = `rgba(0, 255, 65, ${alpha * brightness})`;
-          ctx.fill();
+          ctx.fillRect(x - halfSize, y - halfSize, size, size);
           
-          // Add glow effect
-          if (intensity > 0.5) {
-            ctx.shadowColor = `rgba(0, 255, 65, ${intensity})`;
-            ctx.shadowBlur = size * 2;
-            ctx.fill();
+          // Only add glow for high intensity dots to reduce overdraw
+          if (intensity > 0.7) {
+            ctx.shadowColor = `rgba(0, 255, 65, ${intensity * 0.5})`;
+            ctx.shadowBlur = size;
+            ctx.fillRect(x - halfSize, y - halfSize, size, size);
             ctx.shadowBlur = 0;
           }
         }
@@ -1563,11 +1581,14 @@
         const cursor = document.querySelector('.cursor');
         const cursorFollower = document.querySelector('.cursor-follower');
 
+        let cursorAnimationId;
         document.addEventListener('mousemove', (e) => {
-          cursor.style.left = e.clientX + 'px';
-          cursor.style.top = e.clientY + 'px';
-          cursorFollower.style.left = e.clientX + 'px';
-          cursorFollower.style.top = e.clientY + 'px';
+          if (cursorAnimationId) return;
+          cursorAnimationId = requestAnimationFrame(() => {
+            cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+            cursorFollower.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+            cursorAnimationId = null;
+          });
         });
 
         // Hover effects

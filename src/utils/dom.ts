@@ -19,28 +19,40 @@ export const select = {
   /**
    * Safe query selector with optional type checking
    */
-  one<T extends HTMLElement = HTMLElement>(selector: string, parent: ParentNode = document): T | null {
+  one<T extends HTMLElement = HTMLElement>(
+    selector: string,
+    parent: ParentNode = document
+  ): T | null {
     return parent.querySelector(selector) as T | null;
   },
 
   /**
    * Safe query selector all with type checking
    */
-  all<T extends HTMLElement = HTMLElement>(selector: string, parent: ParentNode = document): T[] {
+  all<T extends HTMLElement = HTMLElement>(
+    selector: string,
+    parent: ParentNode = document
+  ): T[] {
     return Array.from(parent.querySelectorAll(selector)) as T[];
   },
 
   /**
    * Find closest parent matching selector
    */
-  closest<T extends HTMLElement = HTMLElement>(element: Element, selector: string): T | null {
+  closest<T extends HTMLElement = HTMLElement>(
+    element: Element,
+    selector: string
+  ): T | null {
     return element.closest(selector) as T | null;
   },
 
   /**
    * Find next sibling matching selector
    */
-  nextSibling<T extends HTMLElement = HTMLElement>(element: Element, selector: string): T | null {
+  nextSibling<T extends HTMLElement = HTMLElement>(
+    element: Element,
+    selector: string
+  ): T | null {
     let sibling = element.nextElementSibling;
     while (sibling) {
       if (sibling.matches(selector)) {
@@ -54,7 +66,10 @@ export const select = {
   /**
    * Find previous sibling matching selector
    */
-  prevSibling<T extends HTMLElement = HTMLElement>(element: Element, selector: string): T | null {
+  prevSibling<T extends HTMLElement = HTMLElement>(
+    element: Element,
+    selector: string
+  ): T | null {
     let sibling = element.previousElementSibling;
     while (sibling) {
       if (sibling.matches(selector)) {
@@ -63,7 +78,7 @@ export const select = {
       sibling = sibling.previousElementSibling;
     }
     return null;
-  }
+  },
 };
 
 /**
@@ -75,30 +90,31 @@ export const create = {
    */
   element<T extends keyof HTMLElementTagNameMap>(
     tag: T,
-    attributes: Partial<HTMLElementTagNameMap[T]> & Record<string, any> = {},
+    attributes: Partial<HTMLElementTagNameMap[T]> &
+      Record<string, unknown> = {},
     children: (Node | string)[] = []
   ): HTMLElementTagNameMap[T] {
     const element = document.createElement(tag);
-    
+
     // Set attributes
     Object.entries(attributes).forEach(([key, value]) => {
       if (key === 'className') {
         element.className = value as string;
       } else if (key === 'textContent' || key === 'innerHTML') {
-        element[key] = value;
+        (element as Record<string, unknown>)[key] = value;
       } else if (key.startsWith('data-')) {
         element.setAttribute(key, String(value));
       } else if (key.startsWith('aria-')) {
         element.setAttribute(key, String(value));
       } else if (key in element) {
-        (element as any)[key] = value;
+        (element as Record<string, unknown>)[key] = value;
       } else {
         element.setAttribute(key, String(value));
       }
     });
 
     // Append children
-    children.forEach(child => {
+    children.forEach((child) => {
       if (typeof child === 'string') {
         element.appendChild(document.createTextNode(child));
       } else {
@@ -130,7 +146,7 @@ export const create = {
     const template = document.createElement('template');
     template.innerHTML = html.trim();
     return template.content.firstElementChild as HTMLElement;
-  }
+  },
 };
 
 /**
@@ -140,9 +156,12 @@ export const css = {
   /**
    * Add classes with conditional logic
    */
-  add(element: Element, ...classes: (string | undefined | null | false)[]): void {
-    const validClasses = classes.filter((cls): cls is string => 
-      typeof cls === 'string' && cls.length > 0
+  add(
+    element: Element,
+    ...classes: (string | undefined | null | false)[]
+  ): void {
+    const validClasses = classes.filter(
+      (cls): cls is string => typeof cls === 'string' && cls.length > 0
     );
     if (validClasses.length > 0) {
       element.classList.add(...validClasses);
@@ -186,7 +205,7 @@ export const css = {
    */
   list(element: Element): string[] {
     return Array.from(element.classList);
-  }
+  },
 };
 
 /**
@@ -210,7 +229,10 @@ export const style = {
   /**
    * Set multiple styles at once
    */
-  set(element: HTMLElement, styles: Record<string, string | number | null>): void {
+  set(
+    element: HTMLElement,
+    styles: Record<string, string | number | null>
+  ): void {
     Object.entries(styles).forEach(([prop, value]) => {
       if (value === null) {
         element.style.removeProperty(prop);
@@ -233,7 +255,7 @@ export const style = {
   forceReflow(element: HTMLElement): void {
     // Reading offsetHeight forces a reflow
     void element.offsetHeight;
-  }
+  },
 };
 
 /**
@@ -250,7 +272,8 @@ export const events = {
     options?: AddEventListenerOptions
   ): () => void {
     element.addEventListener(type, listener as EventListener, options);
-    return () => element.removeEventListener(type, listener as EventListener, options);
+    return () =>
+      element.removeEventListener(type, listener as EventListener, options);
   },
 
   /**
@@ -262,10 +285,10 @@ export const events = {
     listener: (this: T, event: HTMLElementEventMap[K]) => void,
     options?: AddEventListenerOptions
   ): () => void {
-    const cleanupFunctions = elements.map(element => 
+    const cleanupFunctions = elements.map((element) =>
       this.on(element, type, listener, options)
     );
-    return () => cleanupFunctions.forEach(cleanup => cleanup());
+    return () => cleanupFunctions.forEach((cleanup) => cleanup());
   },
 
   /**
@@ -285,8 +308,17 @@ export const events = {
       }
     };
 
-    container.addEventListener(type, delegatedListener as EventListener, options);
-    return () => container.removeEventListener(type, delegatedListener as EventListener, options);
+    container.addEventListener(
+      type,
+      delegatedListener as EventListener,
+      options
+    );
+    return () =>
+      container.removeEventListener(
+        type,
+        delegatedListener as EventListener,
+        options
+      );
   },
 
   /**
@@ -320,14 +352,14 @@ export const events = {
   /**
    * Trigger custom event
    */
-  trigger(element: Element, eventName: string, detail?: any): boolean {
+  trigger(element: Element, eventName: string, detail?: unknown): boolean {
     const event = new CustomEvent(eventName, {
       detail,
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
     return element.dispatchEvent(event);
-  }
+  },
 };
 
 /**
@@ -341,9 +373,9 @@ export const animate = {
     return new Promise((resolve) => {
       element.style.opacity = '0';
       element.style.transition = `opacity ${duration}ms ease-in-out`;
-      
+
       style.forceReflow(element);
-      
+
       element.style.opacity = '1';
       setTimeout(resolve, duration);
     });
@@ -369,9 +401,9 @@ export const animate = {
       element.style.height = '0px';
       element.style.overflow = 'hidden';
       element.style.transition = `height ${duration}ms ease-in-out`;
-      
+
       style.forceReflow(element);
-      
+
       element.style.height = startHeight + 'px';
       setTimeout(() => {
         element.style.height = 'auto';
@@ -390,13 +422,13 @@ export const animate = {
       element.style.height = startHeight + 'px';
       element.style.overflow = 'hidden';
       element.style.transition = `height ${duration}ms ease-in-out`;
-      
+
       style.forceReflow(element);
-      
+
       element.style.height = '0px';
       setTimeout(resolve, duration);
     });
-  }
+  },
 };
 
 /**
@@ -410,7 +442,7 @@ export const scroll = {
     element.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
-      ...options
+      ...options,
     });
   },
 
@@ -441,7 +473,7 @@ export const scroll = {
   getPosition(): { x: number; y: number } {
     return {
       x: window.scrollX || window.pageXOffset,
-      y: window.scrollY || window.pageYOffset
+      y: window.scrollY || window.pageYOffset,
     };
   },
 
@@ -450,8 +482,10 @@ export const scroll = {
    */
   isInViewport(element: Element, threshold: number = 0): boolean {
     const rect = element.getBoundingClientRect();
-    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-    const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+    const windowHeight =
+      window.innerHeight || document.documentElement.clientHeight;
+    const windowWidth =
+      window.innerWidth || document.documentElement.clientWidth;
 
     return (
       rect.top >= -threshold &&
@@ -459,7 +493,7 @@ export const scroll = {
       rect.bottom <= windowHeight + threshold &&
       rect.right <= windowWidth + threshold
     );
-  }
+  },
 };
 
 /**
@@ -472,11 +506,11 @@ export const form = {
   getData(form: HTMLFormElement): Record<string, string> {
     const formData = new FormData(form);
     const data: Record<string, string> = {};
-    
+
     for (const [key, value] of formData.entries()) {
       data[key] = value as string;
     }
-    
+
     return data;
   },
 
@@ -485,9 +519,9 @@ export const form = {
    */
   setData(form: HTMLFormElement, data: Record<string, string>): void {
     Object.entries(data).forEach(([name, value]) => {
-      const field = form.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
-        `[name="${name}"]`
-      );
+      const field = form.querySelector<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >(`[name="${name}"]`);
       if (field) {
         field.value = value;
       }
@@ -514,7 +548,7 @@ export const form = {
       form.reset();
       return Promise.resolve();
     }
-  }
+  },
 };
 
 // Export all utilities as a single object for convenience
@@ -526,5 +560,5 @@ export const dom = {
   events,
   animate,
   scroll,
-  form
+  form,
 };

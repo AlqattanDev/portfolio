@@ -13,7 +13,7 @@ import { throttle } from '@/utils/performance';
 export function initStatusBarNavigation(): void {
   const statusBar = dom.select.one('.status-bar');
   if (!statusBar) return;
-  
+
   // Use event delegation for better performance
   const navigationCleanup = dom.events.delegate(
     statusBar,
@@ -21,11 +21,11 @@ export function initStatusBarNavigation(): void {
     '.status-item',
     (event, target) => {
       event.preventDefault();
-      
+
       const statusItem = target as HTMLAnchorElement;
       const targetId = statusItem.getAttribute('href')?.substring(1);
       const targetElement = targetId ? dom.select.byId(targetId) : null;
-      
+
       if (targetElement) {
         // Use requestAnimationFrame for smoother scrolling
         requestAnimationFrame(() => {
@@ -34,9 +34,9 @@ export function initStatusBarNavigation(): void {
       }
     }
   );
-  
+
   // Store cleanup function for potential future use
-  (window as any).__statusBarNavCleanup = navigationCleanup;
+  window.__statusBarNavCleanup = navigationCleanup;
 }
 
 /**
@@ -46,9 +46,9 @@ export function initStatusBarNavigation(): void {
 export function initViewSwitcher(): void {
   const switcher = dom.select.one('.view-switcher');
   const body = document.body;
-  
+
   if (!switcher) return;
-  
+
   const switcherCleanup = dom.events.on(switcher, 'click', () => {
     if (body.classList.contains('digital-view')) {
       body.classList.remove('digital-view');
@@ -58,9 +58,9 @@ export function initViewSwitcher(): void {
       body.classList.add('digital-view');
     }
   });
-  
+
   // Store cleanup function for potential future use
-  (window as any).__viewSwitcherCleanup = switcherCleanup;
+  window.__viewSwitcherCleanup = switcherCleanup;
 }
 
 /**
@@ -69,50 +69,60 @@ export function initViewSwitcher(): void {
  */
 export function initScrollToTop(): void {
   const scrollToTopBtn = dom.select.byId<HTMLButtonElement>('scrollToTopBtn');
-  
+
   if (!scrollToTopBtn) return;
-  
+
   const showAfter = parseInt(scrollToTopBtn.dataset['showAfter'] || '300', 10);
-  
+
   function toggleScrollToTop(): void {
     try {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       dom.css.toggle(scrollToTopBtn, 'visible', scrollTop > showAfter);
     } catch (error) {
-      console.error('Failed to toggle scroll to top button:', error);
+      // Fail silently
     }
   }
-  
+
   const scrollToTop = (): void => {
     try {
       dom.scroll.toTop();
     } catch (error) {
       // Fallback for browsers that don't support smooth scrolling
-      console.warn('Smooth scrolling not supported, using fallback:', error);
       window.scrollTo(0, 0);
     }
   };
-  
+
   // Event listeners
   const clickCleanup = dom.events.on(scrollToTopBtn, 'click', scrollToTop);
-  
+
   // Add keyboard support
-  const keydownCleanup = dom.events.on(scrollToTopBtn, 'keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      scrollToTop();
+  const keydownCleanup = dom.events.on(
+    scrollToTopBtn,
+    'keydown',
+    (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        scrollToTop();
+      }
     }
-  });
-  
+  );
+
   // Use throttled scroll listener for better performance
   const throttledToggleScrollToTop = throttle(toggleScrollToTop, 100);
-  const scrollCleanup = dom.events.on(window as any, 'scroll', throttledToggleScrollToTop, { passive: true });
-  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const scrollCleanup = dom.events.on(
+    window as any,
+    'scroll',
+    throttledToggleScrollToTop,
+    { passive: true }
+  );
+
   // Initial check
   toggleScrollToTop();
-  
+
   // Store cleanup functions for potential future use
-  (window as any).__scrollToTopCleanup = () => {
+  window.__scrollToTopCleanup = () => {
     clickCleanup();
     keydownCleanup();
     scrollCleanup();
@@ -124,55 +134,74 @@ export function initScrollToTop(): void {
  * Updates the progress ring based on scroll position
  */
 export function initProgressRing(): void {
-  const progressRing = dom.select.one('.progress-ring');
+  const progressRing = dom.select.one<SVGCircleElement>('.progress-ring');
   const progressPercentage = dom.select.one('.progress-percentage');
-  
+
   if (!progressRing || !progressPercentage) return;
-  
+
   // Calculate the circumference of the progress ring
   const radius = 25; // Based on the SVG circle radius
   const circumference = 2 * Math.PI * radius;
-  
+
   // Set initial dash array
-  dom.style.set(progressRing as HTMLElement, {
+  dom.style.set(progressRing, {
     'stroke-dasharray': circumference.toString(),
-    'stroke-dashoffset': circumference.toString()
+    'stroke-dashoffset': circumference.toString(),
   });
-  
+
   function updateProgress(): void {
     try {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const documentHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrollPercent = Math.min(100, Math.max(0, (scrollTop / documentHeight) * 100));
-      
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const documentHeight =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+      const scrollPercent = Math.min(
+        100,
+        Math.max(0, (scrollTop / documentHeight) * 100)
+      );
+
       // Update the ring
       const offset = circumference - (scrollPercent / 100) * circumference;
-      dom.style.setProperty(progressRing as HTMLElement, 'stroke-dashoffset', offset.toString());
-      
+      dom.style.setProperty(
+        progressRing,
+        'stroke-dashoffset',
+        offset.toString()
+      );
+
       // Update the percentage text
       if (progressPercentage) {
         progressPercentage.textContent = `${Math.round(scrollPercent)}%`;
       }
-      
+
       // Update the aria-valuenow for accessibility
       const container = dom.select.one('.status-progress-container');
       if (container) {
-        container.setAttribute('aria-valuenow', Math.round(scrollPercent).toString());
+        container.setAttribute(
+          'aria-valuenow',
+          Math.round(scrollPercent).toString()
+        );
       }
     } catch (error) {
-      console.error('Failed to update progress ring:', error);
+      // Fail silently
     }
   }
-  
+
   // Use throttled scroll listener for better performance
   const throttledUpdateProgress = throttle(updateProgress, 16); // ~60fps
-  const scrollCleanup = dom.events.on(window as any, 'scroll', throttledUpdateProgress, { passive: true });
-  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const scrollCleanup = dom.events.on(
+    window as any,
+    'scroll',
+    throttledUpdateProgress,
+    { passive: true }
+  );
+
   // Initial update
   updateProgress();
-  
+
   // Store cleanup function for potential future use
-  (window as any).__progressRingCleanup = scrollCleanup;
+  window.__progressRingCleanup = scrollCleanup;
 }
 
 /**
@@ -191,18 +220,18 @@ export function initStatusBar(): void {
  * Useful for hot reloading and component unmounting
  */
 export function cleanupStatusBar(): void {
-  const cleanupFunctions = [
+  const cleanupFunctions: (keyof Window)[] = [
     '__statusBarNavCleanup',
     '__viewSwitcherCleanup',
     '__scrollToTopCleanup',
-    '__progressRingCleanup'
+    '__progressRingCleanup',
   ];
-  
-  cleanupFunctions.forEach(funcName => {
-    const cleanup = (window as any)[funcName];
+
+  cleanupFunctions.forEach((funcName) => {
+    const cleanup = window[funcName] as (() => void) | undefined;
     if (typeof cleanup === 'function') {
       cleanup();
-      delete (window as any)[funcName];
+      delete window[funcName];
     }
   });
 }

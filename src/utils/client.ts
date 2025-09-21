@@ -42,7 +42,6 @@ const ActionButtonManager: ActionButtonManager = {
 
         case 'case-study':
           // TODO: Implement case study modal or navigation
-          console.log('Case study functionality not yet implemented');
           ActionButtonManager.setError(button);
           break;
 
@@ -58,11 +57,9 @@ const ActionButtonManager: ActionButtonManager = {
           break;
 
         default:
-          console.warn(`Unknown action type: ${type}`);
           ActionButtonManager.setError(button);
       }
     } catch (error) {
-      console.error('Action button error:', error);
       ActionButtonManager.setError(button);
     } finally {
       ActionButtonManager.setLoading(button, false);

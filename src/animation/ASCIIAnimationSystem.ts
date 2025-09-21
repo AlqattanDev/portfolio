@@ -10,7 +10,7 @@ import { VimSystem, type VimSystemCallbacks } from '@/systems/VimSystem';
 import { ParticleSystem } from '@/animation/ParticleSystem';
 import { EffectSystem } from '@/animation/EffectSystem';
 import { AnimationScheduler } from '@/animation/AnimationScheduler';
-import { performance as perfUtils, globalCleanupManager } from '@/utils/performance';
+import { globalCleanupManager } from '@/utils/performance';
 import { device, mobileOptimizations } from '@/utils/device';
 import { dom } from '@/utils/dom';
 import { COLOR_SCHEMES, EFFECT_NAMES } from '@/utils/constants';
@@ -20,17 +20,17 @@ export class ASCIIAnimationSystem {
   private ctx: CanvasRenderingContext2D;
   private time: number = 0;
   private mousePos: { x: number; y: number } = { x: 0, y: 0 };
-  
+
   // System components
   private particleSystem: ParticleSystem;
   private effectSystem: EffectSystem;
   private vimSystem: VimSystem;
   private animationScheduler: AnimationScheduler;
-  
+
   // State
   private isRunning: boolean = false;
   private isPaused: boolean = false;
-  
+
   // Cleanup functions
   private cleanupFunctions: (() => void)[] = [];
 
@@ -52,7 +52,7 @@ export class ASCIIAnimationSystem {
     this.animationScheduler = new AnimationScheduler();
     this.particleSystem = new ParticleSystem(canvas, ctx);
     this.effectSystem = new EffectSystem();
-    
+
     // Setup vim system with callbacks
     const vimCallbacks: VimSystemCallbacks = {
       onModeChange: (mode) => this.handleModeChange(mode),
@@ -69,20 +69,20 @@ export class ASCIIAnimationSystem {
   private init(): void {
     // Restore previously selected color scheme if available
     this.restoreColorScheme();
-    
+
     // Setup canvas and particles
     this.resize();
     this.createParticles();
-    
+
     // Setup event listeners
     this.setupEventListeners();
-    
+
     // Apply mobile optimizations if needed
     this.applyMobileOptimizations();
-    
+
     // Update initial state
     this.updateColorScheme();
-    
+
     // Start animation
     this.start();
   }
@@ -90,8 +90,13 @@ export class ASCIIAnimationSystem {
   private restoreColorScheme(): void {
     try {
       const savedIndexRaw = localStorage.getItem('schemeIndex');
-      const savedIndex = savedIndexRaw != null ? parseInt(savedIndexRaw, 10) : NaN;
-      if (!Number.isNaN(savedIndex) && savedIndex >= 0 && savedIndex < Object.values(COLOR_SCHEMES).length) {
+      const savedIndex =
+        savedIndexRaw != null ? parseInt(savedIndexRaw, 10) : NaN;
+      if (
+        !Number.isNaN(savedIndex) &&
+        savedIndex >= 0 &&
+        savedIndex < Object.values(COLOR_SCHEMES).length
+      ) {
         this.effectSystem.setCurrentEffect(savedIndex);
       }
     } catch {
@@ -102,7 +107,7 @@ export class ASCIIAnimationSystem {
   private setupEventListeners(): void {
     // Window resize with debouncing
     const resizeCleanup = dom.events.onDebounced(
-      window as any,
+      window,
       'resize',
       () => this.resize(),
       250
@@ -113,16 +118,14 @@ export class ASCIIAnimationSystem {
     const mouseMoveCleanup = dom.events.onThrottled(
       this.canvas,
       'mousemove',
-      (e) => this.updateMouse(e),
+      (e) => this.updateMouse(e as MouseEvent),
       16 // 60fps
     );
     this.cleanupFunctions.push(mouseMoveCleanup);
 
     // Visibility change handling
-    const visibilityCleanup = dom.events.on(
-      document as any,
-      'visibilitychange',
-      () => this.handleVisibilityChange()
+    const visibilityCleanup = dom.events.on(document, 'visibilitychange', () =>
+      this.handleVisibilityChange()
     );
     this.cleanupFunctions.push(visibilityCleanup);
 
@@ -137,18 +140,16 @@ export class ASCIIAnimationSystem {
 
   private applyMobileOptimizations(): void {
     // Always run at highest quality regardless of device
-    const config = mobileOptimizations.getMobileAnimationConfig();
-    
+    mobileOptimizations.getMobileAnimationConfig();
+
     // Always enable animations with best quality settings
-    console.log(`Animation config: complexity=${config.complexity}, frameRate=${config.frameRate}, forceEnabled=true, quality=maximum`);
-    
+
     // No quality adjustments - always run at full quality
   }
 
   private setupMobileOptimizations(): void {
     // Memory monitoring
     const memoryCleanup = mobileOptimizations.setupMemoryMonitoring(() => {
-      console.warn('High memory usage detected, pausing animations');
       this.pause();
     });
     this.cleanupFunctions.push(memoryCleanup);
@@ -158,21 +159,19 @@ export class ASCIIAnimationSystem {
       try {
         const batteryCleanup = await device.battery.setupBatteryMonitoring({
           onLowBattery: () => {
-            console.warn('Low battery detected, pausing animations');
             this.pause();
           },
           onChargingChange: (charging) => {
             if (charging && this.isPaused) {
-              console.log('Device charging, resuming animations');
               this.resume();
             }
-          }
+          },
         });
         if (batteryCleanup) {
           this.cleanupFunctions.push(batteryCleanup);
         }
       } catch (error) {
-        console.warn('Battery monitoring not available:', error);
+        // Battery monitoring not available
       }
     })();
   }
@@ -223,14 +222,14 @@ export class ASCIIAnimationSystem {
 
     const currentEffect = this.effectSystem.getCurrentEffect();
     const maxEffects = EFFECT_NAMES.length;
-    
+
     let newEffect: number;
     if (direction === 'next') {
       newEffect = (currentEffect + 1) % maxEffects;
     } else {
       newEffect = (currentEffect - 1 + maxEffects) % maxEffects;
     }
-    
+
     this.effectSystem.setCurrentEffect(newEffect);
     this.particleSystem.resetParticles();
     this.updateColorScheme();
@@ -257,7 +256,7 @@ export class ASCIIAnimationSystem {
 
     // Update and render particles with effects
     const particles = this.particleSystem.getParticles();
-    particles.forEach(particle => {
+    particles.forEach((particle) => {
       this.effectSystem.applyEffectToParticle(particle, this.time);
     });
 
@@ -268,23 +267,23 @@ export class ASCIIAnimationSystem {
     // Handle theme synchronization
     const currentEffect = this.effectSystem.getCurrentEffect();
     const currentScheme = Object.values(COLOR_SCHEMES)[currentEffect];
-    
+
     if (currentScheme) {
       // Persist scheme selection
       try {
         localStorage.setItem('schemeIndex', String(currentEffect));
-        
+
         // Update theme attribute
         const html = document.documentElement;
         const theme = this.getThemeForScheme(currentScheme);
         html.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
-        
+
         // Broadcast theme change event
         dom.events.trigger(document, 'theme:changed', {
           theme,
           scheme: currentScheme,
-          index: currentEffect
+          index: currentEffect,
         });
       } catch {
         // localStorage not available
@@ -336,11 +335,11 @@ export class ASCIIAnimationSystem {
   public destroy(): void {
     this.isRunning = false;
     this.isPaused = true;
-    
+
     // Cleanup all event listeners
-    this.cleanupFunctions.forEach(cleanup => cleanup());
+    this.cleanupFunctions.forEach((cleanup) => cleanup());
     this.cleanupFunctions = [];
-    
+
     // Destroy systems
     this.animationScheduler.destroy();
     this.particleSystem.destroy();
@@ -356,14 +355,14 @@ export class ASCIIAnimationSystem {
       currentMode: this.getCurrentMode(),
       currentEffect: this.getCurrentEffectName(),
       ...this.particleSystem.getStats(),
-      activeAnimationTasks: this.animationScheduler.getActiveTaskCount()
+      activeAnimationTasks: this.animationScheduler.getActiveTaskCount(),
     };
   }
 
   // Start the animation system
   public start(): void {
     if (this.isRunning) return;
-    
+
     this.isRunning = true;
     this.isPaused = false;
     this.animationScheduler.add(this.animate);

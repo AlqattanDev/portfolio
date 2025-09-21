@@ -2,8 +2,6 @@
 import type { Project } from '@/types';
 import ActionButtons from './ActionButtons.astro';
 
-import MediaPreview from './MediaPreview.astro';
-
 interface Props {
   project: Project;
 }
@@ -14,13 +12,6 @@ const metric =
   project.metrics?.security ||
   project.metrics?.performance ||
   project.metrics?.innovation;
-const metricLabel = project.metrics?.scale
-  ? 'Users'
-  : project.metrics?.security
-    ? 'Security'
-    : project.metrics?.performance
-      ? 'Performance'
-      : 'Innovation';
 const meta = `${project.status} | ${metric}`;
 ---
 
@@ -34,15 +25,17 @@ const meta = `${project.status} | ${metric}`;
     // Features: {project.features.join(', ')}
   </div>
   <div class="tech-stack">
-    {project.stack.map((tech: string, index: number) => 
-      <span 
-        class="tech-tag" 
-        data-tech={tech.toLowerCase().replace(/\s+/g, '-')}
-        style={`animation-delay: ${index * 0.05}s`}
-      >
-        {tech}
-      </span>
-    )}
+    {
+      project.stack.map((tech: string, index: number) => (
+        <span
+          class="tech-tag"
+          data-tech={tech.toLowerCase().replace(/\s+/g, '-')}
+          style={`animation-delay: ${index * 0.05}s`}
+        >
+          {tech}
+        </span>
+      ))
+    }
   </div>
 
   <!-- Action Buttons -->
@@ -51,8 +44,6 @@ const meta = `${project.status} | ${metric}`;
     githubUrl={project.githubUrl}
     variant="default"
   />
-
-
 </div>
 
 <style>
@@ -75,7 +66,12 @@ const meta = `${project.status} | ${metric}`;
     left: -100%;
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.3), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 255, 65, 0.3),
+      transparent
+    );
     transition: left 0.6s ease;
   }
 
@@ -127,14 +123,14 @@ const meta = `${project.status} | ${metric}`;
   }
 
   /* Tech stack connection indicators */
-  .tech-tag[data-tech="flutter"] ~ .tech-tag[data-tech="dart"],
-  .tech-tag[data-tech="flutter"] ~ .tech-tag[data-tech="firebase"],
-  .tech-tag[data-tech="firebase"] ~ .tech-tag[data-tech="real-time-analytics"] {
+  .tech-tag[data-tech='flutter'] ~ .tech-tag[data-tech='dart'],
+  .tech-tag[data-tech='flutter'] ~ .tech-tag[data-tech='firebase'],
+  .tech-tag[data-tech='firebase'] ~ .tech-tag[data-tech='real-time-analytics'] {
     position: relative;
   }
 
-  .tech-tag[data-tech="flutter"]:hover ~ .tech-tag[data-tech="dart"],
-  .tech-tag[data-tech="flutter"]:hover ~ .tech-tag[data-tech="firebase"] {
+  .tech-tag[data-tech='flutter']:hover ~ .tech-tag[data-tech='dart'],
+  .tech-tag[data-tech='flutter']:hover ~ .tech-tag[data-tech='firebase'] {
     opacity: 0.7;
     transform: translateX(2px);
   }
@@ -165,8 +161,15 @@ const meta = `${project.status} | ${metric}`;
   }
 
   @keyframes pulse {
-    0%, 100% { transform: translateY(-50%) scale(1); opacity: 1; }
-    50% { transform: translateY(-50%) scale(1.2); opacity: 0.7; }
+    0%,
+    100% {
+      transform: translateY(-50%) scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(-50%) scale(1.2);
+      opacity: 0.7;
+    }
   }
 
   /* Entry description smooth reveal */
@@ -192,17 +195,17 @@ const meta = `${project.status} | ${metric}`;
   }
 
   /* Theme-reactive project highlighting */
-  .project-card[data-theme="MATRIX"]:hover .entry-title {
+  .project-card[data-theme='MATRIX']:hover .entry-title {
     color: #00ff41;
     text-shadow: 0 0 2px #00ff41;
   }
 
-  .project-card[data-theme="TRADING"]:hover .entry-title {
+  .project-card[data-theme='TRADING']:hover .entry-title {
     color: #ffff00;
     text-shadow: 0 0 2px #ffff00;
   }
 
-  .project-card[data-theme="BLOCKCHAIN"]:hover .entry-title {
+  .project-card[data-theme='BLOCKCHAIN']:hover .entry-title {
     color: #64ffda;
     text-shadow: 0 0 2px #64ffda;
   }
@@ -215,17 +218,17 @@ const meta = `${project.status} | ${metric}`;
       transition: none;
       animation: none;
     }
-    
+
     .project-card:hover {
       transform: none;
     }
-    
+
     .tech-stack {
       opacity: 1;
       transform: none;
       animation: none;
     }
-    
+
     .project-card::before,
     .tech-tag::before {
       display: none;
@@ -234,120 +237,121 @@ const meta = `${project.status} | ${metric}`;
 </style>
 
 <script>
-// Enhanced Project Entry Interactions
-document.addEventListener('DOMContentLoaded', () => {
-  const projectCards = document.querySelectorAll('.project-card');
-  
-  if (!projectCards.length) return;
+  // Enhanced Project Entry Interactions
+  document.addEventListener('DOMContentLoaded', () => {
+    const projectCards = document.querySelectorAll('.project-card');
 
-  // Theme-reactive project highlighting
-  function updateProjectTheme() {
-    const animationSystem = (window as any).asciiAnimationSystem;
-    
-    if (animationSystem) {
-      const currentEffectName = animationSystem.getCurrentEffectName();
-      const theme = currentEffectName.toUpperCase().replace(/\s+/g, '_');
-      
-      projectCards.forEach(card => {
-        card.setAttribute('data-theme', theme);
-      });
-    }
-  }
+    if (!projectCards.length) return;
 
-  // Smooth tech stack connections
-  function setupTechConnections() {
-    projectCards.forEach(card => {
-      const techTags = card.querySelectorAll('.tech-tag');
-      
-      techTags.forEach(tag => {
-        tag.addEventListener('mouseenter', () => {
-          const techName = tag.getAttribute('data-tech');
-          const relatedTechs = {
-            'flutter': ['dart', 'firebase'],
-            'firebase': ['flutter', 'real-time-analytics'],
-            'dart': ['flutter'],
-            'rust': ['systems-programming'],
-          };
-          
-          const related = relatedTechs[techName] || [];
-          
-          // Subtle highlight of related technologies
-          techTags.forEach(otherTag => {
-            const otherTech = otherTag.getAttribute('data-tech');
-            if (related.includes(otherTech)) {
-              otherTag.style.opacity = '0.8';
-              otherTag.style.transform = 'translateY(-1px) scale(1.02)';
-              otherTag.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-            }
-          });
-        });
+    // Theme-reactive project highlighting
+    function updateProjectTheme() {
+      const animationSystem = window.asciiAnimationSystem;
 
-        tag.addEventListener('mouseleave', () => {
-          techTags.forEach(otherTag => {
-            otherTag.style.opacity = '';
-            otherTag.style.transform = '';
-          });
-        });
-      });
-    });
-  }
+      if (animationSystem) {
+        const currentEffectName = animationSystem.getCurrentEffectName();
+        const theme = currentEffectName.toUpperCase().replace(/\s+/g, '_');
 
-  // Intersection Observer for smooth scroll animations
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '-5% 0px -5% 0px'
-  };
-
-  const projectObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate-in');
-        
-        // Stagger tech tag animations
-        const techTags = entry.target.querySelectorAll('.tech-tag');
-        techTags.forEach((tag, index) => {
-          tag.style.transitionDelay = `${0.25 + index * 0.05}s`;
-          tag.style.transform = 'translateY(0)';
-          tag.style.opacity = '1';
+        projectCards.forEach((card) => {
+          card.setAttribute('data-theme', theme);
         });
       }
-    });
-  }, observerOptions);
+    }
 
-  // Initialize projects
-  projectCards.forEach((card, index) => {
-    // Set initial state for animation
-    card.style.transitionDelay = `${index * 0.1}s`;
-    
-    // Initialize tech tags
-    const techTags = card.querySelectorAll('.tech-tag');
-    techTags.forEach(tag => {
-      tag.style.opacity = '0';
-      tag.style.transform = 'translateY(10px)';
-      tag.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    // Smooth tech stack connections
+    function setupTechConnections() {
+      projectCards.forEach((card) => {
+        const techTags = card.querySelectorAll('.tech-tag');
+
+        techTags.forEach((tag) => {
+          tag.addEventListener('mouseenter', () => {
+            const techName = tag.getAttribute('data-tech');
+            const relatedTechs = {
+              flutter: ['dart', 'firebase'],
+              firebase: ['flutter', 'real-time-analytics'],
+              dart: ['flutter'],
+              rust: ['systems-programming'],
+            };
+
+            const related = relatedTechs[techName] || [];
+
+            // Subtle highlight of related technologies
+            techTags.forEach((otherTag) => {
+              const otherTech = otherTag.getAttribute('data-tech');
+              if (related.includes(otherTech)) {
+                otherTag.style.opacity = '0.8';
+                otherTag.style.transform = 'translateY(-1px) scale(1.02)';
+                otherTag.style.transition =
+                  'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+              }
+            });
+          });
+
+          tag.addEventListener('mouseleave', () => {
+            techTags.forEach((otherTag) => {
+              otherTag.style.opacity = '';
+              otherTag.style.transform = '';
+            });
+          });
+        });
+      });
+    }
+
+    // Intersection Observer for smooth scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '-5% 0px -5% 0px',
+    };
+
+    const projectObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+
+          // Stagger tech tag animations
+          const techTags = entry.target.querySelectorAll('.tech-tag');
+          techTags.forEach((tag, index) => {
+            tag.style.transitionDelay = `${0.25 + index * 0.05}s`;
+            tag.style.transform = 'translateY(0)';
+            tag.style.opacity = '1';
+          });
+        }
+      });
+    }, observerOptions);
+
+    // Initialize projects
+    projectCards.forEach((card, index) => {
+      // Set initial state for animation
+      card.style.transitionDelay = `${index * 0.1}s`;
+
+      // Initialize tech tags
+      const techTags = card.querySelectorAll('.tech-tag');
+      techTags.forEach((tag) => {
+        tag.style.opacity = '0';
+        tag.style.transform = 'translateY(10px)';
+        tag.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+      });
+
+      projectObserver.observe(card);
     });
-    
-    projectObserver.observe(card);
+
+    // Listen for theme changes
+    document.addEventListener('theme:changed', updateProjectTheme);
+
+    // Initialize
+    updateProjectTheme();
+    setupTechConnections();
+
+    // Subtle project card focus interactions
+    projectCards.forEach((card) => {
+      card.addEventListener('mouseenter', () => {
+        // Add subtle particle effect hint
+        card.style.position = 'relative';
+        card.style.zIndex = '2';
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.zIndex = '';
+      });
+    });
   });
-
-  // Listen for theme changes
-  document.addEventListener('theme:changed', updateProjectTheme);
-  
-  // Initialize
-  updateProjectTheme();
-  setupTechConnections();
-  
-  // Subtle project card focus interactions
-  projectCards.forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      // Add subtle particle effect hint
-      card.style.position = 'relative';
-      card.style.zIndex = '2';
-    });
-
-    card.addEventListener('mouseleave', () => {
-      card.style.zIndex = '';
-    });
-  });
-});
 </script>

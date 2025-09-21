@@ -12,27 +12,22 @@ export interface ASCIICanvasProps extends BaseComponentProps {
   enableAnimations?: boolean;
 }
 
-const { 
+const {
   canvasId = 'ascii-canvas',
   width,
   height,
-  enableAnimations = true,
   className = '',
-  ...props 
+  ...props
 } = Astro.props as ASCIICanvasProps;
 ---
 
 <div class={`ascii-canvas-container ${className}`} {...props}>
-    <canvas 
-        id={canvasId}
-        width={width}
-        height={height}
-    ></canvas>
+  <canvas id={canvasId} width={width} height={height}></canvas>
 </div>
 
 <style>
-/* ASCII Canvas Container - Enhanced Responsive Height with Container Queries */
-.ascii-canvas-container {
+  /* ASCII Canvas Container - Enhanced Responsive Height with Container Queries */
+  .ascii-canvas-container {
     position: relative;
     width: 100%;
     /* Enhanced fluid sizing with better scaling factors */
@@ -44,15 +39,15 @@ const {
     /* Better aspect ratio maintenance */
     aspect-ratio: 6 / 1;
     max-height: 25vh; /* Ensure it doesn't take too much vertical space */
-}
+  }
 
-body.print-view .ascii-canvas-container {
+  body.print-view .ascii-canvas-container {
     height: 180px;
     margin-bottom: 20px;
     display: block !important;
-}
+  }
 
-canvas {
+  canvas {
     width: 100%;
     height: 100%;
     display: block;
@@ -65,206 +60,209 @@ canvas {
     object-position: center;
     /* Improved font rendering for text */
     text-rendering: geometricPrecision;
-}
+  }
 
-/* Enhanced mobile-first responsive optimizations */
-@media (max-width: 768px) {
+  /* Enhanced mobile-first responsive optimizations */
+  @media (max-width: 768px) {
     .ascii-canvas-container {
-        /* Height is now handled by the main clamp() function */
-        aspect-ratio: 5 / 1; /* Slightly taller on tablets */
-        /* Reduce animation complexity on mobile */
-        opacity: 0.95;
+      /* Height is now handled by the main clamp() function */
+      aspect-ratio: 5 / 1; /* Slightly taller on tablets */
+      /* Reduce animation complexity on mobile */
+      opacity: 0.95;
     }
-}
+  }
 
-@media (max-width: 480px) {
+  @media (max-width: 480px) {
     .ascii-canvas-container {
-        aspect-ratio: 4 / 1; /* Even more compact on phones */
-        max-height: 20vh;
-        /* Further reduce complexity on small screens */
-        opacity: 0.9;
+      aspect-ratio: 4 / 1; /* Even more compact on phones */
+      max-height: 20vh;
+      /* Further reduce complexity on small screens */
+      opacity: 0.9;
     }
-}
+  }
 
-@media (max-width: 375px) {
+  @media (max-width: 375px) {
     .ascii-canvas-container {
-        aspect-ratio: 3.5 / 1; /* Most compact for small phones */
-        max-height: 18vh;
-        opacity: 0.85;
+      aspect-ratio: 3.5 / 1; /* Most compact for small phones */
+      max-height: 18vh;
+      opacity: 0.85;
     }
-}
+  }
 
-/* Ultra-wide screen optimizations */
-@media (min-width: 1440px) {
+  /* Ultra-wide screen optimizations */
+  @media (min-width: 1440px) {
     .ascii-canvas-container {
-        aspect-ratio: 8 / 1; /* Wider ratio for large screens */
-        max-height: 220px;
+      aspect-ratio: 8 / 1; /* Wider ratio for large screens */
+      max-height: 220px;
     }
-}
+  }
 
-/* Performance optimizations for touch devices */
-@media (hover: none) {
+  /* Performance optimizations for touch devices */
+  @media (hover: none) {
     .ascii-canvas-container {
-        /* Reduce animation complexity on touch devices */
-        will-change: auto;
-        contain: layout;
+      /* Reduce animation complexity on touch devices */
+      will-change: auto;
+      contain: layout;
     }
-    
+
     canvas {
-        /* Disable complex filtering on mobile */
-        filter: none !important;
+      /* Disable complex filtering on mobile */
+      filter: none !important;
     }
-}
+  }
 
-/* Reduce motion for users who prefer it */
-@media (prefers-reduced-motion: reduce) {
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
     .ascii-canvas-container {
-        opacity: 1;
-        will-change: auto;
+      opacity: 1;
+      will-change: auto;
     }
-    
-    canvas {
-        animation: none !important;
-    }
-}
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
     canvas {
-        filter: contrast(1.2);
+      animation: none !important;
     }
-}
+  }
 
-body.print-view canvas {
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    canvas {
+      filter: contrast(1.2);
+    }
+  }
+
+  body.print-view canvas {
     filter: none !important;
     opacity: 1 !important;
     display: block !important;
-}
+  }
 
-/* Vim mode styles moved to Layout.astro status bar */
+  /* Vim mode styles moved to Layout.astro status bar */
 
-/* Cursor styles based on vim mode */
-body.digital-view {
+  /* Cursor styles based on vim mode */
+  body.digital-view {
     cursor: crosshair;
-}
+  }
 
-body.digital-view.vim-normal {
+  body.digital-view.vim-normal {
     cursor: crosshair;
-}
+  }
 
-body.digital-view.vim-insert {
+  body.digital-view.vim-insert {
     cursor: text;
-}
+  }
 
-body.digital-view.vim-visual {
+  body.digital-view.vim-visual {
     cursor: cell;
-}
+  }
 
-body.digital-view.vim-command {
+  body.digital-view.vim-command {
     cursor: help;
-}
+  }
 
-/* Digital/Print View Toggles */
-body.print-view .digital-only {
+  /* Digital/Print View Toggles */
+  body.print-view .digital-only {
     display: none;
-}
+  }
 </style>
 
 <script>
-import { ASCIIAnimationSystem } from '@/utils/animations';
+  import { ASCIIAnimationSystem } from '@/utils/animations';
 
-// Mobile-optimized ASCII animation initialization
-document.addEventListener('DOMContentLoaded', () => {
+  // Mobile-optimized ASCII animation initialization
+  document.addEventListener('DOMContentLoaded', () => {
     const initializeAnimation = async () => {
+      try {
+        const canvasElement = document.getElementById('ascii-canvas');
+        if (!canvasElement) return;
+
+        // Check if device supports smooth animations
+        const isMobile =
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+          );
+
+        // Check battery level safely
         try {
-            const canvasElement = document.getElementById('ascii-canvas');
-            if (!canvasElement) return;
-            
-            // Check if device supports smooth animations
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            const hasReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            
-            // Check battery level safely
-            let isLowPowerMode = false;
-            try {
-                if ('getBattery' in navigator) {
-                    const battery = await navigator.getBattery();
-                    isLowPowerMode = battery.level < 0.2;
-                }
-            } catch (batteryError) {
-                // Battery API not available, assume normal power mode
-                isLowPowerMode = false;
-            }
-            
-            // Always initialize animation system to enable vim bindings
-            // Ignore all performance checks and browser preferences - always enable animations
-            
-            // Create animation system with maximum quality settings
-            const animationSystem = new ASCIIAnimationSystem('ascii-canvas');
-            
-            // Always run at highest quality - no mobile optimizations
-            
-            // Store reference for potential cleanup
-            (window as any).asciiAnimationSystem = animationSystem;
-            
-            // Enhanced visibility handling
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    animationSystem.pause();
-                } else {
-                    // Only resume if page has been visible for 500ms (avoid rapid switching)
-                    setTimeout(() => {
-                        if (!document.hidden) {
-                            animationSystem.resume();
-                        }
-                    }, 500);
-                }
-            });
-            
-            // Memory management for mobile
-            let memoryCheckInterval: number;
-            if (isMobile && (performance as any).memory) {
-                memoryCheckInterval = setInterval(() => {
-                    const memoryInfo = (performance as any).memory;
-                    if (memoryInfo.usedJSHeapSize > memoryInfo.jsHeapSizeLimit * 0.8) {
-                        console.warn('High memory usage detected, pausing animations');
-                        animationSystem.pause();
-                        clearInterval(memoryCheckInterval);
-                    }
-                }, 10000); // Check every 10 seconds
-            }
-            
-            // Enhanced cleanup on page unload
-            window.addEventListener('beforeunload', () => {
-                if (memoryCheckInterval) clearInterval(memoryCheckInterval);
-                animationSystem.destroy();
-            });
-            
-            // Pause animations when battery is low (if supported)
-            if ('getBattery' in navigator) {
-                try {
-                    const battery = await navigator.getBattery();
-                    const handleBatteryChange = () => {
-                        if (battery.level < 0.15 && !battery.charging) {
-                            animationSystem.pause();
-                        } else if (battery.level > 0.25 || battery.charging) {
-                            animationSystem.resume();
-                        }
-                    };
-                    
-                    battery.addEventListener('levelchange', handleBatteryChange);
-                    battery.addEventListener('chargingchange', handleBatteryChange);
-                } catch (batteryError) {
-                    console.warn('Battery event listeners not available:', batteryError);
-                }
-            }
-            
-        } catch (error) {
-            console.warn('Failed to initialize ASCII animation system:', error);
+          if ('getBattery' in navigator) {
+            await navigator.getBattery();
+          }
+        } catch (batteryError) {
+          // Battery API not available, assume normal power mode
         }
+
+        // Always initialize animation system to enable vim bindings
+        // Ignore all performance checks and browser preferences - always enable animations
+
+        // Create animation system with maximum quality settings
+        const animationSystem = new ASCIIAnimationSystem('ascii-canvas');
+
+        // Always run at highest quality - no mobile optimizations
+
+        // Store reference for potential cleanup
+        (
+          window as Window & { asciiAnimationSystem?: ASCIIAnimationSystem }
+        ).asciiAnimationSystem = animationSystem;
+
+        // Enhanced visibility handling
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) {
+            animationSystem.pause();
+          } else {
+            // Only resume if page has been visible for 500ms (avoid rapid switching)
+            setTimeout(() => {
+              if (!document.hidden) {
+                animationSystem.resume();
+              }
+            }, 500);
+          }
+        });
+
+        // Memory management for mobile
+        let memoryCheckInterval: number;
+        if (isMobile && 'memory' in performance) {
+          memoryCheckInterval = setInterval(() => {
+            const memoryInfo = (
+              performance as Performance & {
+                memory: { usedJSHeapSize: number; jsHeapSizeLimit: number };
+              }
+            ).memory;
+            if (memoryInfo.usedJSHeapSize > memoryInfo.jsHeapSizeLimit * 0.8) {
+              animationSystem.pause();
+              clearInterval(memoryCheckInterval);
+            }
+          }, 10000); // Check every 10 seconds
+        }
+
+        // Enhanced cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+          if (memoryCheckInterval) clearInterval(memoryCheckInterval);
+          animationSystem.destroy();
+        });
+
+        // Pause animations when battery is low (if supported)
+        if ('getBattery' in navigator) {
+          try {
+            const battery = await navigator.getBattery();
+            const handleBatteryChange = () => {
+              if (battery.level < 0.15 && !battery.charging) {
+                animationSystem.pause();
+              } else if (battery.level > 0.25 || battery.charging) {
+                animationSystem.resume();
+              }
+            };
+
+            battery.addEventListener('levelchange', handleBatteryChange);
+            battery.addEventListener('chargingchange', handleBatteryChange);
+          } catch (batteryError) {
+            // Battery event listeners not available
+          }
+        }
+      } catch (error) {
+        // Failed to initialize ASCII animation system
+      }
     };
-    
+
     // Call the async initialization function
     initializeAnimation();
-});
+  });
 </script>

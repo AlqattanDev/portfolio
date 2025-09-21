@@ -37,7 +37,13 @@ export const profile: UserProfile = profileData as UserProfile;
     </div>
 
     <!-- Screen Reader Announcements -->
-    <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+    <div
+      id="sr-announcements"
+      class="sr-only"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+    </div>
 
     <script>
       // Import component enhancements
@@ -48,7 +54,7 @@ export const profile: UserProfile = profileData as UserProfile;
         enableScrollAnimations: true,
         enableThemeReactivity: true,
         enableInteractionEffects: true,
-        staggerDelay: 0.04 // Faster animations for better responsiveness
+        staggerDelay: 0.04, // Faster animations for better responsiveness
       });
 
       // Core theme management functionality
@@ -58,35 +64,35 @@ export const profile: UserProfile = profileData as UserProfile;
       function updateTheme(theme: string) {
         try {
           html.setAttribute('data-theme', theme);
-          
+
           // Safe localStorage operation
           try {
             localStorage.setItem('theme', theme);
           } catch (storageError) {
-            console.warn('Failed to save theme preference:', storageError);
+            // Failed to save theme preference
           }
         } catch (error) {
-          console.error('Failed to update theme:', error);
+          // Failed to update theme
         }
       }
 
       // Initialize theme with fallback
       function initializeTheme() {
         let savedTheme = 'light'; // Default fallback
-        
+
         try {
           if (typeof Storage !== 'undefined') {
             savedTheme = localStorage.getItem('theme') || 'light';
           }
         } catch (error) {
-          console.warn('localStorage not available, using default theme:', error);
+          // localStorage not available, using default theme
         }
-        
+
         // Validate theme value
         if (!['light', 'dark'].includes(savedTheme)) {
           savedTheme = 'light';
         }
-        
+
         updateTheme(savedTheme);
       }
 
@@ -94,8 +100,8 @@ export const profile: UserProfile = profileData as UserProfile;
 
       if (themeToggle) {
         // Get reference to the animation system
-        const animationSystem = (window as any).asciiAnimationSystem;
-        
+        const animationSystem = window.asciiAnimationSystem;
+
         const toggleTheme = () => {
           try {
             // If animation system exists, use it to cycle schemes
@@ -107,27 +113,30 @@ export const profile: UserProfile = profileData as UserProfile;
               const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
               updateTheme(newTheme);
             }
-            
+
             // Add subtle animation feedback
             themeToggle.style.transform = 'scale(0.95)';
             setTimeout(() => {
               themeToggle.style.transform = '';
             }, 150);
           } catch (error) {
-            console.error('Failed to toggle theme:', error);
+            // Failed to toggle theme
           }
         };
-        
+
         // Listen for theme:changed events from the animation system
         document.addEventListener('theme:changed', (e: Event) => {
           const customEvent = e as CustomEvent;
           if (customEvent.detail && customEvent.detail.theme) {
-            themeToggle.setAttribute('aria-pressed', customEvent.detail.theme === 'dark' ? 'true' : 'false');
+            themeToggle.setAttribute(
+              'aria-pressed',
+              customEvent.detail.theme === 'dark' ? 'true' : 'false'
+            );
           }
         });
-        
+
         themeToggle.addEventListener('click', toggleTheme);
-        
+
         // Add keyboard support
         themeToggle.addEventListener('keydown', (e) => {
           const keyEvent = e as KeyboardEvent;
@@ -140,19 +149,26 @@ export const profile: UserProfile = profileData as UserProfile;
 
       // Lazy load section observer with performance optimization
       const observeSections = () => {
-        const navLinks = Array.from(document.querySelectorAll('.status-item')) as HTMLAnchorElement[];
+        const navLinks = Array.from(
+          document.querySelectorAll('.status-item')
+        ) as HTMLAnchorElement[];
         if (navLinks.length === 0) return;
-        
+
         const sections = navLinks
-          .map((l) => document.querySelector(l.getAttribute('href')!) as HTMLElement | null)
+          .map(
+            (l) =>
+              document.querySelector(
+                l.getAttribute('href')!
+              ) as HTMLElement | null
+          )
           .filter(Boolean) as HTMLElement[];
-          
+
         if (sections.length === 0) return;
-        
+
         // Debounce utility
-        function debounce(func: Function, wait: number) {
-          let timeout: NodeJS.Timeout;
-          return function executedFunction(...args: any[]) {
+        function debounce(func: (...args: unknown[]) => void, wait: number) {
+          let timeout: number;
+          return function executedFunction(...args: unknown[]) {
             const later = () => {
               clearTimeout(timeout);
               func(...args);
@@ -161,28 +177,33 @@ export const profile: UserProfile = profileData as UserProfile;
             timeout = setTimeout(later, wait);
           };
         }
-        
+
         // Debounced intersection handler
-        const debouncedHandler = debounce((entries: IntersectionObserverEntry[]) => {
-          entries.forEach((entry) => {
-            const id = entry.target.getAttribute('id');
-            if (!id) return;
-            const link = navLinks.find((l) => l.getAttribute('href') === `#${id}`);
-            if (!link) return;
-            if (entry.isIntersecting) {
-              requestAnimationFrame(() => {
-                navLinks.forEach((a) => a.classList.remove('active'));
-                link.classList.add('active');
-              });
-            }
-          });
-        }, 50);
-        
-        const observer = new IntersectionObserver(
-          debouncedHandler,
-          { rootMargin: '-40% 0px -55% 0px', threshold: [0, 0.25, 0.6, 1] }
+        const debouncedHandler = debounce(
+          (entries: IntersectionObserverEntry[]) => {
+            entries.forEach((entry) => {
+              const id = entry.target.getAttribute('id');
+              if (!id) return;
+              const link = navLinks.find(
+                (l) => l.getAttribute('href') === `#${id}`
+              );
+              if (!link) return;
+              if (entry.isIntersecting) {
+                requestAnimationFrame(() => {
+                  navLinks.forEach((a) => a.classList.remove('active'));
+                  link.classList.add('active');
+                });
+              }
+            });
+          },
+          50
         );
-        
+
+        const observer = new IntersectionObserver(debouncedHandler, {
+          rootMargin: '-40% 0px -55% 0px',
+          threshold: [0, 0.25, 0.6, 1],
+        });
+
         sections.forEach((sec) => observer.observe(sec));
       };
 

@@ -3,6 +3,8 @@
  * Centralized performance optimization helpers
  */
 
+import type { MemoryInfo, BatteryManager } from '@/types';
+
 // RAF-based animation scheduler for centralized animation management
 class AnimationScheduler {
   private tasks = new Set<() => boolean | void>();
@@ -14,7 +16,7 @@ class AnimationScheduler {
     if (!this.isRunning) {
       this.start();
     }
-    
+
     // Return cleanup function
     return () => this.remove(task);
   }
@@ -42,7 +44,7 @@ class AnimationScheduler {
 
   private tick = (): void => {
     if (!this.isRunning) return;
-    
+
     // Execute all animation tasks
     for (const task of this.tasks) {
       try {
@@ -51,7 +53,6 @@ class AnimationScheduler {
           this.tasks.delete(task);
         }
       } catch (error) {
-        console.error('Animation task failed:', error);
         this.tasks.delete(task);
       }
     }
@@ -80,16 +81,16 @@ export const animationScheduler = new AnimationScheduler();
 /**
  * Throttle function for performance-critical event handlers
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number = 16
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
-  return function(this: any, ...args: Parameters<T>) {
+  return function (this: unknown, ...args: Parameters<T>) {
     if (!inThrottle) {
       func.apply(this, args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 }
@@ -97,12 +98,12 @@ export function throttle<T extends (...args: any[]) => any>(
 /**
  * Debounce function for resize events and user input
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number = 250
 ): (...args: Parameters<T>) => void {
   let timeout: number | NodeJS.Timeout;
-  return function(this: any, ...args: Parameters<T>) {
+  return function (this: unknown, ...args: Parameters<T>) {
     const later = () => {
       clearTimeout(timeout);
       func.apply(this, args);
@@ -130,7 +131,7 @@ export function observeIntersection(
   const defaultOptions: IntersectionObserverInit = {
     rootMargin: '50px',
     threshold: 0.1,
-    ...options
+    ...options,
   };
 
   const observer = new IntersectionObserver((entries) => {
@@ -140,8 +141,8 @@ export function observeIntersection(
     });
   }, defaultOptions);
 
-  elements.forEach(el => observer.observe(el));
-  
+  elements.forEach((el) => observer.observe(el));
+
   return () => {
     observer.disconnect();
   };
@@ -155,10 +156,7 @@ export const performance = {
    * Measure function execution time
    */
   measure<T>(name: string, fn: () => T): T {
-    const start = Date.now();
     const result = fn();
-    const end = Date.now();
-    console.log(`[Performance] ${name}: ${end - start}ms`);
     return result;
   },
 
@@ -166,10 +164,7 @@ export const performance = {
    * Measure async function execution time
    */
   async measureAsync<T>(name: string, fn: () => Promise<T>): Promise<T> {
-    const start = Date.now();
     const result = await fn();
-    const end = Date.now();
-    console.log(`[Performance] ${name}: ${end - start}ms`);
     return result;
   },
 
@@ -177,8 +172,11 @@ export const performance = {
    * Memory usage monitoring
    */
   getMemoryInfo(): MemoryInfo | null {
-    if ('memory' in performance && (performance as any).memory) {
-      return (performance as any).memory;
+    if (
+      'memory' in performance &&
+      (performance as Performance & { memory: MemoryInfo }).memory
+    ) {
+      return (performance as Performance & { memory: MemoryInfo }).memory;
     }
     return null;
   },
@@ -189,7 +187,9 @@ export const performance = {
   async isLowPowerMode(): Promise<boolean> {
     try {
       if ('getBattery' in navigator) {
-        const battery = await (navigator as any).getBattery();
+        const battery = await (
+          navigator as Navigator & { getBattery: () => Promise<BatteryManager> }
+        ).getBattery();
         return battery.level < 0.2 && !battery.charging;
       }
     } catch {
@@ -219,7 +219,7 @@ export const performance = {
    */
   getDevicePixelRatio(): number {
     return window.devicePixelRatio || 1;
-  }
+  },
 };
 
 /**
@@ -242,7 +242,7 @@ export const resourceLoader = {
    * Preload multiple images
    */
   preloadImages(sources: string[]): Promise<HTMLImageElement[]> {
-    return Promise.all(sources.map(src => this.preloadImage(src)));
+    return Promise.all(sources.map((src) => this.preloadImage(src)));
   },
 
   /**
@@ -270,7 +270,7 @@ export const resourceLoader = {
       link.href = href;
       document.head.appendChild(link);
     });
-  }
+  },
 };
 
 /**
@@ -280,7 +280,8 @@ export class SimpleCache<T> {
   private cache = new Map<string, { value: T; timestamp: number }>();
   private maxAge: number;
 
-  constructor(maxAge: number = 5 * 60 * 1000) { // 5 minutes default
+  constructor(maxAge: number = 5 * 60 * 1000) {
+    // 5 minutes default
     this.maxAge = maxAge;
   }
 
@@ -328,11 +329,11 @@ export class CleanupManager {
   }
 
   public cleanup(): void {
-    this.cleanupTasks.forEach(task => {
+    this.cleanupTasks.forEach((task) => {
       try {
         task();
       } catch (error) {
-        console.error('Cleanup task failed:', error);
+        // Fail silently
       }
     });
     this.cleanupTasks.clear();

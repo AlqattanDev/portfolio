@@ -34,14 +34,6 @@ class MatrixRainEffect implements EffectStrategy {
       // Dynamic color transition
       const intensity = Math.sin(cascadePhase) * 0.5 + 0.5;
       particle.color = `hsl(${60 + intensity * 20}, 100%, ${70 + intensity * 20}%)`;
-
-      // Character morphing effect
-      const matrixChars = ['0', '1', 'ア', 'カ', 'サ', 'タ', 'ナ', 'ハ'];
-      if (Math.floor(time / 3) % 2 === 0) {
-        particle.char =
-          matrixChars[Math.floor(Math.random() * matrixChars.length)] ||
-          particle.originalChar;
-      }
     } else {
       particle.color = '#00ff41';
       particle.char = particle.originalChar;
@@ -284,7 +276,6 @@ class RiskAssessmentEffect implements EffectStrategy {
         (totalRisk * 3 + 1);
 
       // Dynamic color with risk progression
-      const intensity = 0.7 + totalRisk * 0.3;
       particle.color = baseColor;
 
       // Alert propagation - high risk particles affect neighbors
@@ -318,7 +309,6 @@ class ComplianceCheckEffect implements EffectStrategy {
       const checkmarks = ['✓', '✔', '☑', '✅'];
       const warnings = ['⚠', '❌', '❎', '⛔'];
       const legal = ['§', '¶', '©', '®', '™', '⚖'];
-      const status = ['●', '○', '◉', '◎', '⦿', '⦾'];
 
       // Compliance scanning simulation
       const scanProgress = (particle.baseY + time * 0.5) % 60;
@@ -697,7 +687,6 @@ class GruvboxVisualSelectionEffect implements EffectStrategy {
     if (isHovering) {
       const selection = ['█', '▓', '▒', '░', '▌', '▐', '▀', '▄'];
       const boundaries = ['┌', '┐', '└', '┘', '┬', '┴', '├', '┤'];
-      const highlights = ['◆', '◇', '◈', '◉', '◎', '●', '○'];
 
       // Dynamic selection area based on mouse position
       const centerX = mousePos.x || particle.baseX;

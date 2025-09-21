@@ -25,7 +25,7 @@ export const profile: UserProfile = profileValidation.success
     } as UserProfile);
 
 if (!profileValidation.success) {
-  console.warn('Profile data validation failed:', profileValidation.error);
+  // Fail silently
 }
 
 // Make profile available to child components via context

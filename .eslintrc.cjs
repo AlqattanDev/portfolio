@@ -1,30 +1,44 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
-  extends: [
-    'eslint:recommended',
-  ],
-  plugins: ['@typescript-eslint'],
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
+  root: true,
   env: {
     browser: true,
     es2022: true,
     node: true,
   },
-  ignorePatterns: [
-    'dist/',
-    'node_modules/',
-    '*.astro', // Skip Astro files for now due to parser issues
-    'src/test/', // Skip test files with vitest globals
-    'src/types/', // Skip type definition files with unused vars
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:astro/recommended",
+  ],
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    ecmaVersion: "latest",
+    sourceType: "module",
+  },
+  overrides: [
+    {
+      files: ["*.astro"],
+      parser: "astro-eslint-parser",
+      parserOptions: {
+        parser: "@typescript-eslint/parser",
+        extraFileExtensions: [".astro"],
+      },
+      rules: {
+        // Astro-specific rules can go here if needed
+      },
+    },
+    {
+      files: ["*.ts"],
+      rules: {
+        "no-console": "warn",
+      },
+    },
   ],
   rules: {
-    'prefer-const': 'error',
-    'no-var': 'error',
-    'no-console': 'warn',
-    'eqeqeq': 'error',
-    'no-unused-vars': 'off', // Allow unused vars in type definitions
+    "prefer-const": "error",
+    "no-var": "error",
+    "no-console": "warn",
+    eqeqeq: "error",
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
   },
 };

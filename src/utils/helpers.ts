@@ -3,7 +3,12 @@
  * Extracted from Skills.astro component
  */
 
-import type { SkillLevel, SkillBarConfig, ProgressSegment } from '@/types';
+import type {
+  SkillLevel,
+  SkillBarConfig,
+  ProgressSegment,
+  ProgressBarType,
+} from '@/types';
 import { ASCII_CHARS } from '@/utils/constants';
 
 /**
@@ -49,7 +54,9 @@ export const generateSkillBarConfig = (level: SkillLevel): SkillBarConfig => {
 /**
  * Generate progress segments for custom rendering
  */
-export const generateProgressSegments = (level: SkillLevel): ProgressSegment[] => {
+export const generateProgressSegments = (
+  level: SkillLevel
+): ProgressSegment[] => {
   const levelMappings: Record<SkillLevel, number> = {
     Expert: 6,
     Advanced: 4,
@@ -74,18 +81,25 @@ export const generateProgressSegments = (level: SkillLevel): ProgressSegment[] =
   // Add remaining segments with dithering
   const remaining = totalSegments - filledSegments;
   if (remaining > 0) {
-    const ditherType = level === 'Advanced' ? 'dither-1' : 
-                      level === 'Proficient' ? 'dither-2' : 'dither-3';
-    const ditherChar = level === 'Advanced' ? ASCII_CHARS.PROGRESS.THREE_QUARTER :
-                      level === 'Proficient' ? ASCII_CHARS.PROGRESS.HALF : 
-                      ASCII_CHARS.PROGRESS.QUARTER;
+    const ditherType: ProgressBarType =
+      level === 'Advanced'
+        ? 'dither-1'
+        : level === 'Proficient'
+          ? 'dither-2'
+          : 'dither-3';
+    const ditherChar =
+      level === 'Advanced'
+        ? ASCII_CHARS.PROGRESS.THREE_QUARTER
+        : level === 'Proficient'
+          ? ASCII_CHARS.PROGRESS.HALF
+          : ASCII_CHARS.PROGRESS.QUARTER;
 
     for (let i = 0; i < remaining; i++) {
       segments.push({
-        type: ditherType as any,
+        type: ditherType,
         content: ditherChar,
-        opacity: level === 'Advanced' ? 0.75 : 
-                level === 'Proficient' ? 0.5 : 0.25,
+        opacity:
+          level === 'Advanced' ? 0.75 : level === 'Proficient' ? 0.5 : 0.25,
       });
     }
   }
@@ -100,19 +114,18 @@ export const generateAnimatedSkillBar = (
   level: SkillLevel,
   animationDelay: number = 0
 ): string => {
-  const config = generateSkillBarConfig(level);
   const segments = generateProgressSegments(level);
-  
+
   let html = '<span class="skill-bar-animated">[';
-  
+
   segments.forEach((segment, index) => {
-    const delay = animationDelay + (index * 100); // 100ms between each segment
+    const delay = animationDelay + index * 100; // 100ms between each segment
     html += `<span class="${segment.type}" style="animation-delay: ${delay}ms;">${segment.content}</span>`;
     if (index < segments.length - 1) {
       html += ' ';
     }
   });
-  
+
   html += ']</span>';
   return html;
 };
@@ -149,7 +162,13 @@ export const getSkillLevelColor = (level: SkillLevel): string => {
  * Validate skill level string
  */
 export const isValidSkillLevel = (level: string): level is SkillLevel => {
-  return ['Expert', 'Advanced', 'Proficient', 'Intermediate', 'Beginner'].includes(level);
+  return [
+    'Expert',
+    'Advanced',
+    'Proficient',
+    'Intermediate',
+    'Beginner',
+  ].includes(level);
 };
 
 /**

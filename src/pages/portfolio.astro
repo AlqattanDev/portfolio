@@ -7,15 +7,16 @@ import Skills from '../components/Skills.astro';
 import Education from '../components/Education.astro';
 import Contact from '../components/Contact.astro';
 import profile from '../data/profile.json';
+import type { Project } from '@/types';
 
 // Normalize projects to ensure metrics are available in expected shape
-const normalizedProjects = (profile.projects || []).map((p: any) => ({
+const normalizedProjects = (profile.projects || []).map((p: Project) => ({
   ...p,
   metrics: p.metrics ?? {
-    scale: (p as any).scale,
-    security: (p as any).security,
-    performance: (p as any).performance,
-    innovation: (p as any).innovation,
+    scale: p.scale,
+    security: p.security,
+    performance: p.performance,
+    innovation: p.innovation,
   },
 }));
 ---
@@ -28,9 +29,7 @@ const normalizedProjects = (profile.projects || []).map((p: any) => ({
   </Section>
 
   <Section id="project-manifest" title="Project Manifest">
-    {normalizedProjects.map((project) => (
-      <ProjectEntry project={project} />
-    ))}
+    {normalizedProjects.map((project) => <ProjectEntry project={project} />)}
   </Section>
 
   <Section id="skill-matrix" title="Skill Matrix">
@@ -43,6 +42,7 @@ const normalizedProjects = (profile.projects || []).map((p: any) => ({
 
   <div class="footer-info">
     <span class="checksum">Checksum: {profile.checksum}</span>
-    <span class="color-scheme" id="colorSchemeDisplay">Scheme: Matrix Rain</span>
+    <span class="color-scheme" id="colorSchemeDisplay">Scheme: Matrix Rain</span
+    >
   </div>
 </Layout>

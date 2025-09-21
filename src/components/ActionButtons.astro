@@ -12,278 +12,324 @@ export interface ActionButtonsProps extends BaseComponentProps {
   variant?: 'default' | 'compact' | 'minimal';
 }
 
-const { 
+const {
   demoUrl,
   githubUrl,
   actions: customActions,
   variant = 'default',
   className = '',
-  ...props 
+  ...props
 } = Astro.props as ActionButtonsProps;
 
 // Generate default actions based on available URLs
 const defaultActions: ProjectAction[] = [
-  ...(demoUrl ? [{
+  ...(demoUrl
+    ? [
+        {
+          type: 'demo' as const,
+          label: '→ Live Demo',
+          url: demoUrl,
+          icon: '→',
+          primary: true,
+        },
+      ]
+    : []),
+  ...(githubUrl
+    ? [
+        {
+          type: 'github' as const,
+          label: '⟨/⟩ Source',
+          url: githubUrl,
+          icon: '⟨/⟩',
+          primary: false,
+        },
+      ]
+    : []),
+  // Static portfolio links
+  {
     type: 'demo' as const,
-    label: '→ Live Demo',
-    url: demoUrl,
-    icon: '→',
-    primary: true,
-  }] : []),
-  ...(githubUrl ? [{
-    type: 'github' as const,
-    label: '⟨/⟩ Source',
-    url: githubUrl,
-    icon: '⟨/⟩',
+    label: '🚀 Cyberpunk',
+    url: '/cyberpunk-portfolio.html',
+    icon: '🚀',
     primary: false,
-  }] : []),
+  },
+  {
+    type: 'demo' as const,
+    label: '💫 LED Glyph',
+    url: '/glyph-backup.html',
+    icon: '💫',
+    primary: false,
+  },
 ];
 
 const actions = customActions || defaultActions;
 ---
 
-<div class={`project-actions project-actions-${variant} ${className}`} {...props}>
-  {actions.map((action) => (
-    <button 
-      class={`action-btn ${action.type}-btn ${action.primary ? 'primary' : ''} ${action.disabled ? 'disabled' : ''}`}
-      data-url={action.url}
-      data-type={action.type}
-      disabled={action.disabled}
-      title={action.disabled ? 'Coming soon' : undefined}
-      aria-label={action.disabled ? `${action.label} - Coming soon` : action.label}
-      aria-describedby={action.disabled ? undefined : `${action.type}-description`}
-    >
-      <span class="action-icon" aria-hidden="true">{action.icon}</span>
-      <span class="action-label">{action.label}</span>
-      <span class="sr-only loading-text" aria-live="polite"></span>
-    </button>
-  ))}
+<div
+  class={`project-actions project-actions-${variant} ${className}`}
+  {...props}
+>
+  {
+    actions.map((action) => (
+      <button
+        class={`action-btn ${action.type}-btn ${action.primary ? 'primary' : ''} ${action.disabled ? 'disabled' : ''}`}
+        data-url={action.url}
+        data-type={action.type}
+        disabled={action.disabled}
+        title={action.disabled ? 'Coming soon' : undefined}
+        aria-label={
+          action.disabled ? `${action.label} - Coming soon` : action.label
+        }
+        aria-describedby={
+          action.disabled ? undefined : `${action.type}-description`
+        }
+      >
+        <span class="action-icon" aria-hidden="true">
+          {action.icon}
+        </span>
+        <span class="action-label">{action.label}</span>
+        <span class="sr-only loading-text" aria-live="polite" />
+      </button>
+    ))
+  }
 </div>
 
 <style>
-/* Base styles already imported in Layout.astro */
+  /* Base styles already imported in Layout.astro */
 
-/* Component-specific styles */
-.project-actions {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-  /* Ensure buttons are touch-friendly */
-  min-height: var(--touch-target-min);
-  align-items: center;
-}
-
-/* Touch-friendly button sizing */
-.action-btn {
-  min-height: var(--touch-target-min);
-  min-width: var(--touch-target-min);
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  border: 1px solid var(--border-digital);
-  background: transparent;
-  color: var(--foreground-digital);
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast) var(--ease-in-out);
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  text-decoration: none;
-  user-select: none;
-}
-
-.action-btn:hover:not(.disabled) {
-  background: var(--accent-digital);
-  border-color: var(--foreground-digital);
-  transform: translateY(-1px);
-}
-
-.action-btn:active:not(.disabled) {
-  transform: translateY(0);
-  background: var(--foreground-digital);
-  color: var(--background-digital);
-}
-
-.action-btn.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.action-btn.primary {
-  background: var(--foreground-digital);
-  color: var(--background-digital);
-}
-
-.action-btn.primary:hover:not(.disabled) {
-  background: var(--accent-digital);
-  color: var(--foreground-digital);
-}
-
-/* Variant styles */
-.project-actions-compact .action-btn {
-  padding: 3px 6px;
-  font-size: 8px;
-  gap: 3px;
-}
-
-.project-actions-compact .action-icon {
-  font-size: 9px;
-}
-
-.project-actions-compact .action-label {
-  font-size: 8px;
-}
-
-.project-actions-minimal .action-btn {
-  border: none;
-  padding: 2px 4px;
-  font-size: 8px;
-  text-decoration: underline;
-}
-
-.project-actions-minimal .action-btn:hover {
-  background: transparent;
-  text-decoration: none;
-  transform: none;
-}
-
-/* Mobile responsive adjustments */
-@media (max-width: 768px) {
+  /* Component-specific styles */
   .project-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    /* Ensure buttons are touch-friendly */
+    min-height: var(--touch-target-min);
+    align-items: center;
+  }
+
+  /* Touch-friendly button sizing */
+  .action-btn {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 6px;
-    justify-content: flex-start;
+    cursor: pointer;
+    border: 1px solid var(--border-digital);
+    background: transparent;
+    color: var(--foreground-digital);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast) var(--ease-in-out);
+    font-family: var(--font-body);
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+    user-select: none;
   }
-  
-  .action-btn {
-    padding: 6px 10px;
-    font-size: var(--font-size-xs);
-  }
-}
 
-@media (max-width: 480px) {
-  .project-actions {
-    gap: 4px;
+  .action-btn:hover:not(.disabled) {
+    background: var(--accent-digital);
+    border-color: var(--foreground-digital);
+    transform: translateY(-1px);
   }
-  
-  .action-btn {
-    padding: 4px 8px;
-    font-size: var(--font-size-2xs);
-    min-width: 40px;
+
+  .action-btn:active:not(.disabled) {
+    transform: translateY(0);
+    background: var(--foreground-digital);
+    color: var(--background-digital);
   }
-  
-  .action-label {
+
+  .action-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .action-btn.primary {
+    background: var(--foreground-digital);
+    color: var(--background-digital);
+  }
+
+  .action-btn.primary:hover:not(.disabled) {
+    background: var(--accent-digital);
+    color: var(--foreground-digital);
+  }
+
+  /* Variant styles */
+  .project-actions-compact .action-btn {
+    padding: 3px 6px;
+    font-size: 8px;
+    gap: 3px;
+  }
+
+  .project-actions-compact .action-icon {
+    font-size: 9px;
+  }
+
+  .project-actions-compact .action-label {
+    font-size: 8px;
+  }
+
+  .project-actions-minimal .action-btn {
+    border: none;
+    padding: 2px 4px;
+    font-size: 8px;
+    text-decoration: underline;
+  }
+
+  .project-actions-minimal .action-btn:hover {
+    background: transparent;
+    text-decoration: none;
+    transform: none;
+  }
+
+  /* Mobile responsive adjustments */
+  @media (max-width: 768px) {
+    .project-actions {
+      gap: 6px;
+      justify-content: flex-start;
+    }
+
+    .action-btn {
+      padding: 6px 10px;
+      font-size: var(--font-size-xs);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .project-actions {
+      gap: 4px;
+    }
+
+    .action-btn {
+      padding: 4px 8px;
+      font-size: var(--font-size-2xs);
+      min-width: 40px;
+    }
+
+    .action-label {
+      display: none;
+    }
+
+    .action-icon {
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .project-actions {
+      justify-content: center;
+    }
+  }
+
+  /* Touch device optimizations */
+  @media (hover: none) {
+    .action-btn:hover {
+      transform: none;
+    }
+
+    .action-btn:active:not(.disabled) {
+      transform: scale(0.98);
+      background: var(--accent-digital);
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .action-btn {
+      transition: none;
+    }
+
+    .action-btn:hover,
+    .action-btn:active {
+      transform: none;
+    }
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .action-btn {
+      border-width: 2px;
+      font-weight: var(--font-weight-bold);
+    }
+  }
+
+  /* Print mode styles */
+  body.print-view .project-actions {
     display: none;
   }
-  
-  .action-icon {
-    font-size: 14px;
+
+  /* Loading state */
+  .action-btn.loading {
+    opacity: 0.6;
+    pointer-events: none;
   }
-}
 
-@media (max-width: 360px) {
-  .project-actions {
-    justify-content: center;
+  .action-btn.loading .action-label::after {
+    content: '...';
+    animation: loading-dots 1.5s infinite;
   }
-}
 
-/* Touch device optimizations */
-@media (hover: none) {
-  .action-btn:hover {
-    transform: none;
+  @keyframes loading-dots {
+    0%,
+    20% {
+      content: '';
+    }
+    40% {
+      content: '.';
+    }
+    60% {
+      content: '..';
+    }
+    80%,
+    100% {
+      content: '...';
+    }
   }
-  
-  .action-btn:active:not(.disabled) {
-    transform: scale(0.98);
-    background: var(--accent-digital);
+
+  /* Success feedback */
+  .action-btn.success {
+    border-color: var(--color-success);
+    color: var(--color-success);
   }
-}
 
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .action-btn {
-    transition: none;
+  .action-btn.success::after {
+    content: '✓';
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    font-size: 6px;
+    opacity: 0.8;
   }
-  
-  .action-btn:hover,
-  .action-btn:active {
-    transform: none;
+
+  /* Error feedback */
+  .action-btn.error {
+    border-color: var(--color-error);
+    color: var(--color-error);
   }
-}
 
-/* High contrast mode */
-@media (prefers-contrast: high) {
-  .action-btn {
-    border-width: 2px;
-    font-weight: var(--font-weight-bold);
+  .action-btn.error::after {
+    content: '✗';
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    font-size: 6px;
+    opacity: 0.8;
   }
-}
-
-/* Print mode styles */
-body.print-view .project-actions {
-  display: none;
-}
-
-/* Loading state */
-.action-btn.loading {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-.action-btn.loading .action-label::after {
-  content: '...';
-  animation: loading-dots 1.5s infinite;
-}
-
-@keyframes loading-dots {
-  0%, 20% { content: ''; }
-  40% { content: '.'; }
-  60% { content: '..'; }
-  80%, 100% { content: '...'; }
-}
-
-/* Success feedback */
-.action-btn.success {
-  border-color: var(--color-success);
-  color: var(--color-success);
-}
-
-.action-btn.success::after {
-  content: '✓';
-  position: absolute;
-  right: 2px;
-  top: 2px;
-  font-size: 6px;
-  opacity: 0.8;
-}
-
-/* Error feedback */
-.action-btn.error {
-  border-color: var(--color-error);
-  color: var(--color-error);
-}
-
-.action-btn.error::after {
-  content: '✗';
-  position: absolute;
-  right: 2px;
-  top: 2px;
-  font-size: 6px;
-  opacity: 0.8;
-}
 </style>
 
 <script>
-import { initActionButtons } from '@/utils/client';
+  import { initActionButtons } from '@/utils/client';
 
-// Initialize action buttons when component is ready
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize for the entire document (can be scoped to component root if needed)
-  const cleanup = initActionButtons();
+  // Initialize action buttons when component is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    // Initialize for the entire document (can be scoped to component root if needed)
+    const cleanup = initActionButtons();
 
-  // Store cleanup function for potential future use
-  (window as any).actionButtonsCleanup = cleanup;
-});
+    // Store cleanup function for potential future use
+    (
+      window as Window & { actionButtonsCleanup?: () => void }
+    ).actionButtonsCleanup = cleanup;
+  });
 </script>

@@ -18,61 +18,87 @@ const { profile } = Astro.props as ContactProps;
   </div>
 
   <div class="contact-grid enhanced">
-    {profile.personal?.location && (
-      <div class="contact-card" data-contact-type="location">
-        <div class="contact-icon">[LOC]</div>
-        <div class="contact-content">
-          <div class="contact-title">Location</div>
-          <div class="contact-description">{profile.personal.location}</div>
+    {
+      profile.personal?.location && (
+        <div class="contact-card" data-contact-type="location">
+          <div class="contact-icon">[LOC]</div>
+          <div class="contact-content">
+            <div class="contact-title">Location</div>
+            <div class="contact-description">{profile.personal.location}</div>
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
 
     <div class="contact-card interactive" data-contact-type="email">
       <div class="contact-icon">[EMAIL]</div>
       <div class="contact-content">
         <div class="contact-title">Email</div>
-        <a class="contact-description contact-link" href={`mailto:${profile.contact.email}`}>
+        <a
+          class="contact-description contact-link"
+          href={`mailto:${profile.contact.email}`}
+        >
           {profile.contact.email}
         </a>
       </div>
     </div>
 
-    {profile.personal?.website && (
-      <div class="contact-card interactive" data-contact-type="website">
-        <div class="contact-icon">[WEB]</div>
-        <div class="contact-content">
-          <div class="contact-title">Website</div>
-          <a class="contact-description contact-link" href={profile.personal.website} target="_blank" rel="noopener noreferrer">
-            {profile.personal.website}
-          </a>
+    {
+      profile.personal?.website && (
+        <div class="contact-card interactive" data-contact-type="website">
+          <div class="contact-icon">[WEB]</div>
+          <div class="contact-content">
+            <div class="contact-title">Website</div>
+            <a
+              class="contact-description contact-link"
+              href={profile.personal.website}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {profile.personal.website}
+            </a>
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
 
-    {profile.social?.linkedin && (
-      <div class="contact-card interactive" data-contact-type="social">
-        <div class="contact-icon">[LINK]</div>
-        <div class="contact-content">
-          <div class="contact-title">LinkedIn</div>
-          <a class="contact-description contact-link" href={profile.social.linkedin} target="_blank" rel="noopener noreferrer">
-            {profile.social.linkedin}
-          </a>
+    {
+      profile.social?.linkedin && (
+        <div class="contact-card interactive" data-contact-type="social">
+          <div class="contact-icon">[LINK]</div>
+          <div class="contact-content">
+            <div class="contact-title">LinkedIn</div>
+            <a
+              class="contact-description contact-link"
+              href={profile.social.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {profile.social.linkedin}
+            </a>
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
 
-    {profile.social?.github && (
-      <div class="contact-card interactive" data-contact-type="social">
-        <div class="contact-icon">[GIT]</div>
-        <div class="contact-content">
-          <div class="contact-title">GitHub</div>
-          <a class="contact-description contact-link" href={profile.social.github} target="_blank" rel="noopener noreferrer">
-            {profile.social.github}
-          </a>
+    {
+      profile.social?.github && (
+        <div class="contact-card interactive" data-contact-type="social">
+          <div class="contact-icon">[GIT]</div>
+          <div class="contact-content">
+            <div class="contact-title">GitHub</div>
+            <a
+              class="contact-description contact-link"
+              href={profile.social.github}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {profile.social.github}
+            </a>
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
   </div>
 </div>
 
@@ -125,8 +151,15 @@ const { profile } = Astro.props as ContactProps;
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.2); }
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.2);
+    }
   }
 
   .contact-grid.enhanced {
@@ -156,7 +189,12 @@ const { profile } = Astro.props as ContactProps;
     left: -100%;
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(var(--theme-accent-rgb, 0, 255, 65), 0.4), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(var(--theme-accent-rgb, 0, 255, 65), 0.4),
+      transparent
+    );
     transition: left 0.6s ease;
   }
 
@@ -227,19 +265,19 @@ const { profile } = Astro.props as ContactProps;
   }
 
   /* Contact type specific styling */
-  .contact-card[data-contact-type="email"]:hover {
+  .contact-card[data-contact-type='email']:hover {
     border-color: rgba(100, 255, 218, 0.3);
   }
 
-  .contact-card[data-contact-type="email"] .contact-icon {
+  .contact-card[data-contact-type='email'] .contact-icon {
     color: #64ffda;
   }
 
-  .contact-card[data-contact-type="social"]:hover {
+  .contact-card[data-contact-type='social']:hover {
     border-color: rgba(255, 255, 0, 0.3);
   }
 
-  .contact-card[data-contact-type="social"] .contact-icon {
+  .contact-card[data-contact-type='social'] .contact-icon {
     color: #ffff00;
   }
 
@@ -256,18 +294,18 @@ const { profile } = Astro.props as ContactProps;
   }
 
   /* Theme-reactive contact styling */
-  .contact-card[data-theme="MATRIX"] .contact-icon,
-  .contact-card[data-theme="MATRIX"]:hover .contact-title {
+  .contact-card[data-theme='MATRIX'] .contact-icon,
+  .contact-card[data-theme='MATRIX']:hover .contact-title {
     color: #00ff41;
   }
 
-  .contact-card[data-theme="TRADING"] .contact-icon,
-  .contact-card[data-theme="TRADING"]:hover .contact-title {
+  .contact-card[data-theme='TRADING'] .contact-icon,
+  .contact-card[data-theme='TRADING']:hover .contact-title {
     color: #ffff00;
   }
 
-  .contact-card[data-theme="BLOCKCHAIN"] .contact-icon,
-  .contact-card[data-theme="BLOCKCHAIN"]:hover .contact-title {
+  .contact-card[data-theme='BLOCKCHAIN'] .contact-icon,
+  .contact-card[data-theme='BLOCKCHAIN']:hover .contact-title {
     color: #64ffda;
   }
 
@@ -294,11 +332,11 @@ const { profile } = Astro.props as ContactProps;
       animation: none;
       transition: none;
     }
-    
+
     .contact-card:hover {
       transform: none;
     }
-    
+
     .contact-card::before,
     .status-dot {
       animation: none;
@@ -317,93 +355,98 @@ const { profile } = Astro.props as ContactProps;
 </style>
 
 <script>
-// Enhanced Contact Interactions
-document.addEventListener('DOMContentLoaded', () => {
-  const contactCards = document.querySelectorAll('.contact-card');
-  
-  if (!contactCards.length) return;
+  // Enhanced Contact Interactions
+  document.addEventListener('DOMContentLoaded', () => {
+    const contactCards = document.querySelectorAll('.contact-card');
 
-  // Theme-reactive contact highlighting
-  function updateContactTheme() {
-    const animationSystem = (window as any).asciiAnimationSystem;
-    
-    if (animationSystem) {
-      const currentEffectName = animationSystem.getCurrentEffectName();
-      const theme = currentEffectName.toUpperCase().replace(/\s+/g, '_');
-      
-      contactCards.forEach(card => {
-        card.setAttribute('data-theme', theme);
-      });
-    }
-  }
+    if (!contactCards.length) return;
 
-  // Intersection Observer for smooth scroll animations
-  const observerOptions = {
-    threshold: 0.2,
-    rootMargin: '-10% 0px -10% 0px'
-  };
+    // Theme-reactive contact highlighting
+    function updateContactTheme() {
+      const animationSystem = window.asciiAnimationSystem;
 
-  const contactObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate-in');
+      if (animationSystem) {
+        const currentEffectName = animationSystem.getCurrentEffectName();
+        const theme = currentEffectName.toUpperCase().replace(/\s+/g, '_');
+
+        contactCards.forEach((card) => {
+          card.setAttribute('data-theme', theme);
+        });
       }
-    });
-  }, observerOptions);
-
-  // Initialize contact cards
-  contactCards.forEach((card, index) => {
-    // Set stagger delay for animation
-    (card as HTMLElement).style.transitionDelay = `${index * 0.075}s`;
-    contactObserver.observe(card);
-
-    // Add enhanced hover interactions
-    const contactType = card.getAttribute('data-contact-type');
-    
-    if (card.classList.contains('interactive')) {
-      card.addEventListener('mouseenter', () => {
-        // Subtle enhancement based on contact type
-        const icon = card.querySelector('.contact-icon');
-        if (icon && contactType === 'email') {
-          (icon as HTMLElement).style.color = '#64ffda';
-        } else if (icon && contactType === 'social') {
-          (icon as HTMLElement).style.color = '#ffff00';
-        }
-      });
-
-      card.addEventListener('mouseleave', () => {
-        const icon = card.querySelector('.contact-icon');
-        if (icon) {
-          (icon as HTMLElement).style.color = '';
-        }
-      });
     }
-  });
 
-  // Listen for theme changes
-  document.addEventListener('theme:changed', updateContactTheme);
-  
-  // Initialize
-  updateContactTheme();
+    // Intersection Observer for smooth scroll animations
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '-10% 0px -10% 0px',
+    };
 
-  // Add copy-to-clipboard functionality for email
-  const emailLinks = document.querySelectorAll('.contact-card[data-contact-type="email"] .contact-link');
-  emailLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      if (navigator.clipboard) {
-        const email = (e.target as HTMLElement).textContent || '';
-        navigator.clipboard.writeText(email.replace('mailto:', '')).then(() => {
-          // Subtle feedback
-          const card = (e.target as HTMLElement).closest('.contact-card');
-          if (card) {
-            (card as HTMLElement).style.background = 'rgba(0, 255, 65, 0.1)';
-            setTimeout(() => {
-              (card as HTMLElement).style.background = '';
-            }, 300);
+    const contactObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+        }
+      });
+    }, observerOptions);
+
+    // Initialize contact cards
+    contactCards.forEach((card, index) => {
+      // Set stagger delay for animation
+      (card as HTMLElement).style.transitionDelay = `${index * 0.075}s`;
+      contactObserver.observe(card);
+
+      // Add enhanced hover interactions
+      const contactType = card.getAttribute('data-contact-type');
+
+      if (card.classList.contains('interactive')) {
+        card.addEventListener('mouseenter', () => {
+          // Subtle enhancement based on contact type
+          const icon = card.querySelector('.contact-icon');
+          if (icon && contactType === 'email') {
+            (icon as HTMLElement).style.color = '#64ffda';
+          } else if (icon && contactType === 'social') {
+            (icon as HTMLElement).style.color = '#ffff00';
+          }
+        });
+
+        card.addEventListener('mouseleave', () => {
+          const icon = card.querySelector('.contact-icon');
+          if (icon) {
+            (icon as HTMLElement).style.color = '';
           }
         });
       }
     });
+
+    // Listen for theme changes
+    document.addEventListener('theme:changed', updateContactTheme);
+
+    // Initialize
+    updateContactTheme();
+
+    // Add copy-to-clipboard functionality for email
+    const emailLinks = document.querySelectorAll(
+      '.contact-card[data-contact-type="email"] .contact-link'
+    );
+    emailLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        if (navigator.clipboard) {
+          const email = (e.target as HTMLElement).textContent || '';
+          navigator.clipboard
+            .writeText(email.replace('mailto:', ''))
+            .then(() => {
+              // Subtle feedback
+              const card = (e.target as HTMLElement).closest('.contact-card');
+              if (card) {
+                (card as HTMLElement).style.background =
+                  'rgba(0, 255, 65, 0.1)';
+                setTimeout(() => {
+                  (card as HTMLElement).style.background = '';
+                }, 300);
+              }
+            });
+        }
+      });
+    });
   });
-});
 </script>

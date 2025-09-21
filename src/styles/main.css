@@ -35,17 +35,17 @@ Centralized spacing, typography, and animation values
 
   /* ============ Enhanced Breakpoint System ============ */
   /* Mobile-first granular breakpoints */
-  --breakpoint-2xs: 320px;   /* Very small phones (iPhone SE) */
-  --breakpoint-xs: 360px;    /* Small phones (Galaxy S10) */
-  --breakpoint-sm: 375px;    /* iPhone standard */
-  --breakpoint-md: 414px;    /* Large phones (iPhone Pro Max) */
-  --breakpoint-lg: 480px;    /* Small tablets / Large phones landscape */
-  --breakpoint-xl: 768px;    /* Tablets portrait */
-  --breakpoint-2xl: 1024px;  /* Desktop / Tablets landscape */
-  --breakpoint-3xl: 1280px;  /* Large desktop */
-  --breakpoint-4xl: 1440px;  /* Wide desktop */
-  --breakpoint-5xl: 1920px;  /* Ultra-wide screens */
-  
+  --breakpoint-2xs: 320px; /* Very small phones (iPhone SE) */
+  --breakpoint-xs: 360px; /* Small phones (Galaxy S10) */
+  --breakpoint-sm: 375px; /* iPhone standard */
+  --breakpoint-md: 414px; /* Large phones (iPhone Pro Max) */
+  --breakpoint-lg: 480px; /* Small tablets / Large phones landscape */
+  --breakpoint-xl: 768px; /* Tablets portrait */
+  --breakpoint-2xl: 1024px; /* Desktop / Tablets landscape */
+  --breakpoint-3xl: 1280px; /* Large desktop */
+  --breakpoint-4xl: 1440px; /* Wide desktop */
+  --breakpoint-5xl: 1920px; /* Ultra-wide screens */
+
   /* Legacy breakpoint names (for compatibility) */
   --breakpoint-mobile: 480px;
   --breakpoint-tablet: 768px;
@@ -158,22 +158,22 @@ Centralized spacing, typography, and animation values
   --duration-base: 250ms;
   --duration-slow: 500ms;
   --duration-slower: 1000ms;
-  
+
   /* ============ Touch & Interaction ============ */
-  --touch-target-min: 44px;     /* Minimum touch target size */
+  --touch-target-min: 44px; /* Minimum touch target size */
   --touch-target-comfortable: 48px; /* Comfortable touch target size */
   --safe-area-inset-top: env(safe-area-inset-top);
   --safe-area-inset-right: env(safe-area-inset-right);
   --safe-area-inset-bottom: env(safe-area-inset-bottom);
   --safe-area-inset-left: env(safe-area-inset-left);
-  
+
   /* ============ Common Size Values ============ */
-  --grid-background-size: 40px;  /* Grid pattern background size */
-  --border-width-thin: 1px;      /* Standard thin border */
-  --border-width-thick: 2px;     /* Thicker border for emphasis */
-  --min-column-width: 280px;     /* Minimum responsive column width */
-  --transform-lift: -1px;        /* Standard hover lift distance */
-  --transform-small: -2px;       /* Small transform distance */
+  --grid-background-size: 40px; /* Grid pattern background size */
+  --border-width-thin: 1px; /* Standard thin border */
+  --border-width-thick: 2px; /* Thicker border for emphasis */
+  --min-column-width: 280px; /* Minimum responsive column width */
+  --transform-lift: -1px; /* Standard hover lift distance */
+  --transform-small: -2px; /* Small transform distance */
 }
 
 /* ============ Responsive Breakpoint Mixins ============ */
@@ -328,7 +328,7 @@ body.scheme-gruvbox-syntax {
 }
 
 /* ============ Light/Dark Mode Toggle Variables ============ */
-[data-theme="light"] {
+[data-theme='light'] {
   --bg-color: #ffffff;
   --text-color: #333333;
   --text-secondary: #666666;
@@ -338,7 +338,7 @@ body.scheme-gruvbox-syntax {
   --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
   --bg-color: #1a1a1a;
   --text-color: #ffffff;
   --text-secondary: #cccccc;
@@ -355,17 +355,17 @@ body.scheme-gruvbox-syntax {
   --color-warning: #ffa726;
   --color-error: #ff4444;
   --color-info: #64ffda;
-  
+
   /* Interactive States */
   --color-hover: var(--foreground-digital);
   --color-active: var(--accent-digital);
   --color-disabled: var(--muted-digital);
-  
+
   /* Component Specific */
   --color-link: var(--foreground-digital);
   --color-link-hover: var(--foreground-digital);
   --color-focus-ring: rgba(0, 255, 65, 0.3);
-}/*
+} /*
 ========================================
 SIMPLIFIED PORTFOLIO CSS
 Clean layout with digital/print modes
@@ -958,19 +958,19 @@ html {
 }
 
 /* Theme-reactive text highlighting */
-[data-theme="MATRIX"] .entry:hover .entry-title {
+[data-theme='MATRIX'] .entry:hover .entry-title {
   color: #00ff41;
 }
 
-[data-theme="TRADING"] .entry:hover .entry-title {
+[data-theme='TRADING'] .entry:hover .entry-title {
   color: #ffff00;
 }
 
-[data-theme="BLOCKCHAIN"] .entry:hover .entry-title {
+[data-theme='BLOCKCHAIN'] .entry:hover .entry-title {
   color: #64ffda;
 }
 
-[data-theme="ENCRYPTION"] .entry:hover .entry-title {
+[data-theme='ENCRYPTION'] .entry:hover .entry-title {
   color: #ff6b6b;
 }
 
@@ -996,18 +996,28 @@ html {
 }
 
 /* Staggered animation delays for all components - faster for better responsiveness */
-.entry:nth-child(1) { animation-delay: 0s; }
-.entry:nth-child(2) { animation-delay: 0.05s; }
-.entry:nth-child(3) { animation-delay: 0.1s; }
-.entry:nth-child(4) { animation-delay: 0.15s; }
-.entry:nth-child(5) { animation-delay: 0.2s; }
+.entry:nth-child(1) {
+  animation-delay: 0s;
+}
+.entry:nth-child(2) {
+  animation-delay: 0.05s;
+}
+.entry:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.entry:nth-child(4) {
+  animation-delay: 0.15s;
+}
+.entry:nth-child(5) {
+  animation-delay: 0.2s;
+}
 
 /* Enhanced accessibility support */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  
+
   * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -1021,7 +1031,7 @@ html {
     background: rgba(255, 255, 255, 0.1);
     border-left-color: currentColor;
   }
-  
+
   .tech-tag {
     border-width: 2px;
     font-weight: bold;
@@ -1042,16 +1052,16 @@ html {
     padding-left: 0;
     border-left: none;
   }
-  
+
   .entry:active {
     transform: scale(0.99);
     background: rgba(0, 255, 65, 0.05);
   }
-  
+
   .tech-tag:hover {
     transform: none;
   }
-  
+
   .tech-tag:active {
     transform: scale(0.95);
   }

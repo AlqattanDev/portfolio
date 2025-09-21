@@ -127,13 +127,16 @@ export class ParticleSystem {
     this.createParticles();
   }
 
-  public getParticleAt(x: number, y: number, threshold: number = 30): CanvasParticle | null {
+  public getParticleAt(
+    x: number,
+    y: number,
+    threshold: number = 30
+  ): CanvasParticle | null {
     for (const particle of this.particles) {
       const distance = Math.sqrt(
-        Math.pow(x - particle.baseX, 2) +
-        Math.pow(y - particle.baseY, 2)
+        Math.pow(x - particle.baseX, 2) + Math.pow(y - particle.baseY, 2)
       );
-      
+
       if (distance < threshold) {
         return particle;
       }
@@ -141,11 +144,14 @@ export class ParticleSystem {
     return null;
   }
 
-  public getParticlesInRadius(x: number, y: number, radius: number): CanvasParticle[] {
-    return this.particles.filter(particle => {
+  public getParticlesInRadius(
+    x: number,
+    y: number,
+    radius: number
+  ): CanvasParticle[] {
+    return this.particles.filter((particle) => {
       const distance = Math.sqrt(
-        Math.pow(x - particle.baseX, 2) +
-        Math.pow(y - particle.baseY, 2)
+        Math.pow(x - particle.baseX, 2) + Math.pow(y - particle.baseY, 2)
       );
       return distance < radius;
     });
@@ -159,9 +165,9 @@ export class ParticleSystem {
   public getStats() {
     return {
       particleCount: this.particles.length,
-      typedParticles: this.particles.filter(p => p.typed).length,
-      validatedParticles: this.particles.filter(p => p.validated).length,
-      highlightedParticles: this.particles.filter(p => p.highlighted).length
+      typedParticles: this.particles.filter((p) => p.typed).length,
+      validatedParticles: this.particles.filter((p) => p.validated).length,
+      highlightedParticles: this.particles.filter((p) => p.highlighted).length,
     };
   }
 }

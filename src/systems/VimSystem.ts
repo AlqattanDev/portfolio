@@ -42,7 +42,7 @@ export class VimSystem {
       this.changeMode(VIM_MODES.NORMAL);
       this.showCommand(VIM_KEYBINDINGS.COMMAND_DESCRIPTIONS['Escape']);
       modeChanged = true;
-    } 
+    }
     // Handle keys in normal mode
     else if (this.currentMode === VIM_MODES.NORMAL) {
       actionTaken = this.handleNormalModeKeys(e);
@@ -68,13 +68,13 @@ export class VimSystem {
       this.showCommand(VIM_KEYBINDINGS.COMMAND_DESCRIPTIONS['i']);
       return true;
     }
-    
+
     if (key === VIM_KEYBINDINGS.MODE_KEYS.VISUAL) {
       this.changeMode(VIM_MODES.VISUAL);
       this.showCommand(VIM_KEYBINDINGS.COMMAND_DESCRIPTIONS['v']);
       return true;
     }
-    
+
     if (key === VIM_KEYBINDINGS.MODE_KEYS.COMMAND) {
       this.changeMode(VIM_MODES.COMMAND);
       this.showCommand(VIM_KEYBINDINGS.COMMAND_DESCRIPTIONS[':']);
@@ -88,33 +88,33 @@ export class VimSystem {
       this.showCommand(VIM_KEYBINDINGS.COMMAND_DESCRIPTIONS['n']);
       return true;
     }
-    
+
     if (key === VIM_KEYBINDINGS.SCHEME.PREVIOUS) {
       e.preventDefault();
       this.callbacks.onSchemeChange?.('prev');
       this.showCommand(VIM_KEYBINDINGS.COMMAND_DESCRIPTIONS['N']);
       return true;
     }
-    
+
     if (key === VIM_KEYBINDINGS.NAVIGATION.SCROLL_DOWN) {
       e.preventDefault();
       this.callbacks.onScroll?.('down', VIM_KEYBINDINGS.TIMINGS.SCROLL_AMOUNT);
       this.showCommand(VIM_KEYBINDINGS.COMMAND_DESCRIPTIONS['j']);
       return true;
     }
-    
+
     if (key === VIM_KEYBINDINGS.NAVIGATION.SCROLL_UP) {
       e.preventDefault();
       this.callbacks.onScroll?.('up', VIM_KEYBINDINGS.TIMINGS.SCROLL_AMOUNT);
       this.showCommand(VIM_KEYBINDINGS.COMMAND_DESCRIPTIONS['k']);
       return true;
     }
-    
+
     if (key === VIM_KEYBINDINGS.NAVIGATION.GO_TO_TOP) {
       e.preventDefault();
       return this.handleGoToTopSequence();
     }
-    
+
     if (key === VIM_KEYBINDINGS.NAVIGATION.GO_TO_BOTTOM) {
       e.preventDefault();
       this.callbacks.onGoToBottom?.();
@@ -128,9 +128,11 @@ export class VimSystem {
   private handleGoToTopSequence(): boolean {
     const now = Date.now();
     const timeDiff = now - this.lastKeyTime;
-    
-    if (this.lastKey === VIM_KEYBINDINGS.NAVIGATION.GO_TO_TOP && 
-        timeDiff < VIM_KEYBINDINGS.TIMINGS.SEQUENCE_TIMEOUT) {
+
+    if (
+      this.lastKey === VIM_KEYBINDINGS.NAVIGATION.GO_TO_TOP &&
+      timeDiff < VIM_KEYBINDINGS.TIMINGS.SEQUENCE_TIMEOUT
+    ) {
       // Complete 'gg' sequence
       this.callbacks.onGoToTop?.();
       this.showCommand(VIM_KEYBINDINGS.COMMAND_DESCRIPTIONS['gg']);
@@ -141,7 +143,7 @@ export class VimSystem {
       this.showCommand(VIM_KEYBINDINGS.COMMAND_DESCRIPTIONS['g']);
       this.lastKey = VIM_KEYBINDINGS.NAVIGATION.GO_TO_TOP;
       this.lastKeyTime = now;
-      
+
       // Clear sequence after timeout
       setTimeout(() => {
         if (this.lastKey === VIM_KEYBINDINGS.NAVIGATION.GO_TO_TOP) {
@@ -149,7 +151,7 @@ export class VimSystem {
           this.clearKeySequence();
         }
       }, VIM_KEYBINDINGS.TIMINGS.SEQUENCE_TIMEOUT);
-      
+
       return true;
     }
   }
@@ -164,12 +166,12 @@ export class VimSystem {
     const modeElement = document.getElementById('statusMode');
     if (modeElement) {
       modeElement.textContent = command;
-      
+
       // Clear any existing timeout
       if (this.commandTimeout) {
         clearTimeout(this.commandTimeout);
       }
-      
+
       // Restore original mode after delay
       this.commandTimeout = setTimeout(() => {
         if (modeElement.textContent === command) {
@@ -185,7 +187,7 @@ export class VimSystem {
     if (modeElement) {
       modeElement.textContent = this.currentMode;
     }
-    
+
     if (this.commandTimeout) {
       clearTimeout(this.commandTimeout);
       this.commandTimeout = null;
@@ -225,7 +227,7 @@ export class VimSystem {
 
   public destroy(): void {
     document.removeEventListener('keydown', (e) => this.handleKeydown(e));
-    
+
     if (this.commandTimeout) {
       clearTimeout(this.commandTimeout);
       this.commandTimeout = null;

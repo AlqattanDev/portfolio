@@ -4,10 +4,7 @@
  * Now uses utility functions and proper type definitions
  */
 import type { SkillsProps, SkillLevel } from '@/types';
-import {
-  generateSkillBarConfig,
-  isValidSkillLevel,
-} from '@/utils/helpers';
+import { generateSkillBarConfig, isValidSkillLevel } from '@/utils/helpers';
 
 const {
   skills,
@@ -21,7 +18,6 @@ const {
 // Enhanced skill bar generation with validation
 const getSkillBarStyle = (level: string) => {
   if (!isValidSkillLevel(level)) {
-    console.warn(`Invalid skill level: ${level}, defaulting to Beginner`);
     return generateSkillBarConfig('Beginner');
   }
   return generateSkillBarConfig(level as SkillLevel);
@@ -45,10 +41,18 @@ const getSkillBarStyle = (level: string) => {
 
             <div class="skills-list">
               {category.items.map((skill) => (
-                <div 
+                <div
                   class={`skill-item ${interactive ? 'interactive' : ''}`}
-                  data-skill-name={skill.name.toLowerCase().replace(/\s+/g, '-')}
-                  data-connected={skill.name.toLowerCase().includes('flutter') || skill.name.toLowerCase().includes('firebase') || skill.name.toLowerCase().includes('dart') ? 'true' : undefined}
+                  data-skill-name={skill.name
+                    .toLowerCase()
+                    .replace(/\s+/g, '-')}
+                  data-connected={
+                    skill.name.toLowerCase().includes('flutter') ||
+                    skill.name.toLowerCase().includes('firebase') ||
+                    skill.name.toLowerCase().includes('dart')
+                      ? 'true'
+                      : undefined
+                  }
                 >
                   <div class="skill-info">
                     <div class="skill-name">{skill.name}</div>
@@ -178,7 +182,12 @@ const getSkillBarStyle = (level: string) => {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 255, 65, 0.1),
+      transparent
+    );
     transition: left 0.6s ease;
     pointer-events: none;
   }
@@ -234,7 +243,9 @@ const getSkillBarStyle = (level: string) => {
   }
 
   .skill-bar {
-    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+    font-family:
+      'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Cascadia Code',
+      monospace;
     background: rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-digital);
     border-radius: 4px;
@@ -279,12 +290,15 @@ const getSkillBarStyle = (level: string) => {
   }
 
   @keyframes subtle-glow {
-    0%, 100% { 
+    0%,
+    100% {
       text-shadow: 0 0 2px currentColor;
       opacity: 0.9;
     }
-    50% { 
-      text-shadow: 0 0 4px currentColor, 0 0 8px currentColor;
+    50% {
+      text-shadow:
+        0 0 4px currentColor,
+        0 0 8px currentColor;
       opacity: 1;
     }
   }
@@ -621,7 +635,7 @@ const getSkillBarStyle = (level: string) => {
       border-width: 2px;
       font-weight: var(--font-weight-bold);
     }
-    
+
     .skill-bar .filled {
       font-weight: 800;
     }
@@ -649,17 +663,23 @@ const getSkillBarStyle = (level: string) => {
   }
 
   /* Theme-reactive skill highlighting */
-  .skills-container[data-scheme="MATRIX"] .skill-item.interactive:hover .skill-name {
+  .skills-container[data-scheme='MATRIX']
+    .skill-item.interactive:hover
+    .skill-name {
     color: #00ff41;
     text-shadow: 0 0 1px #00ff41;
   }
 
-  .skills-container[data-scheme="TRADING"] .skill-item.interactive:hover .skill-name {
+  .skills-container[data-scheme='TRADING']
+    .skill-item.interactive:hover
+    .skill-name {
     color: #ffff00;
     text-shadow: 0 0 1px #ffff00;
   }
 
-  .skills-container[data-scheme="BLOCKCHAIN"] .skill-item.interactive:hover .skill-name {
+  .skills-container[data-scheme='BLOCKCHAIN']
+    .skill-item.interactive:hover
+    .skill-name {
     color: #64ffda;
     text-shadow: 0 0 1px #64ffda;
   }
@@ -669,18 +689,18 @@ const getSkillBarStyle = (level: string) => {
     .skill-item {
       transition: none;
     }
-    
+
     .skill-item.interactive:hover,
     .skill-item.interactive:active {
       transform: none;
     }
-    
+
     .skill-bar .filled,
     .skill-bar .dither-1,
     .skill-bar .dither-2 {
       animation: none !important;
     }
-    
+
     .skill-item.interactive::before {
       display: none;
     }
@@ -688,90 +708,93 @@ const getSkillBarStyle = (level: string) => {
 </style>
 
 <script>
-// Theme-reactive Skills Enhancement
-document.addEventListener('DOMContentLoaded', () => {
-  const skillsContainer = document.querySelector('.skills-container');
-  const skillItems = document.querySelectorAll('.skill-item.interactive');
-  
-  if (!skillsContainer || !skillItems.length) return;
+  // Theme-reactive Skills Enhancement
+  document.addEventListener('DOMContentLoaded', () => {
+    const skillsContainer = document.querySelector('.skills-container');
+    const skillItems = document.querySelectorAll('.skill-item.interactive');
 
-  // Update skills container with current theme
-  function updateSkillsTheme() {
-    const currentScheme = document.documentElement.getAttribute('data-theme');
-    const animationSystem = (window as any).asciiAnimationSystem;
-    
-    if (animationSystem) {
-      const currentEffectName = animationSystem.getCurrentEffectName();
-      skillsContainer.setAttribute('data-scheme', currentEffectName.toUpperCase().replace(/\s+/g, '_'));
+    if (!skillsContainer || !skillItems.length) return;
+
+    // Update skills container with current theme
+    function updateSkillsTheme() {
+      const animationSystem = window.asciiAnimationSystem;
+
+      if (animationSystem) {
+        const currentEffectName = animationSystem.getCurrentEffectName();
+        skillsContainer.setAttribute(
+          'data-scheme',
+          currentEffectName.toUpperCase().replace(/\s+/g, '_')
+        );
+      }
     }
-  }
 
-  // Subtle skill connection highlighting
-  function setupSkillConnections() {
-    const connections = {
-      'flutter': ['dart', 'firebase', 'mobile-development'],
-      'firebase': ['flutter', 'real-time-analytics', 'push-notifications'],
-      'dart': ['flutter', 'mobile-development'],
-      'rust': ['systems-programming', 'performance-optimization'],
-      'ai': ['machine-learning', 'innovation', 'research']
+    // Subtle skill connection highlighting
+    function setupSkillConnections() {
+      const connections = {
+        flutter: ['dart', 'firebase', 'mobile-development'],
+        firebase: ['flutter', 'real-time-analytics', 'push-notifications'],
+        dart: ['flutter', 'mobile-development'],
+        rust: ['systems-programming', 'performance-optimization'],
+        ai: ['machine-learning', 'innovation', 'research'],
+      };
+
+      skillItems.forEach((item) => {
+        const skillName = item.getAttribute('data-skill-name');
+
+        item.addEventListener('mouseenter', () => {
+          const relatedSkills = connections[skillName] || [];
+
+          // Subtle highlight of related skills
+          skillItems.forEach((otherItem) => {
+            const otherSkillName = otherItem.getAttribute('data-skill-name');
+
+            if (relatedSkills.includes(otherSkillName)) {
+              otherItem.style.opacity = '0.7';
+              otherItem.style.transform = 'translateX(1px)';
+              otherItem.style.transition = 'all 0.3s ease';
+            }
+          });
+        });
+
+        item.addEventListener('mouseleave', () => {
+          skillItems.forEach((otherItem) => {
+            otherItem.style.opacity = '';
+            otherItem.style.transform = '';
+          });
+        });
+      });
+    }
+
+    // Listen for theme changes
+    document.addEventListener('theme:changed', updateSkillsTheme);
+
+    // Initialize
+    updateSkillsTheme();
+    setupSkillConnections();
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '-10% 0px -10% 0px',
     };
 
-    skillItems.forEach(item => {
-      const skillName = item.getAttribute('data-skill-name');
-      
-      item.addEventListener('mouseenter', () => {
-        const relatedSkills = connections[skillName] || [];
-        
-        // Subtle highlight of related skills
-        skillItems.forEach(otherItem => {
-          const otherSkillName = otherItem.getAttribute('data-skill-name');
-          
-          if (relatedSkills.includes(otherSkillName)) {
-            otherItem.style.opacity = '0.7';
-            otherItem.style.transform = 'translateX(1px)';
-            otherItem.style.transition = 'all 0.3s ease';
-          }
-        });
+    const skillsObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          entry.target.style.transition =
+            'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        }
       });
+    }, observerOptions);
 
-      item.addEventListener('mouseleave', () => {
-        skillItems.forEach(otherItem => {
-          otherItem.style.opacity = '';
-          otherItem.style.transform = '';
-        });
-      });
+    // Apply subtle entrance animation
+    skillItems.forEach((item, index) => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(10px)';
+      item.style.transitionDelay = `${index * 0.1}s`;
+      skillsObserver.observe(item);
     });
-  }
-
-  // Listen for theme changes
-  document.addEventListener('theme:changed', updateSkillsTheme);
-  
-  // Initialize
-  updateSkillsTheme();
-  setupSkillConnections();
-  
-  // Intersection Observer for scroll animations
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '-10% 0px -10% 0px'
-  };
-
-  const skillsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-        entry.target.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-      }
-    });
-  }, observerOptions);
-
-  // Apply subtle entrance animation
-  skillItems.forEach((item, index) => {
-    item.style.opacity = '0';
-    item.style.transform = 'translateY(10px)';
-    item.style.transitionDelay = `${index * 0.1}s`;
-    skillsObserver.observe(item);
   });
-});
 </script>

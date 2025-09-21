@@ -72,17 +72,17 @@ export const VIM_KEYBINDINGS = {
   },
   // Command descriptions for status display (keep short for fixed width)
   COMMAND_DESCRIPTIONS: {
-    'Escape': 'NORMAL',
-    'i': 'INSERT',
-    'v': 'VISUAL', 
+    Escape: 'NORMAL',
+    i: 'INSERT',
+    v: 'VISUAL',
     ':': 'COMMAND',
-    'n': 'NEXT →',
-    'N': '← PREV',
-    'j': 'j ↓',
-    'k': 'k ↑', 
-    'g': 'g...',
-    'gg': 'gg ↑↑',
-    'G': 'G ↓↓',
+    n: 'NEXT →',
+    N: '← PREV',
+    j: 'j ↓',
+    k: 'k ↑',
+    g: 'g...',
+    gg: 'gg ↑↑',
+    G: 'G ↓↓',
   },
 } as const;
 
@@ -130,17 +130,17 @@ export const CSS_VARIABLES = {
   MUTED_DIGITAL: '--muted-digital',
   BORDER_DIGITAL: '--border-digital',
   ACCENT_DIGITAL: '--accent-digital',
-  
+
   BACKGROUND_PRINT: '--background-print',
   FOREGROUND_PRINT: '--foreground-print',
   MUTED_PRINT: '--muted-print',
   BORDER_PRINT: '--border-print',
   ACCENT_PRINT: '--accent-print',
-  
+
   // Typography
   FONT_BODY: '--font-body',
   FONT_ACCENT: '--font-accent',
-  
+
   // Animation
   TRANSITION_SPEED: '--transition-speed',
 } as const;
@@ -191,9 +191,11 @@ export const ASCII_CHARS = {
   },
 } as const;
 
-export type ColorScheme = typeof COLOR_SCHEMES[keyof typeof COLOR_SCHEMES];
-export type EffectName = typeof EFFECT_NAMES[number];
-export type VimMode = typeof VIM_MODES[keyof typeof VIM_MODES];
-export type TransitionSpeed = typeof TRANSITION_SPEEDS[keyof typeof TRANSITION_SPEEDS];
-export type AnimationEasing = typeof ANIMATION_EASINGS[keyof typeof ANIMATION_EASINGS];
-export type Breakpoint = typeof BREAKPOINTS[keyof typeof BREAKPOINTS];
+export type ColorScheme = (typeof COLOR_SCHEMES)[keyof typeof COLOR_SCHEMES];
+export type EffectName = (typeof EFFECT_NAMES)[number];
+export type VimMode = (typeof VIM_MODES)[keyof typeof VIM_MODES];
+export type TransitionSpeed =
+  (typeof TRANSITION_SPEEDS)[keyof typeof TRANSITION_SPEEDS];
+export type AnimationEasing =
+  (typeof ANIMATION_EASINGS)[keyof typeof ANIMATION_EASINGS];
+export type Breakpoint = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS];

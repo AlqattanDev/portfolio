@@ -13,7 +13,7 @@ export class AnimationScheduler {
     if (!this.isRunning) {
       this.start();
     }
-    
+
     // Return cleanup function
     return () => this.remove(task);
   }
@@ -41,7 +41,7 @@ export class AnimationScheduler {
 
   private tick = (): void => {
     if (!this.isRunning) return;
-    
+
     // Execute all animation tasks
     for (const task of this.tasks) {
       try {
@@ -50,7 +50,7 @@ export class AnimationScheduler {
           this.tasks.delete(task);
         }
       } catch (error) {
-        console.error('Animation task failed:', error);
+        // Optionally handle the error, e.g., log to a different service
         this.tasks.delete(task);
       }
     }
