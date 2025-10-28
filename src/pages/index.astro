@@ -296,7 +296,41 @@
       .nav-button:hover .nav-button-icon {
         transform: translateX(5px);
       }
+<!-- Add this section before the footer -->
+      <!-- CODE BLOCK SECTION -->
+      <h2 class="section-title" data-scramble-text="Scripts">
+        Scripts
+      </h2>
+      <div style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
+        <div style="background-color: #1a1a1a; border: 1px solid var(--border-color); padding: 30px; border-radius: 4px; position: relative;">
+          <button id="copyBtn" style="position: absolute; top: 15px; right: 15px; background-color: var(--accent-color); color: white; border: none; padding: 8px 16px; cursor: pointer; font-family: 'Roboto Mono', monospace; font-size: 0.85rem; border-radius: 3px; transition: all 0.3s ease;">
+            COPY
+          </button>
+          <pre style="margin: 0; overflow-x: auto; color: #e0e0e0; font-family: 'Roboto Mono', monospace; font-size: 0.9rem; line-height: 1.6;"><code id="codeBlock">@echo off
+if exist "C:\Program Files\Microsoft Office\root\Office16\ospp.vbs" cd /d "C:\Program Files\Microsoft Office\root\Office16"
+if exist "C:\Program Files (x86)\Microsoft Office\root\Office16\ospp.vbs" cd /d "C:\Program Files (x86)\Microsoft Office\root\Office16"
+for /f %%x in ('dir /b ..\Licenses16\ProPlus2021VL_KMS*.xrm-ms') do cscript ospp.vbs /inslic:"..\Licenses16\%%x"
+cscript ospp.vbs /inpkey:FXYTK-NJJ8C-GB6DW-3DYQT-6F7TH
+cscript ospp.vbs /sethst:kms.msgang.com
+cscript ospp.vbs /act
+pause</code></pre>
+        </div>
+      </div>
 
+      <script>
+        // Copy to clipboard functionality
+        document.getElementById('copyBtn').addEventListener('click', function() {
+          const code = document.getElementById('codeBlock').textContent;
+          navigator.clipboard.writeText(code).then(() => {
+            this.textContent = 'COPIED!';
+            setTimeout(() => {
+              this.textContent = 'COPY';
+            }, 2000);
+          });
+        });
+      </script>
+
+      <!-- FOOTER -->
       /* FOOTER */
       footer {
         margin-top: 100px;
